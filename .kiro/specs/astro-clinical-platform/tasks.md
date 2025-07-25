@@ -176,7 +176,6 @@
 
 - [x] 8. Build educational content system
 
-
   - [x] 8.1 Create education content renderer
 
     - Build EducationLayout.astro for educational articles
@@ -212,15 +211,7 @@
 
 - [x] 9. Implement SEO optimization
 
-
-
   - [x] 9.1 Configure medical content SEO
-
-
-
-
-
-
 
     - Add medical schema markup for structured data
     - Implement proper meta tags and Open Graph data
@@ -229,7 +220,6 @@
     - _Requirements: 8.1, 8.4, 8.5_
 
   - [x] 9.2 Optimize Core Web Vitals
-
 
     - Implement image optimization with responsive images
     - Add critical CSS inlining for above-the-fold content
@@ -240,8 +230,6 @@
 ### Phase 8: 基礎分析
 
 - [x] 10. Set up privacy-compliant analytics
-
-
 
   - Integrate Plausible or similar privacy-focused analytics
   - Configure medical content usage tracking
@@ -282,9 +270,9 @@
 
 ### 進階臨床工具
 
-- [ ] 12. Develop advanced medical components
+- [x] 12. Develop advanced medical components
 
-  - [ ] 12.1 Build decision tree system
+  - [x] 12.1 Build decision tree system
 
     - Create interactive decision tree component
     - Implement step-by-step clinical pathway navigation
@@ -292,7 +280,8 @@
     - Configure decision tree JSON schema and validation
     - _Requirements: 2.3_
 
-  - [ ] 12.2 Create medical data visualization components
+  - [x] 12.2 Create medical data visualization components
+
     - Build Chart.js integration for medical data
     - Create risk assessment visualization components
     - Implement comparison charts for treatment options
@@ -301,17 +290,20 @@
 
 ### 進階內容功能
 
-- [ ] 13. Enhanced educational features
+- [-] 13. Enhanced educational features
 
-  - [ ] 13.1 Create medication information system
+  - [x] 13.1 Create medication information system
 
     - Design medication comparison interfaces
     - Implement visual medication guides with images
     - Add side effect comparison tables
     - Create medication search and filtering
+
     - _Requirements: 3.4_
 
-  - [ ] 13.2 Implement procedure explanation system
+  - [x] 13.2 Implement procedure explanation system
+
+
 
     - Create procedure comparison interfaces
     - Build risk visualization components
@@ -320,6 +312,8 @@
     - _Requirements: 3.5_
 
   - [ ] 13.3 Build advanced search features
+
+
     - Add search suggestions and autocomplete functionality
     - Create intelligent content recommendation engine
     - Implement user behavior-based recommendations
@@ -327,9 +321,9 @@
 
 ### 外部整合
 
-- [ ] 14. Implement medical API integrations
+- [-] 14. Implement medical API integrations
 
-  - [ ] 14.1 Build secure API integration framework
+  - [-] 14.1 Build secure API integration framework
 
     - Create API client with proper error handling
     - Implement API key management and rotation
@@ -338,49 +332,60 @@
     - _Requirements: 9.1, 9.3, 9.6_
 
   - [ ] 14.2 Integrate medical databases
+
     - Connect to external medical reference APIs
     - Implement drug interaction checking APIs
     - Add medical coding system integrations (ICD-10, CPT)
     - Create medical literature search integration
     - _Requirements: 9.2, 9.4_
 
----
+  - [ ] 14.3 Build extensible plugin system
+    - Create plugin architecture for new integrations
+    - Implement plugin configuration management
+    - Add plugin security and validation
+    - Build plugin marketplace framework
+    - _Requirements: 9.4, 9.5_
 
-## 📋 第三版 (v3.0+) 長期規劃
+### SEO 與效能優化
 
-### 平台擴充
+- [ ] 15. Implement SEO optimization
 
-- [ ] 15. Advanced CMS features
+  - [ ] 15.1 Configure medical content SEO
 
-  - [ ] 15.1 Build CMS content integration
+    - Add medical schema markup for structured data
+    - Implement proper meta tags and Open Graph data
+    - Create XML sitemaps with medical content categorization
+    - Add canonical URLs for multi-language content
+    - _Requirements: 8.1, 8.4, 8.5_
 
-    - Create build-time content fetching from CMS
-    - Implement content caching and optimization
-    - Add automatic content rebuilds on CMS updates
-    - Configure content preview functionality
-    - _Requirements: 5.4, 5.7_
+  - [ ] 15.2 Optimize Core Web Vitals
 
-  - [ ] 15.2 Create flowchart management system
-    - Add flowchart code editor in CMS
-    - Implement flowchart preview functionality
-    - Create flowchart template library
-    - Add flowchart validation and error handling
-    - _Requirements: 10.2, 10.5_
+    - Implement image optimization with responsive images
+    - Add critical CSS inlining for above-the-fold content
+    - Configure lazy loading for non-critical components
+    - Optimize JavaScript bundle splitting
+    - _Requirements: 4.5, 4.6, 8.3_
 
-### 社群與擴充功能
+  - [ ] 15.3 Build performance monitoring
+    - Integrate web vitals measurement
+    - Add performance analytics and monitoring
+    - Create performance budget enforcement
+    - Implement automated performance testing
+    - _Requirements: 8.6, 11.5_
 
-- [ ] 16. Build extensible plugin system [複雜度高 - 長期規劃]
-  - Create plugin architecture for new integrations
-  - Implement plugin configuration management
-  - Add plugin security and validation
-  - Build plugin marketplace framework
-  - _Requirements: 9.4, 9.5_
+### 分析與監控
 
-### 進階分析與監控
+- [ ] 16. Implement analytics and monitoring
 
-- [ ] 17. Advanced analytics and monitoring
+  - [ ] 16.1 Set up privacy-compliant analytics
 
-  - [ ] 17.1 Build error monitoring and reporting
+    - Integrate Plausible or similar privacy-focused analytics
+    - Configure medical content usage tracking
+    - Add calculator usage analytics
+    - Implement user journey tracking
+    - _Requirements: 11.1, 11.4, 11.7_
+
+  - [ ] 16.2 Build error monitoring and reporting
 
     - Integrate error tracking service
     - Create custom error boundaries for medical tools
@@ -388,14 +393,37 @@
     - Implement user feedback collection system
     - _Requirements: 11.3, 11.5_
 
-  - [ ] 17.2 Create usage insights dashboard
+  - [ ] 16.3 Create usage insights dashboard
     - Build analytics dashboard for administrators
     - Add popular content and tool tracking
     - Implement user behavior analysis
     - Create content effectiveness metrics
     - _Requirements: 11.2, 11.6_
 
-### 合規與品質保證
+---
+
+## 📋 第三版 (v3.0+) 長期規劃
+
+### 內容管理系統整合
+
+- [ ] 17. Advanced CMS features
+
+  - [ ] 17.1 Build CMS content integration
+
+    - Create build-time content fetching from CMS
+    - Implement content caching and optimization
+    - Add automatic content rebuilds on CMS updates
+    - Configure content preview functionality
+    - _Requirements: 5.4, 5.7_
+
+  - [ ] 17.2 Create flowchart management system
+    - Add flowchart code editor in CMS
+    - Implement flowchart preview functionality
+    - Create flowchart template library
+    - Add flowchart validation and error handling
+    - _Requirements: 10.2, 10.5_
+
+### 測試與品質保證
 
 - [ ] 18. Comprehensive testing framework
 
@@ -430,6 +458,8 @@
     - Build medical expert review integration
     - _Requirements: 2.6, 2.7_
 
+### 無障礙與合規
+
 - [ ] 19. Ensure accessibility compliance
 
   - [ ] 19.1 Implement WCAG 2.1 AA compliance
@@ -455,7 +485,7 @@
     - Build compliance reporting tools
     - _Requirements: 7.6, 11.7_
 
-### 文件與維護
+### 文件與部署
 
 - [ ] 20. Create comprehensive documentation
 
@@ -482,226 +512,11 @@
     - Implement automated security scanning
     - _Requirements: 8.7, 11.3_
 
-## Authentication and Security
+### 擴充功能
 
-- [ ] 9. Implement authentication system
-
-  - [ ] 9.1 Build client-side authentication
-
-    - Create authentication service with JWT handling
-    - Implement secure token storage with HttpOnly cookies
-    - Add login/logout functionality
-    - Build authentication state management
-    - _Requirements: 7.1, 7.2, 7.4_
-
-  - [ ] 9.2 Create protected route system
-
-    - Implement route protection for administrative features
-    - Add authentication guards for sensitive content
-    - Create session management with automatic expiration
-    - Build user preference synchronization
-    - _Requirements: 7.3, 7.5_
-
-  - [ ] 9.3 Add security measures
-    - Implement rate limiting for authentication attempts
-    - Add CSRF protection for forms
-    - Create secure error handling without information leakage
-    - Implement audit logging for security events
-    - _Requirements: 7.6, 7.8_
-
-## Content Management Integration
-
-- [ ] 10. Set up headless CMS integration
-
-  - [ ] 10.1 Configure Strapi/Sanity CMS
-
-    - Set up headless CMS with medical content schemas
-    - Configure content types for calculators and education
-    - Add multi-language content management
-    - Set up media asset management
-    - _Requirements: 5.1, 5.2, 5.6_
-
-  - [ ] 10.2 Build CMS content integration
-
-    - Create build-time content fetching from CMS
-    - Implement content caching and optimization
-    - Add automatic content rebuilds on CMS updates
-    - Configure content preview functionality
-    - _Requirements: 5.4, 5.7_
-
-  - [ ] 10.3 Create flowchart management system
-    - Add flowchart code editor in CMS
-    - Implement flowchart preview functionality
-    - Create flowchart template library
-    - Add flowchart validation and error handling
-    - _Requirements: 10.2, 10.5_
-
-## SEO and Performance Optimization
-
-- [ ] 11. Implement SEO optimization
-
-  - [ ] 11.1 Configure medical content SEO
-
-    - Add medical schema markup for structured data
-    - Implement proper meta tags and Open Graph data
-    - Create XML sitemaps with medical content categorization
-    - Add canonical URLs for multi-language content
-    - _Requirements: 8.1, 8.4, 8.5_
-
-  - [ ] 11.2 Optimize Core Web Vitals
-
-    - Implement image optimization with responsive images
-    - Add critical CSS inlining for above-the-fold content
-    - Configure lazy loading for non-critical components
-    - Optimize JavaScript bundle splitting
-    - _Requirements: 4.5, 4.6, 8.3_
-
-  - [ ] 11.3 Build performance monitoring
-    - Integrate web vitals measurement
-    - Add performance analytics and monitoring
-    - Create performance budget enforcement
-    - Implement automated performance testing
-    - _Requirements: 8.6, 11.5_
-
-## External Integrations
-
-- [ ] 12. Implement medical API integrations
-
-  - [ ] 12.1 Build secure API integration framework
-
-    - Create API client with proper error handling
-    - Implement API key management and rotation
-    - Add request caching and rate limiting
-    - Build fallback mechanisms for API failures
-    - _Requirements: 9.1, 9.3, 9.6_
-
-  - [ ] 12.2 Integrate medical databases
-
-    - Connect to external medical reference APIs
-    - Implement drug interaction checking APIs
-    - Add medical coding system integrations (ICD-10, CPT)
-    - Create medical literature search integration
-    - _Requirements: 9.2, 9.4_
-
-  - [ ] 12.3 Build extensible plugin system
-    - Create plugin architecture for new integrations
-    - Implement plugin configuration management
-    - Add plugin security and validation
-    - Build plugin marketplace framework
-    - _Requirements: 9.4, 9.5_
-
-## Analytics and Monitoring
-
-- [ ] 13. Implement analytics and monitoring
-
-  - [ ] 13.1 Set up privacy-compliant analytics
-
-    - Integrate Plausible or similar privacy-focused analytics
-    - Configure medical content usage tracking
-    - Add calculator usage analytics
-    - Implement user journey tracking
-    - _Requirements: 11.1, 11.4, 11.7_
-
-  - [ ] 13.2 Build error monitoring and reporting
-
-    - Integrate error tracking service
-    - Create custom error boundaries for medical tools
-    - Add performance monitoring and alerting
-    - Implement user feedback collection system
-    - _Requirements: 11.3, 11.5_
-
-  - [ ] 13.3 Create usage insights dashboard
-    - Build analytics dashboard for administrators
-    - Add popular content and tool tracking
-    - Implement user behavior analysis
-    - Create content effectiveness metrics
-    - _Requirements: 11.2, 11.6_
-
-## Testing and Quality Assurance
-
-- [ ] 14. Establish comprehensive testing framework
-
-  - [ ] 14.1 Set up unit testing
-
-    - Configure Vitest for Astro components
-    - Write tests for calculator logic and validation
-    - Create tests for content processing utilities
-    - Add tests for authentication and security functions
-    - _Requirements: 2.2, 7.1_
-
-  - [ ] 14.2 Implement integration testing
-
-    - Set up Astro container testing for pages
-    - Create tests for CMS integration
-    - Add tests for API integrations
-    - Implement cross-browser compatibility testing
-    - _Requirements: 5.4, 9.1_
-
-  - [ ] 14.3 Build end-to-end testing
-
-    - Set up Playwright for E2E testing
-    - Create user journey tests for medical workflows
-    - Add accessibility testing with axe-core
-    - Implement visual regression testing
-    - _Requirements: 4.1, 9.5_
-
-  - [ ] 14.4 Add medical accuracy validation
-    - Create medical content review workflows
-    - Implement calculator accuracy verification
-    - Add clinical guideline compliance checking
-    - Build medical expert review integration
-    - _Requirements: 2.6, 2.7_
-
-## Accessibility and Compliance
-
-- [ ] 15. Ensure accessibility compliance
-
-  - [ ] 15.1 Implement WCAG 2.1 AA compliance
-
-    - Add proper ARIA labels and roles
-    - Implement keyboard navigation for all interactive elements
-    - Create high contrast mode support
-    - Add screen reader optimization
-    - _Requirements: 9.5, 10.6_
-
-  - [ ] 15.2 Build medical accessibility features
-
-    - Add medical terminology pronunciation guides
-    - Implement text-to-speech for educational content
-    - Create simplified language alternatives
-    - Add visual impairment support for medical diagrams
-    - _Requirements: 3.7, 10.6_
-
-  - [ ] 15.3 Ensure healthcare compliance
-    - Implement HIPAA compliance measures
-    - Add medical data privacy protections
-    - Create audit trails for sensitive operations
-    - Build compliance reporting tools
-    - _Requirements: 7.6, 11.7_
-
-## Documentation and Deployment
-
-- [ ] 16. Create comprehensive documentation
-
-  - [ ] 16.1 Build developer documentation
-
-    - Create API documentation for all components
-    - Add calculator development guidelines
-    - Build content creation guides
-    - Create deployment and maintenance documentation
-    - _Requirements: 5.5, 9.7_
-
-  - [ ] 16.2 Create user documentation
-
-    - Build user guides for medical professionals
-    - Create video tutorials for complex features
-    - Add FAQ and troubleshooting guides
-    - Build onboarding documentation
-    - _Requirements: 3.6, 3.7_
-
-  - [ ] 16.3 Finalize production deployment
-    - Configure production environment variables
-    - Set up monitoring and alerting systems
-    - Create backup and disaster recovery procedures
-    - Implement automated security scanning
-    - _Requirements: 8.7, 11.3_
+- [ ] 21. Build extensible plugin system [複雜度高 - 長期規劃]
+  - Create plugin architecture for new integrations
+  - Implement plugin configuration management
+  - Add plugin security and validation
+  - Build plugin marketplace framework
+  - _Requirements: 9.4, 9.5_
