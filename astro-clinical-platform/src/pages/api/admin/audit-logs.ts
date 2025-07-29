@@ -4,6 +4,9 @@
  */
 
 import type { APIRoute } from 'astro';
+
+// Disable prerendering for this API route
+export const prerender = false;
 import { 
   AuditLogger, 
   SecureErrorHandler,

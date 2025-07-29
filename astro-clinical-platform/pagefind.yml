@@ -73,8 +73,6 @@ ranking:
 
 # 索引優化
 glob: "**/*.{html}"
-force_language: false
-keep_index_url: false
 
 # 醫療內容加權
 boost_selectors:

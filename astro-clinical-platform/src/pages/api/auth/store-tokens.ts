@@ -5,6 +5,9 @@
 
 import type { APIRoute } from 'astro';
 
+// Disable prerendering for this API route
+export const prerender = false;
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();

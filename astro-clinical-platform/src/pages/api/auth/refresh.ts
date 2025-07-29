@@ -5,6 +5,9 @@
 
 import type { APIRoute } from 'astro';
 
+// Disable prerendering for this API route
+export const prerender = false;
+
 // Mock user database - same as login
 const MOCK_USERS = [
   {

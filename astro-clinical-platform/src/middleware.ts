@@ -36,6 +36,11 @@ const i18nMiddleware = defineMiddleware(async (context, next) => {
 
 // Security middleware for rate limiting and CSRF protection
 const securityMiddleware = defineMiddleware(async (context, next) => {
+  // Skip security middleware during prerendering
+  if (import.meta.env.SSR === false) {
+    return next();
+  }
+
   // Apply rate limiting to authentication endpoints
   if (context.url.pathname.startsWith('/api/auth/') && context.request.method === 'POST') {
     const rateLimitResponse = await SecurityMiddleware.applyRateLimit(context, 'login');
@@ -57,6 +62,14 @@ const securityMiddleware = defineMiddleware(async (context, next) => {
 
 // Authentication middleware for session management
 const authMiddleware = defineMiddleware(async (context, next) => {
+  // Skip authentication middleware during prerendering
+  if (import.meta.env.SSR === false) {
+    // Set default values for prerendering
+    context.locals.user = null;
+    context.locals.isAuthenticated = false;
+    return next();
+  }
+
   // Validate and refresh session if needed
   const user = await SessionManager.validateAndRefreshSession(context);
   

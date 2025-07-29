@@ -395,18 +395,23 @@ export class AuditLogger {
     details?: Record<string, any>,
     severity: SecurityEvent['severity'] = 'medium'
   ): void {
+    // Skip logging during prerendering if context is not available
+    if (!context.clientAddress && !context.request) {
+      return;
+    }
+
     const securityEvent: SecurityEvent = {
       timestamp: new Date(),
       event,
       ip: context.clientAddress || 'unknown',
-      userAgent: context.request.headers.get('user-agent') || undefined,
+      userAgent: context.request?.headers.get('user-agent') || undefined,
       success,
       details,
       severity,
     };
 
     // Add user ID if available from context
-    const authHeader = context.request.headers.get('authorization');
+    const authHeader = context.request?.headers.get('authorization');
     if (authHeader) {
       // Extract user ID from JWT token (simplified)
       try {
@@ -529,7 +534,12 @@ export class SecurityMiddleware {
     context: APIContext,
     type: string = 'api'
   ): Promise<Response | null> {
-    const identifier = `${context.clientAddress || 'unknown'}:${type}`;
+    // Skip rate limiting if clientAddress is not available (during prerendering)
+    if (!context.clientAddress) {
+      return null;
+    }
+
+    const identifier = `${context.clientAddress}:${type}`;
     
     if (RateLimiter.isRateLimited(identifier, type)) {
       const status = RateLimiter.getStatus(identifier, type);

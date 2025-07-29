@@ -4,6 +4,9 @@
  */
 
 import type { APIRoute } from 'astro';
+
+// Disable prerendering for this API route
+export const prerender = false;
 import { RateLimiter, AuditLogger, SecureErrorHandler, SecurityMiddleware } from '../../../utils/security-measures';
 
 // Mock user database - In production, this would be a real database
