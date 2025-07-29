@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兒童抗生素劑量計算器 - 醫療工具百寶箱</title>
+    <meta name="description" content="專業的兒童抗生素劑量計算工具，幫助醫療人員快速準確計算用藥劑量。">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+        }
+        .result-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .result-body {
+            transition: all 0.5s ease-in-out;
+        }
+        /* 避免 number input 出現上下箭頭 */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .tab-btn.active {
+            border-color: #0d9488; /* teal-600 */
+            color: #0d9488;
+            border-bottom-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 頂部導航欄 -->
+
+    <!-- 側邊欄遮罩 (移動端) -->
+
+    <!-- 側邊欄 -->
+
+    <!-- 主內容區 -->
+    <main>
+        <div class="p-6 lg:p-8">
+            <!-- 麵包屑導航 -->
+
+            <!-- 原有內容區域 -->
+            <div class="container mx-auto max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-teal-600">兒童抗生素劑量計算器</h1>
+            <p class="text-gray-500 mt-2">方便門診快速計算常用抗生素劑量</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- 左側：輸入與控制面板 -->
+            <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col border border-gray-200">
+                <div>
+                    <h2 class="text-2xl font-bold mb-6 border-b pb-3 text-teal-700">輸入基本資料</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="weight" class="block text-md font-medium text-gray-700 mb-1">兒童體重 (kg)</label>
+                            <input type="number" id="weight" placeholder="例如: 15" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label for="age" class="block text-md font-medium text-gray-700 mb-1">兒童年齡 (歲)</label>
+                            <input type="number" id="age" placeholder="部分藥物計算所需" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-md font-medium text-gray-700 mb-1">藥物劑型</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="form" value="powder" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500" checked>
+                                    <span class="ml-2 text-gray-700">藥粉</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="form" value="pill" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500">
+                                    <span class="ml-2 text-gray-700">藥錠/膠囊</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="days" class="block text-md font-medium text-gray-700 mb-1">天數</label>
+                                <select id="days" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                    <option value="1">1 天</option>
+                                    <option value="2">2 天</option>
+                                    <option value="3" selected>3 天</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="frequency" class="block text-md font-medium text-gray-700 mb-1">頻次 (次/天)</label>
+                                <select id="frequency" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                    <option value="1">1 次 (QD)</option>
+                                    <option value="2">2 次 (BID)</option>
+                                    <option value="3" selected>3 次 (TID)</option>
+                                    <option value="4">4 次 (QID)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="calculateBtn" class="w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-transform transform hover:scale-105 mt-8">
+                        計算
+                    </button>
+                </div>
+                <!-- Amoxicillin 連結區塊 -->
+                <div class="mt-auto pt-6 border-t border-gray-200">
+                     <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="font-bold text-gray-800">Amoxicillin + Clavulanate (Augmentin)</h3>
+                        <a href="../amoxicillin-dose-calculator.html" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 font-semibold underline mt-2 inline-block">點此開啟 Amoxicillin 劑量計算頁面 &rarr;</a>
+                     </div>
+                </div>
+            </div>
+
+            <!-- 右側：結果顯示區 -->
+            <div id="results-wrapper">
+                <div class="flex border-b border-gray-200">
+                    <button class="tab-btn active py-2 px-4 bg-white font-semibold border-b-2" data-tab="bacterial">抗細菌藥物</button>
+                    <button class="tab-btn py-2 px-4 text-gray-500 font-semibold border-b-2 border-transparent" data-tab="viral">抗病毒藥物</button>
+                    <button class="tab-btn py-2 px-4 text-gray-500 font-semibold border-b-2 border-transparent" data-tab="fungal">抗黴菌藥物</button>
+                </div>
+                <div id="results-container" class="mt-4">
+                    <div id="bacterial-content" class="tab-content space-y-4">
+                        <div class="bg-white p-6 rounded-xl shadow-lg h-full flex items-center justify-center">
+                            <p class="text-gray-500 text-lg">請在左側輸入資料並點擊「計算」</p>
+                        </div>
+                    </div>
+                    <div id="viral-content" class="tab-content hidden space-y-4">
+                         <div class="bg-white p-6 rounded-xl shadow-lg h-full flex items-center justify-center">
+                            <p class="text-gray-500 text-lg">請在左側輸入資料並點擊「計算」</p>
+                        </div>
+                    </div>
+                    <div id="fungal-content" class="tab-content hidden space-y-4">
+                        <div class="bg-white p-6 rounded-xl shadow-lg h-full flex items-center justify-center">
+                            <p class="text-gray-500 text-lg">此功能待新增</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <script>
+        // DOM 元素
+        let weightInput, ageInput, daysSelect, frequencySelect, calculateBtn, resultsContainer, formRadios, tabs, tabContents;
+
+        // Helper functions
+        function roundDose(total, type) {
+            if (type === 'capsule') return Math.ceil(total);
+            if (type === 'pill') return Math.ceil(total * 2) / 2;
+            return total;
+        }
+
+        function getPracticalSingleUnits(idealSingleDoseMg, drugUnitMg, drugType) {
+            if (drugUnitMg === 0) return 0;
+            const idealUnits = idealSingleDoseMg / drugUnitMg;
+            return roundDose(idealUnits, drugType);
+        }
+        
+        function getActualDoses(practicalUnits, drugUnitMg, days, frequency, isTotalUnits = false) {
+            let practicalSingleUnits, finalTotalUnits;
+            if(isTotalUnits){
+                finalTotalUnits = practicalUnits;
+                practicalSingleUnits = (days * frequency > 0) ? finalTotalUnits / (days * frequency) : 0;
+            } else {
+                practicalSingleUnits = practicalUnits;
+                finalTotalUnits = practicalSingleUnits * frequency * days;
+            }
+            const actualTotalMg = finalTotalUnits * drugUnitMg;
+            const actualDailyMg = (days > 0) ? actualTotalMg / days : 0;
+            const actualSingleMg = (frequency > 0) ? actualDailyMg / frequency : 0;
+            return { actualDailyMg, actualSingleMg, finalTotalUnits, practicalSingleUnits };
+        }
+        
+        function getFreqText(freq) {
+            const map = {1: "QD", 2: "BID", 3: "TID", 4: "QID"};
+            return map[freq] || `${freq}x/day`;
+        }
+
+        function simplifyDisplay(minVal, maxVal, unit, precision = 1) {
+            const minStr = minVal.toFixed(precision);
+            const maxStr = maxVal.toFixed(precision);
+            if (minStr === maxStr) {
+                return `<strong>${maxStr} ${unit}</strong>`;
+            } else {
+                return `<strong>${minStr} - ${maxStr} ${unit}</strong>`;
+            }
+        }
+
+        function getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText) {
+            let prescriptionExplanation;
+            if (form === 'pill') {
+                prescriptionExplanation = `<i class="text-xs text-gray-500 italic">(依藥錠/膠囊劑型，採用建議頻次)</i>`;
+                return {
+                    calculationFrequency: recommendedFreq,
+                    freqTextForPrescription: recommendedFreqText,
+                    prescriptionExplanation: prescriptionExplanation
+                };
+            } else {
+                const freqText = getFreqText(userFrequency);
+                 prescriptionExplanation = `<i class="text-xs text-gray-500 italic">(依藥粉劑型，採用選擇頻次)</i>`;
+                return {
+                    calculationFrequency: userFrequency,
+                    freqTextForPrescription: freqText,
+                    prescriptionExplanation: prescriptionExplanation
+                };
+            }
+        }
+        
+        // --- 各藥物計算函數 ---
+
+        function calculateCefixime(weight, userFrequency, days, form) {
+            const drugType = 'capsule'; const unitName = '顆'; const unitSymbol = '#';
+            const drugUnitMg = 100; const recommendedFreq = 2; const recommendedFreqText = "BID";
+            let baseNote = '常用劑量為 8 mg/kg/day。<br>常見療程天數：急性中耳炎(AOM) 10天, 鏈球菌咽喉炎 10天, 泌尿道感染(UTI) 7-14天。<br><strong class="text-red-700">禁忌症:</strong> 對本藥或任何頭孢菌素類藥物過敏者。';
+            
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText);
+            let content;
+            const idealDailyDoseMg = weight * 8;
+
+            if (form === 'pill') {
+                const practicalSingleUnits = getPracticalSingleUnits(idealDailyDoseMg / calculationFrequency, drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, finalTotalUnits } = getActualDoses(practicalSingleUnits, drugUnitMg, days, calculationFrequency);
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(0)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${finalTotalUnits.toFixed(0)} ${unitName}</strong>`,
+                    otherDetails: `<p>每次服用藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong></p>`,
+                    maxDoseText: `最大劑量限制: 400 mg/day`
+                };
+            } else { // powder
+                const practicalTotalUnits = roundDose((idealDailyDoseMg * days) / drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(0)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong></p>`,
+                    maxDoseText: `最大劑量限制: 400 mg/day`
+                };
+            }
+            return { title: `Cefixime (${drugUnitMg}mg) (膠囊)`, content, note: baseNote };
+        }
+
+        function calculateBaktar(weight, userFrequency, days, form) {
+            const drugType = 'pill'; const unitName = '錠'; const unitSymbol = '#';
+            const drugUnitMg = 80; const recommendedFreq = 2; const recommendedFreqText = "BID";
+            let baseNote = '劑量基於 Trimethoprim (8-12 mg/kg/day)。<br>常見療程天數：UTI (3-7天), SSTI (5-10天), AOM (10天)。<br><strong class="text-red-700">禁忌症:</strong> 對磺胺類藥物或Trimethoprim過敏者、葉酸缺乏致貧血、<2個月嬰兒、嚴重肝腎損傷、併用dofetilide。';
+            
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText);
+            let content;
+
+            if (form === 'pill') {
+                const practicalSingleUnitsMin = getPracticalSingleUnits((weight * 8) / calculationFrequency, drugUnitMg, drugType);
+                const practicalSingleUnitsMax = getPracticalSingleUnits((weight * 12) / calculationFrequency, drugUnitMg, drugType);
+                const dosesMin = getActualDoses(practicalSingleUnitsMin, drugUnitMg, days, calculationFrequency);
+                const dosesMax = getActualDoses(practicalSingleUnitsMax, drugUnitMg, days, calculationFrequency);
+                const prescriptionText = `建議開立: ${simplifyDisplay(practicalSingleUnitsMin, practicalSingleUnitsMax, unitSymbol, 1).replace(/<(\/)?strong>/g, '')} ${freqTextForPrescription} ${prescriptionExplanation}`;
+                content = {
+                    prescriptionText,
+                    totalDoseText: `${days} 天總藥量: ${simplifyDisplay(dosesMin.finalTotalUnits, dosesMax.finalTotalUnits, unitName)}`,
+                    otherDetails: `<p>每次服用藥量: <strong>${simplifyDisplay(dosesMin.actualSingleMg, dosesMax.actualSingleMg, "mg")}</strong></p><p>每日總劑量(TMP): <strong>${simplifyDisplay(dosesMin.actualDailyMg, dosesMax.actualDailyMg, "mg")}</strong></p>`,
+                    maxDoseText: `最大劑量限制(TMP): 320 mg/dose`
+                };
+            } else {
+                const practicalTotalUnits = roundDose((weight * 12 * days) / drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(1)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong></p>`,
+                    maxDoseText: `最大劑量限制(TMP): 320 mg/dose`
+                };
+            }
+            return { title: `Sulfamethoxazole/Trimethoprim (Baktar 400/80mg) (藥錠)`, content, note: baseNote };
+        }
+        
+        function calculateLevofloxacin(weight, age, userFrequency, days, form) {
+            const drugType = 'pill'; const unitName = '錠'; const unitSymbol = '#';
+            const drugUnitMg = 500;
+            if (age === null) return { title: `Levofloxacin (Cravit ${drugUnitMg}mg) (藥錠)`, content: { totalDoseText: '<span class="text-red-500">請輸入年齡</span>', otherDetails: ''}, note: '此藥物劑量與年齡相關。', borderColor: 'border-red-500' };
+            
+            const maxDailyDose = 750;
+            let recommendedFreq, baseNote, recommendedFreqText, idealSingleDoseMinMg, idealSingleDoseMaxMg, idealDailyDoseMinMg, idealDailyDoseMaxMg;
+            const durationNote = '<br>常見療程天數：CAP (5天), 複雜性UTI (5-7天), 急性細菌性鼻竇炎 (5-7天)。';
+            const contraindicationNote = '<br><strong class="text-red-700">禁忌症:</strong> 對本藥或任何Quinolone類藥物過敏者。';
+            
+            if (age < 5) {
+                recommendedFreq = 2; recommendedFreqText = 'BID';
+                baseNote = `<strong>6個月至 <5歲:</strong> 建議劑量 8-10 mg/kg/dose。` + durationNote + contraindicationNote;
+            } else {
+                recommendedFreq = 1; recommendedFreqText = 'QD';
+                baseNote = `<strong>≥5歲:</strong> 建議劑量 10 mg/kg/day。` + durationNote + contraindicationNote;
+            }
+
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText);
+            let note = baseNote, content;
+
+            if (form === 'pill') {
+                if (age < 5) { idealSingleDoseMinMg = weight * 8; idealSingleDoseMaxMg = weight * 10; } 
+                else { idealSingleDoseMinMg = idealSingleDoseMaxMg = (weight * 10) / calculationFrequency; }
+
+                const practicalSingleUnitsMin = getPracticalSingleUnits(idealSingleDoseMinMg, drugUnitMg, drugType);
+                const practicalSingleUnitsMax = getPracticalSingleUnits(idealSingleDoseMaxMg, drugUnitMg, drugType);
+                const dosesMin = getActualDoses(practicalSingleUnitsMin, drugUnitMg, days, calculationFrequency);
+                let dosesMax = getActualDoses(practicalSingleUnitsMax, drugUnitMg, days, calculationFrequency);
+                
+                let capNote = dosesMax.actualDailyMg > maxDailyDose ? ` <strong class="text-blue-600">(已達上限)</strong>` : '';
+                const prescriptionText = `建議開立: ${simplifyDisplay(practicalSingleUnitsMin, practicalSingleUnitsMax, unitSymbol, 1).replace(/<(\/)?strong>/g, '')} ${freqTextForPrescription} ${prescriptionExplanation}`;
+                content = {
+                    prescriptionText,
+                    totalDoseText: `${days} 天總藥量: ${simplifyDisplay(dosesMin.finalTotalUnits, dosesMax.finalTotalUnits, unitName)}`,
+                    otherDetails: `<p>每次服用藥量: <strong>${simplifyDisplay(dosesMin.actualSingleMg, dosesMax.actualSingleMg, "mg")}</strong></p><p>每日總劑量: <strong>${simplifyDisplay(dosesMin.actualDailyMg, dosesMax.actualDailyMg, "mg")}${capNote}</strong></p>`,
+                    maxDoseText: `最大劑量限制: ${maxDailyDose} mg/day`
+                };
+                if(capNote) note += `<br>每日最大劑量已限制在 ${maxDailyDose} mg。`;
+            } else { // powder
+                if (age < 5) { idealDailyDoseMaxMg = (weight * 10) * calculationFrequency; } 
+                else { idealDailyDoseMaxMg = weight * 10; }
+                let capNote = '';
+                if(idealDailyDoseMaxMg > maxDailyDose) { idealDailyDoseMaxMg = maxDailyDose; capNote = ` <strong class="text-blue-600">(已達上限)</strong>`; }
+                const idealTotalUnits = (idealDailyDoseMaxMg * days) / drugUnitMg;
+                const practicalTotalUnits = roundDose(idealTotalUnits, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(1)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong>${capNote}</p>`,
+                    maxDoseText: `最大劑量限制: ${maxDailyDose} mg/day`
+                };
+                if(capNote) note += `<br>每日最大劑量已限制在 ${maxDailyDose} mg。`;
+            }
+            return { title: `Levofloxacin (Cravit ${drugUnitMg}mg) (藥錠)`, content, note };
+        }
+        
+        function calculateCephalexin(weight, userFrequency, days, form) {
+            const drugType = 'capsule'; const unitName = '顆'; const unitSymbol = '#';
+            const drugUnitMg = 500;
+            const recommendedFreq = 2;
+            const recommendedFreqText = "BID-QID";
+            let baseNote = `常用劑量為 25-50 mg/kg/day (嚴重感染 75-100 mg/kg/day)。<br>常見療程天數：SSTI (5-7天), GABHS咽炎 (10天), UTI (5天)。<br><strong class="text-red-700">禁忌症:</strong> 對本藥或任何頭孢菌素類藥物過敏者。`;
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, "BID");
+            let content;
+            if (form === 'pill') {
+                const practicalSingleUnitsMin = getPracticalSingleUnits((weight * 25) / calculationFrequency, drugUnitMg, drugType);
+                const practicalSingleUnitsMax = getPracticalSingleUnits((weight * 50) / calculationFrequency, drugUnitMg, drugType);
+                const dosesMin = getActualDoses(practicalSingleUnitsMin, drugUnitMg, days, calculationFrequency);
+                const dosesMax = getActualDoses(practicalSingleUnitsMax, drugUnitMg, days, calculationFrequency);
+                const prescriptionText = `建議開立: ${simplifyDisplay(practicalSingleUnitsMin, practicalSingleUnitsMax, unitSymbol, 0).replace(/<(\/)?strong>/g, '')} ${freqTextForPrescription} ${prescriptionExplanation}`;
+                content = {
+                    prescriptionText,
+                    totalDoseText: `${days} 天總藥量: ${simplifyDisplay(dosesMin.finalTotalUnits, dosesMax.finalTotalUnits, unitName, 0)}`,
+                    otherDetails: `<p>每次服用藥量: <strong>${simplifyDisplay(dosesMin.actualSingleMg, dosesMax.actualSingleMg, "mg")}</strong></p><p>每日總劑量: <strong>${simplifyDisplay(dosesMin.actualDailyMg, dosesMax.actualDailyMg, "mg")}</strong></p>`,
+                    maxDoseText: '最大劑量限制: 4000 mg/day'
+                };
+            } else {
+                const practicalTotalUnits = roundDose((weight * 50 * days) / drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(0)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong></p>`,
+                    maxDoseText: '最大劑量限制: 4000 mg/day'
+                };
+            }
+            return { title: `Cephalexin (500mg) (膠囊)`, content, note: baseNote };
+        }
+
+        function calculateAzithromycin(weight, userFrequency, days, form) {
+            const drugType = 'pill'; const unitName = '錠'; const unitSymbol = '#';
+            const drugUnitMg = 250;
+            const recommendedFreq = 1;
+            const recommendedFreqText = "QD";
+            let baseNote = '常用劑量為 10 mg/kg/day。<br>常見療程天數：AOM (3天或5天療程), CAP (5天療程), GABHS咽炎 (5天療程)。<br><strong class="text-red-700">禁忌症:</strong> 對本藥、紅黴素、或任何巨環類抗生素過敏者；曾因使用本藥導致膽汁鬱積性黃疸/肝功能異常者。';
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText);
+            let content;
+            let idealDailyDoseMg = weight * 10;
+            let capNote = '';
+            if (idealDailyDoseMg > 500) {
+                idealDailyDoseMg = 500;
+                capNote = ` <strong class="text-blue-600">(已達上限)</strong>`;
+            }
+            if (form === 'pill') {
+                const practicalSingleUnits = getPracticalSingleUnits(idealDailyDoseMg / calculationFrequency, drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, finalTotalUnits } = getActualDoses(practicalSingleUnits, drugUnitMg, days, calculationFrequency);
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(1)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${finalTotalUnits.toFixed(1)} ${unitName}</strong>`,
+                    otherDetails: `<p>每次服用藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong>${capNote}</p>`,
+                    maxDoseText: `最大劑量限制: 500 mg/day`
+                };
+            } else {
+                const practicalTotalUnits = roundDose((idealDailyDoseMg * days) / drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(1)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong>${capNote}</p>`,
+                    maxDoseText: `最大劑量限制: 500 mg/day`
+                };
+            }
+            note = baseNote + (capNote ? `<br>每日最大劑量已限制在 500 mg。` : '');
+            return { title: `Azithromycin (Zithromax ${drugUnitMg}mg) (藥錠)`, content, note };
+        }
+
+        function calculateMinocycline(weight, age, userFrequency, days, form) {
+            const drugType = 'capsule'; const unitName = '顆'; const unitSymbol = '#';
+            const drugUnitMg = 50; const recommendedFreq = 2; const recommendedFreqText = "BID";
+            let baseNote = `常用劑量 2 mg/kg/dose BID (起始 4 mg/kg)。<br>常見療程天數：痤瘡 (長期使用), MRSA SSTI (5-10天), MRSA SSTI (5-10天)。<br><strong class="text-red-700">禁忌症:</strong> 對本藥或任何四環黴素類藥物過敏者。<br><strong class="text-red-600">注意：不建議用於 8 歲以下兒童。</strong>`;
+            if (age !== null && age < 8) return { title: `Minocycline (Bory ${drugUnitMg}mg) (膠囊)`, content: { totalDoseText: '<span class="text-red-500">不建議 8 歲以下使用</span>', otherDetails: ''}, note: baseNote, borderColor: 'border-red-500' };
+            
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText);
+            let content;
+            let idealDailyDoseMg = weight * 4;
+            let capNote = '';
+            if (idealDailyDoseMg > 400) { idealDailyDoseMg = 400; capNote = ` <strong class="text-blue-600">(已達上限)</strong>`; }
+            
+            if (form === 'pill') {
+                const practicalSingleUnits = getPracticalSingleUnits(idealDailyDoseMg / calculationFrequency, drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, finalTotalUnits } = getActualDoses(practicalSingleUnits, drugUnitMg, days, calculationFrequency);
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(0)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${finalTotalUnits.toFixed(0)} ${unitName}</strong>`,
+                    otherDetails: `<p>每次服用藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong>${capNote}</p>`,
+                    maxDoseText: '最大劑量限制: 400 mg/day'
+                };
+            } else {
+                const practicalTotalUnits = roundDose((idealDailyDoseMg * days) / drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(0)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong>${capNote}</p>`,
+                    maxDoseText: '最大劑量限制: 400 mg/day'
+                };
+            }
+            note = baseNote + (capNote ? `<br>每日最大劑量已限制在 400 mg。` : '');
+            return { title: `Minocycline (Bory ${drugUnitMg}mg) (膠囊)`, content, note };
+        }
+
+        function calculateDoxycycline(weight, age, userFrequency, days, form) {
+            const drugType = 'capsule'; const unitName = '顆'; const unitSymbol = '#';
+            const drugUnitMg = 50; const recommendedFreq = 2; const recommendedFreqText = "BID";
+            let baseNote = `常用劑量 2.2 mg/kg/dose BID。<br>常見療程天數：萊姆病 (10-28天), MRSA SSTI (5-10天), CAP (10天)。<br>短期療程(<21天)可用於各年齡層。<br><strong class="text-red-700">禁忌症:</strong> 對本藥或任何四環黴素類藥物過敏者。`;
+            
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText);
+            let content;
+            const idealDailyDoseMg = weight * 4.4;
+            let capNote = '';
+            if (idealDailyDoseMg > 200) { capNote = ` <strong class="text-blue-600">(已達上限)</strong>`; }
+
+            if (form === 'pill') {
+                const practicalSingleUnits = getPracticalSingleUnits((weight * 2.2), drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, finalTotalUnits } = getActualDoses(practicalSingleUnits, drugUnitMg, days, calculationFrequency);
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(0)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${finalTotalUnits.toFixed(0)} ${unitName}</strong>`,
+                    otherDetails: `<p>每次服用藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong>${capNote}</p>`,
+                    maxDoseText: `最大劑量限制: 200 mg/day`
+                };
+            } else {
+                const practicalTotalUnits = roundDose((idealDailyDoseMg * days) / drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(0)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(1)} mg</strong>${capNote}</p>`,
+                    maxDoseText: `最大劑量限制: 200 mg/day`
+                };
+            }
+            note = baseNote + (capNote ? `<br>每日最大劑量已限制在 200 mg。` : '');
+            return { title: `Doxycycline (Doxymycin ${drugUnitMg}mg) (膠囊)`, content, note };
+        }
+
+        function calculateAcyclovir(weight, userFrequency, days, form) {
+            const drugType = 'capsule'; const unitName = '顆'; const unitSymbol = '#';
+            const drugUnitMg = 800; const recommendedFreq = 4; const recommendedFreqText = "QID";
+            let baseNote = '水痘劑量為 20 mg/kg/dose (QID)。<br>常見療程天數：水痘 (5-7天), Zoster (7-10天)。<br><strong class="text-red-700">禁忌症:</strong> 對本藥或Valacyclovir過敏者。';
+            
+            const { calculationFrequency, freqTextForPrescription, prescriptionExplanation } = getFrequencyInfo(form, userFrequency, recommendedFreq, recommendedFreqText);
+            let content;
+            let idealSingleDoseMg = weight * 20;
+            let capNote = '';
+            if (idealSingleDoseMg > 800) { idealSingleDoseMg = 800; capNote = ` <strong class="text-blue-600">(已達上限)</strong>`; }
+            
+            if (form === 'pill') {
+                const practicalSingleUnits = getPracticalSingleUnits(idealSingleDoseMg, drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, finalTotalUnits } = getActualDoses(practicalSingleUnits, drugUnitMg, days, calculationFrequency);
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(0)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${finalTotalUnits.toFixed(0)} ${unitName}</strong>`,
+                    otherDetails: `<p>每次服用藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(0)} mg</strong>${capNote}</p>`,
+                    maxDoseText: `單次最大劑量: 800 mg/dose`
+                };
+            } else {
+                const practicalTotalUnits = roundDose((idealSingleDoseMg * calculationFrequency * days) / drugUnitMg, drugType);
+                const { actualDailyMg, actualSingleMg, practicalSingleUnits } = getActualDoses(practicalTotalUnits, drugUnitMg, days, calculationFrequency, true);
+                const totalPackages = days * calculationFrequency;
+                content = {
+                    prescriptionText: `建議開立: ${practicalSingleUnits.toFixed(2)}${unitSymbol} ${freqTextForPrescription} ${prescriptionExplanation}`,
+                    totalDoseText: `${days} 天總藥量: <strong>${practicalTotalUnits.toFixed(0)} ${unitName}</strong> (磨粉, 分 ${totalPackages} 包)`,
+                    otherDetails: `<p>每包藥量: <strong>${actualSingleMg.toFixed(1)} mg</strong></p><p>每日總劑量: <strong>${actualDailyMg.toFixed(0)} mg</strong>${capNote}</p>`,
+                    maxDoseText: `單次最大劑量: 800 mg/dose`
+                };
+            }
+            note = baseNote + (capNote ? `<br>單次最大劑量已限制在 800 mg。` : '');
+            return { title: `Acyclovir (Virless ${drugUnitMg}mg) (膠囊)`, content, note };
+        }
+
+        function createResultCard({ title, content, note = '', borderColor = 'border-teal-500' }, index) {
+            const card = document.createElement('div');
+            card.className = `result-card bg-white rounded-xl shadow-lg border-l-4 ${borderColor} overflow-hidden`;
+            
+            const bodyId = `result-body-${index}`;
+
+            const maxDoseHTML = content.maxDoseText ? `<p class="text-xs text-gray-500 mt-1">${content.maxDoseText}</p>` : '';
+
+            card.innerHTML = `
+                <div class="result-header p-5 cursor-pointer flex justify-between items-center" data-target="${bodyId}">
+                    <h3 class="text-xl font-bold text-gray-800">${title}</h3>
+                    <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="${bodyId}" class="result-body hidden px-5 pb-5">
+                    <div class="text-gray-700 space-y-2">
+                        <p class="text-lg font-bold text-blue-700">${content.prescriptionText}</p>
+                        <p class="text-lg font-bold text-red-600">${content.totalDoseText}</p>
+                        <hr class="my-2 border-gray-200">
+                        <div class="text-sm space-y-1">
+                            ${content.otherDetails}
+                            ${maxDoseHTML}
+                        </div>
+                    </div>
+                    ${note ? `<div class="mt-3 pt-3 border-t border-gray-200 text-sm text-gray-600">${note}</div>` : ''}
+                </div>
+            `;
+            return card;
+        }
+
+        // Event Handlers
+        function handleFormRadioChange(event) {
+            if (event.target.value === 'powder') {
+                if (frequencySelect) { // Defensive check
+                    frequencySelect.value = '3'; // 藥粉預設TID
+                }
+            }
+        }
+
+        function handleTabClick(event) {
+            const tab = event.currentTarget;
+            tabs.forEach(item => {
+                item.classList.remove('active', 'border-teal-600', 'text-teal-600');
+                item.classList.add('text-gray-500', 'border-transparent');
+            });
+            tab.classList.add('active', 'border-teal-600', 'text-teal-600');
+            tab.classList.remove('text-gray-500', 'border-transparent');
+            
+            const target = document.getElementById(tab.dataset.tab + '-content');
+            
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+            if (target) { // Defensive check
+                target.classList.remove('hidden');
+            }
+        }
+
+        function handleResultCardClick(event) {
+            const header = event.target.closest('.result-header');
+            if (!header) return;
+
+            const targetId = header.dataset.target;
+            const body = document.getElementById(targetId);
+            const icon = header.querySelector('svg');
+
+            if (body) {
+                body.classList.toggle('hidden');
+                if (icon) { // Defensive check
+                    icon.classList.toggle('rotate-180');
+                }
+            }
+        }
+        
+        function calculate() {
+            const weight = parseFloat(weightInput.value);
+            const age = ageInput.value ? parseInt(ageInput.value) : null;
+            const days = parseInt(daysSelect.value);
+            const userFrequency = parseInt(frequencySelect.value);
+            const form = document.querySelector('input[name="form"]:checked').value;
+
+            const bacterialContent = document.getElementById('bacterial-content');
+            const viralContent = document.getElementById('viral-content');
+            
+            if (bacterialContent) bacterialContent.innerHTML = '';
+            if (viralContent) viralContent.innerHTML = '';
+
+            if (!weight || weight <= 0) {
+                if (bacterialContent) {
+                    bacterialContent.innerHTML = `<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md" role="alert"><p class="font-bold">輸入錯誤</p><p>請輸入有效的兒童體重。</p></div>`;
+                }
+                return;
+            }
+
+            const calculations = [
+                { func: () => calculateCefixime(weight, userFrequency, days, form), type: 'bacterial', index: 0 },
+                { func: () => calculateBaktar(weight, userFrequency, days, form), type: 'bacterial', index: 1 },
+                { func: () => calculateLevofloxacin(weight, age, userFrequency, days, form), type: 'bacterial', index: 2 },
+                { func: () => calculateCephalexin(weight, userFrequency, days, form), type: 'bacterial', index: 3 },
+                { func: () => calculateAzithromycin(weight, userFrequency, days, form), type: 'bacterial', index: 4 },
+                { func: () => calculateMinocycline(weight, age, userFrequency, days, form), type: 'bacterial', index: 5 },
+                { func: () => calculateDoxycycline(weight, age, userFrequency, days, form), type: 'bacterial', index: 6 },
+                { func: () => calculateAcyclovir(weight, userFrequency, days, form), type: 'viral', index: 7 }
+            ];
+
+            calculations.forEach(({func, type, index}) => {
+                const drugData = func();
+                const card = createResultCard(drugData, index);
+                if (type === 'bacterial') {
+                    if (bacterialContent) bacterialContent.appendChild(card);
+                } else if (type === 'viral') {
+                    if (viralContent) viralContent.appendChild(card);
+                }
+            });
+            if (bacterialContent && bacterialContent.innerHTML === '') {
+                bacterialContent.innerHTML = `<div class="bg-white p-6 rounded-xl shadow-lg h-full flex items-center justify-center"><p class="text-gray-500 text-lg">無適用藥物</p></div>`;
+            }
+            if (viralContent && viralContent.innerHTML === '') {
+                viralContent.innerHTML = `<div class="bg-white p-6 rounded-xl shadow-lg h-full flex items-center justify-center"><p class="text-gray-500 text-lg">無適用藥物</p></div>`;
+            }
+        }
+
+
+        // Initialization function for this page
+        function initPediatricAntibioticCalculator() {
+            // Get DOM elements
+            weightInput = document.getElementById('weight');
+            ageInput = document.getElementById('age');
+            daysSelect = document.getElementById('days');
+            frequencySelect = document.getElementById('frequency');
+            calculateBtn = document.getElementById('calculateBtn');
+            resultsContainer = document.getElementById('results-container');
+            formRadios = document.querySelectorAll('input[name="form"]');
+            tabs = document.querySelectorAll('.tab-btn');
+            tabContents = document.querySelectorAll('.tab-content');
+
+            // Attach event listeners
+            if (formRadios) {
+                formRadios.forEach(radio => {
+                    radio.addEventListener('change', handleFormRadioChange);
+                });
+            } else {
+                console.error("Form radios not found for initPediatricAntibioticCalculator!");
+            }
+            if (tabs) {
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', handleTabClick);
+                });
+            } else {
+                console.error("Tabs not found for initPediatricAntibioticCalculator!");
+            }
+            if (resultsContainer) {
+                resultsContainer.addEventListener('click', handleResultCardClick);
+            } else {
+                console.error("Results container not found for initPediatricAntibioticCalculator!");
+            }
+            if (calculateBtn) {
+                calculateBtn.addEventListener('click', calculate);
+            } else {
+                console.error("Calculate button not found for initPediatricAntibioticCalculator!");
+            }
+        }
+
+        // Expose the initialization function globally
+        window.initPediatricAntibioticCalculator = initPediatricAntibioticCalculator;
+
+    </script>
+</body>
+</html>

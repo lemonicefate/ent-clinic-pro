@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>血脂管理與心血管風險計算機 - 醫療工具百寶箱</title>
+    <meta name="description" content="專業的血脂管理與心血管風險評估工具，根據2022臺灣指引提供個人化建議。">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+        }
+        .result-card {
+            transition: all 0.3s ease-in-out;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        .result-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .result-section {
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            padding: 1rem; /* p-4 */
+            margin-top: 1.5rem; /* mt-6 */
+        }
+        details > summary {
+            list-style: none;
+            cursor: pointer;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        details[open] summary .arrow {
+            transform: rotate(90deg);
+        }
+        .arrow {
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 頂部導航欄 -->
+
+    <!-- 側邊欄遮罩 (移動端) -->
+
+    <!-- 側邊欄 -->
+
+    <!-- 主內容區 -->
+    <main>
+        <div class="p-6 lg:p-8">
+            <!-- 麵包屑導航 -->
+
+            <!-- 原有內容區域 -->
+            <div class="container mx-auto max-w-7xl">
+        <div class="container mx-auto p-6 lg:p-8 max-w-4xl">
+            
+            <header class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">血脂管理與心血管風險計算機</h1>
+                <p class="mt-2 text-gray-600">根據 2022 臺灣高血壓、高血脂、糖尿病指引建議 (並參考初級預防流程圖)</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Input Form -->
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <h2 class="text-2xl font-bold mb-6 border-b pb-4 text-gray-900 border-gray-200">請輸入您的風險因子</h2>
+                <form id="riskForm" class="space-y-6">
+                    
+                    <div>
+                        <label class="block text-md font-medium text-gray-700 mb-2">1. 您是否有以下任何一項疾病？</label>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="has_ascvd" name="condition" value="ascvd" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="has_ascvd" class="ml-3 block text-sm text-gray-900">冠狀動脈、腦血管或周邊動脈疾病 (ASCVD)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="has_dm" name="condition" value="dm" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="has_dm" class="ml-3 block text-sm text-gray-900">糖尿病 (DM)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="has_ckd" name="condition" value="ckd" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="has_ckd" class="ml-3 block text-sm text-gray-900">慢性腎臟病 (CKD，第三期以上)</label>
+                            </div>
+                             <div class="flex items-center">
+                                <input type="checkbox" id="has_fh" name="condition" value="fh" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="has_fh" class="ml-3 block text-sm text-gray-900">家族性高膽固醇血症 (FH)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="ldl" class="block text-md font-medium text-gray-700">2. 低密度脂蛋白膽固醇 (LDL-C) (mg/dL)</label>
+                        <input type="number" id="ldl" name="ldl" class="mt-2 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="例如：135">
+                    </div>
+
+                    <div>
+                        <label for="tg" class="block text-md font-medium text-gray-700">3. 三酸甘油脂 (TG) (mg/dL)</label>
+                        <input type="number" id="tg" name="tg" class="mt-2 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="例如：250">
+                    </div>
+
+                    <div id="other_risk_factors_container" class="space-y-6">
+                         <div>
+                            <label class="block text-md font-medium text-gray-700">4. 其他風險因子（若無第1項疾病請填寫）</label>
+                            <div id="other_risk_factors" class="space-y-2 mt-2">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="is_male_age" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <label for="is_male_age" class="ml-3 block text-sm text-gray-900">男性 ≥ 45歲 或 女性 ≥ 55歲</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="has_smoking" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <label for="has_smoking" class="ml-3 block text-sm text-gray-900">目前吸菸</label>
+                                </div>
+                                 <div class="flex items-center">
+                                    <input type="checkbox" id="has_hdl" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <label for="has_hdl" class="ml-3 block text-sm text-gray-900">高密度脂蛋白膽固醇 (HDL-C) &lt; 40 mg/dL</label>
+                                </div>
+                                <div class="flex items-start">
+                                    <input type="checkbox" id="has_family_history" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1">
+                                    <label for="has_family_history" class="ml-3 block text-sm text-gray-900">早發性冠心病家族史<br><span class="text-xs text-gray-500">(男性一等親&lt;55歲或女性一等親&lt;65歲罹患冠心病)</span></label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="has_hypertension" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <label for="has_hypertension" class="ml-3 block text-sm text-gray-900">高血壓</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="button" id="calculateBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                            計算風險與建議
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Display -->
+            <div id="result" class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                 <h2 class="text-2xl font-bold mb-6 border-b pb-4">評估結果</h2>
+                <div id="resultContent" class="space-y-6">
+                    <p class="text-gray-500">結果將會顯示於此。</p>
+                </div>
+                 <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+                    <h4 class="font-bold text-blue-800">免責聲明</h4>
+                    <p class="text-sm text-blue-700 mt-1">此工具僅供衛教參考，不能取代專業醫療建議。所有治療決策請務必與您的醫師討論。</p>
+                </div>
+            </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 頁面功能腳本 -->
+    <script>
+        // 血脂風險計算功能
+        let calculateBtn;
+        let resultContent;
+        let hasASCVDInput;
+        let hasDMInput;
+        let hasCKDInput;
+        let hasFHInput;
+        let ldlInput;
+        let tgInput;
+        let isMaleAgeInput;
+        let hasSmokingInput;
+        let hasHDLInput;
+        let hasFamilyHistoryInput;
+        let hasHypertensionInput;
+
+        function calculateRisk() {
+            console.log('🔍 開始計算血脂風險');
+            
+            // 獲取疾病狀態
+            const hasASCVD = hasASCVDInput.checked;
+            const hasDM = hasDMInput.checked;
+            const hasCKD = hasCKDInput.checked;
+            const hasFH = hasFHInput.checked;
+            
+            // 獲取數值
+            const ldl = parseFloat(ldlInput.value) || 0;
+            const tg = parseFloat(tgInput.value) || 0;
+            
+            // 獲取其他風險因子
+            const isMaleAge = isMaleAgeInput.checked;
+            const hasSmoking = hasSmokingInput.checked;
+            const hasHDL = hasHDLInput.checked;
+            const hasFamilyHistory = hasFamilyHistoryInput.checked;
+            const hasHypertension = hasHypertensionInput.checked;
+            
+            let riskLevel = '';
+            let ldlTarget = '';
+            let tgTarget = '';
+            let recommendations = [];
+            
+            // 判斷風險等級和目標值
+            if (hasASCVD || hasDM || hasCKD || hasFH) {
+                riskLevel = '極高風險';
+                ldlTarget = '< 70 mg/dL';
+                
+                if (hasASCVD) {
+                    recommendations.push('已有心血管疾病，需積極控制');
+                }
+                if (hasDM) {
+                    recommendations.push('糖尿病患者，需嚴格血脂控制');
+                }
+                if (hasCKD) {
+                    recommendations.push('慢性腎臟病，需注意腎功能');
+                }
+                if (hasFH) {
+                    recommendations.push('家族性高膽固醇血症，可能需要特殊治療');
+                }
+            } else {
+                // 計算其他風險因子數量
+                const riskFactors = [isMaleAge, hasSmoking, hasHDL, hasFamilyHistory, hasHypertension].filter(Boolean).length;
+                
+                if (riskFactors >= 2) {
+                    riskLevel = '中高風險';
+                    ldlTarget = '< 100 mg/dL';
+                } else if (riskFactors === 1) {
+                    riskLevel = '中風險';
+                    ldlTarget = '< 130 mg/dL';
+                } else {
+                    riskLevel = '低風險';
+                    ldlTarget = '< 160 mg/dL';
+                }
+                
+                recommendations.push(`檢測到 ${riskFactors} 個風險因子`);
+            }
+            
+            // 三酸甘油脂建議
+            if (tg >= 500) {
+                tgTarget = '< 500 mg/dL (緊急)';
+                recommendations.push('三酸甘油脂過高，有急性胰臟炎風險');
+            } else if (tg >= 200) {
+                tgTarget = '< 200 mg/dL';
+                recommendations.push('三酸甘油脂偏高，建議調整飲食和運動');
+            } else if (tg >= 150) {
+                tgTarget = '< 150 mg/dL';
+                recommendations.push('三酸甘油脂輕度升高');
+            } else {
+                tgTarget = '正常範圍';
+            }
+            
+            // 生活方式建議
+            recommendations.push('建議採用地中海飲食');
+            recommendations.push('每週至少150分鐘中等強度運動');
+            if (hasSmoking) {
+                recommendations.push('強烈建議戒菸');
+            }
+            
+            // 計算用藥建議
+            const medicationAdvice = calculateMedicationAdvice(ldl, ldlTarget, riskLevel);
+            
+            // 顯示結果
+            displayResults(riskLevel, ldl, ldlTarget, tg, tgTarget, recommendations, medicationAdvice);
+        }
+
+        function calculateMedicationAdvice(currentLDL, targetLDL, riskLevel) {
+            console.log(`💊 計算用藥建議 - 當前LDL: ${currentLDL}, 目標: ${targetLDL}`);
+            
+            // 解析目標 LDL 數值
+            const targetValue = parseFloat(targetLDL.match(/\d+/)[0]);
+            
+            // 如果已達標，不需要藥物
+            if (currentLDL <= targetValue) {
+                return {
+                    needed: false,
+                    message: '✅ LDL-C 已達標，建議維持現有生活方式',
+                    medications: []
+                };
+            }
+            
+            // 計算需要降低的百分比
+            const reductionNeeded = ((currentLDL - targetValue) / currentLDL) * 100;
+            console.log(`📉 需要降低: ${reductionNeeded.toFixed(1)}%`);
+            
+            let medications = [];
+            
+            // 根據需要降低的幅度推薦藥物
+            if (reductionNeeded <= 30) {
+                // 低強度 Statin
+                medications.push({
+                    category: '低強度 Statin',
+                    reduction: '≤30%',
+                    options: [
+                        'Simvastatin 10 mg/day'
+                    ],
+                    note: '適合輕度血脂異常患者'
+                });
+            } else if (reductionNeeded <= 50) {
+                // 中強度 Statin
+                medications.push({
+                    category: '中強度 Statin',
+                    reduction: '30-50%',
+                    options: [
+                        'Atorvastatin 10-20 mg/day',
+                        'Rosuvastatin 5-10 mg/day'
+                    ],
+                    note: '適合中度血脂異常患者'
+                });
+                
+                // 也可以考慮低強度作為替代
+                medications.push({
+                    category: '低強度 Statin（替代選擇）',
+                    reduction: '≤30%',
+                    options: [
+                        'Simvastatin 10 mg/day'
+                    ],
+                    note: '如無法耐受中強度，可考慮低強度 + 生活方式調整'
+                });
+            } else {
+                // 高強度 Statin
+                medications.push({
+                    category: '高強度 Statin',
+                    reduction: '≥50%',
+                    options: [
+                        'Atorvastatin 40-80 mg/day',
+                        'Rosuvastatin 20-40 mg/day'
+                    ],
+                    note: '適合高風險或嚴重血脂異常患者'
+                });
+                
+                // 也提供中強度作為替代
+                medications.push({
+                    category: '中強度 Statin（替代選擇）',
+                    reduction: '30-50%',
+                    options: [
+                        'Atorvastatin 10-20 mg/day',
+                        'Rosuvastatin 5-10 mg/day'
+                    ],
+                    note: '如無法耐受高強度，可考慮中強度 + 其他治療'
+                });
+            }
+            
+            // 根據風險等級調整建議
+            let urgencyNote = '';
+            if (riskLevel === '極高風險') {
+                urgencyNote = '⚠️ 極高風險患者，建議積極藥物治療';
+            } else if (riskLevel === '中高風險') {
+                urgencyNote = '⚡ 中高風險患者，建議考慮藥物治療';
+            } else if (riskLevel === '中風險') {
+                urgencyNote = '💡 中風險患者，可考慮藥物治療或加強生活方式調整';
+            } else {
+                urgencyNote = '🌱 低風險患者，優先考慮生活方式調整';
+            }
+            
+            return {
+                needed: true,
+                reductionNeeded: reductionNeeded.toFixed(1),
+                urgencyNote: urgencyNote,
+                medications: medications,
+                additionalNotes: [
+                    '⚠️ 用藥建議僅供參考，實際處方需由醫師評估',
+                    '📋 開始用藥前應檢查肝功能',
+                    '🔄 用藥後 4-6 週應追蹤血脂變化',
+                    '💪 藥物治療應配合飲食控制和規律運動'
+                ]
+            };
+        }
+
+        function displayResults(riskLevel, ldl, ldlTarget, tg, tgTarget, recommendations, medicationAdvice) {
+            
+            const riskColor = {
+                '極高風險': 'text-red-600 bg-red-50',
+                '中高風險': 'text-orange-600 bg-orange-50',
+                '中風險': 'text-yellow-600 bg-yellow-50',
+                '低風險': 'text-green-600 bg-green-50'
+            }[riskLevel] || 'text-gray-600 bg-gray-50';
+            
+            const ldlStatus = ldl > parseFloat(ldlTarget.match(/\d+/)[0]) ? 
+                '<span class="text-red-600">⚠️ 超標</span>' : 
+                '<span class="text-green-600">✅ 達標</span>';
+            
+            const tgStatus = tg >= 200 ? 
+                '<span class="text-red-600">⚠️ 偏高</span>' : 
+                '<span class="text-green-600">✅ 正常</span>';
+            
+            // 生成用藥建議 HTML
+            let medicationHTML = '';
+            if (medicationAdvice.needed) {
+                medicationHTML = `
+                    <div class="bg-orange-50 border border-orange-200 p-4 rounded-lg mt-4">
+                        <h4 class="font-bold text-orange-800 mb-3 flex items-center">
+                            <i class="fas fa-pills mr-2"></i>用藥建議
+                        </h4>
+                        
+                        <div class="mb-3">
+                            <p class="text-orange-700 font-medium">
+                                需要降低 LDL-C：<span class="font-bold">${medicationAdvice.reductionNeeded}%</span>
+                            </p>
+                            <p class="text-orange-600 text-sm mt-1">${medicationAdvice.urgencyNote}</p>
+                        </div>
+                        
+                        ${medicationAdvice.medications.map(med => `
+                            <div class="bg-white border border-orange-100 rounded-lg p-3 mb-3">
+                                <h5 class="font-bold text-gray-800 mb-2">
+                                    ${med.category} <span class="text-sm text-gray-600">(降幅：${med.reduction})</span>
+                                </h5>
+                                <ul class="space-y-1 mb-2">
+                                    ${med.options.map(option => `
+                                        <li class="text-gray-700 text-sm">• ${option}</li>
+                                    `).join('')}
+                                </ul>
+                                <p class="text-xs text-gray-600 italic">${med.note}</p>
+                            </div>
+                        `).join('')}
+                        
+                        <div class="border-t border-orange-200 pt-3 mt-3">
+                            <h6 class="font-bold text-orange-800 mb-2 text-sm">重要提醒：</h6>
+                            <ul class="space-y-1">
+                                ${medicationAdvice.additionalNotes.map(note => `
+                                    <li class="text-orange-700 text-xs">• ${note}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            } else {
+                medicationHTML = `
+                    <div class="bg-green-50 border border-green-200 p-4 rounded-lg mt-4">
+                        <h4 class="font-bold text-green-800 mb-2 flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i>用藥建議
+                        </h4>
+                        <p class="text-green-700">${medicationAdvice.message}</p>
+                    </div>
+                `;
+            }
+
+            if (resultContent) { // Defensive check
+                resultContent.innerHTML = `
+                    <div class="result-card show">
+                        <div class="p-4 rounded-lg ${riskColor} mb-4">
+                            <h3 class="text-xl font-bold">風險等級：${riskLevel}</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 border rounded-lg">
+                                <h4 class="font-bold text-gray-800">LDL-C 膽固醇</h4>
+                                <p class="text-2xl font-bold text-blue-600">${ldl} mg/dL</p>
+                                <p class="text-sm text-gray-600">目標：${ldlTarget}</p>
+                                <p class="mt-1">${ldlStatus}</p>
+                            </div>
+                            
+                            <div class="p-4 border rounded-lg">
+                                <h4 class="font-bold text-gray-800">三酸甘油脂</h4>
+                                <p class="text-2xl font-bold text-purple-600">${tg} mg/dL</p>
+                                <p class="text-sm text-gray-600">目標：${tgTarget}</p>
+                                <p class="mt-1">${tgStatus}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-blue-800 mb-2">建議事項：</h4>
+                            <ul class="space-y-1">
+                                ${recommendations.map(rec => `<li class="text-blue-700">• ${rec}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        ${medicationHTML}
+                    </div>
+                `;
+            }
+            
+            console.log('📊 計算完成，結果已顯示');
+        }
+
+        function initializeLipidCalculator() {
+            console.log('🚀 開始初始化血脂計算器');
+            
+            // Get DOM elements
+            calculateBtn = document.getElementById('calculateBtn');
+            resultContent = document.getElementById('resultContent');
+            hasASCVDInput = document.getElementById('has_ascvd');
+            hasDMInput = document.getElementById('has_dm');
+            hasCKDInput = document.getElementById('has_ckd');
+            hasFHInput = document.getElementById('has_fh');
+            ldlInput = document.getElementById('ldl');
+            tgInput = document.getElementById('tg');
+            isMaleAgeInput = document.getElementById('is_male_age');
+            hasSmokingInput = document.getElementById('has_smoking');
+            hasHDLInput = document.getElementById('has_hdl');
+            hasFamilyHistoryInput = document.getElementById('has_family_history');
+            hasHypertensionInput = document.getElementById('has_hypertension');
+
+            if (!calculateBtn || !resultContent) {
+                console.error('❌ 必要的元素尚未載入，無法初始化血脂計算器！');
+                return;
+            }
+
+            // 防止重複初始化
+            if (calculateBtn.hasAttribute('data-initialized')) {
+                console.log('⚠️ 已經初始化過，跳過重複初始化');
+                return;
+            }
+            calculateBtn.setAttribute('data-initialized', 'true');
+
+            calculateBtn.addEventListener('click', calculateRisk);
+
+            console.log('✅ 血脂計算器初始化完成');
+        }
+
+        // Expose the initialization function globally
+        window.initLipidCalculator = initializeLipidCalculator;
+    </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兒科類固醇劑量互動計算機</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #f7fafc;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+
+    .indication-btn {
+      transition: all 0.2s ease-in-out;
+    }
+
+    .indication-btn.active {
+      background-color: #4A5568;
+      color: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .result-card {
+      background-color: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s;
+    }
+
+    .result-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .input-focus:focus {
+      border-color: #4299e1;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+  </style>
+</head>
+
+<body class="antialiased text-gray-800">
+
+  <main class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl">
+    <header class="text-center mb-8">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">兒科類固醇劑量計算機</h1>
+      <p class="text-md text-gray-600 mt-2">根據體重與適應症計算建議劑量</p>
+    </header>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+        <div class="md:col-span-1">
+          <label for="weight" class="block text-lg font-semibold text-gray-700 mb-2">1. 輸入兒童體重 (公斤)</label>
+          <input type="number" id="weight" placeholder="例如: 15"
+            class="w-full px-4 py-3 text-2xl font-bold border-2 border-gray-300 rounded-lg focus:outline-none input-focus">
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-lg font-semibold text-gray-700 mb-2">2. 選擇臨床適應症</label>
+          <div id="indication-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <button data-indication="asthma"
+              class="indication-btn py-3 px-2 text-sm sm:text-base font-semibold bg-gray-200 text-gray-700 rounded-lg">急性氣喘</button>
+            <button data-indication="anti_inflammatory"
+              class="indication-btn py-3 px-2 text-sm sm:text-base font-semibold bg-gray-200 text-gray-700 rounded-lg">抗發炎/免疫抑制</button>
+            <button data-indication="croup"
+              class="indication-btn py-3 px-2 text-sm sm:text-base font-semibold bg-gray-200 text-gray-700 rounded-lg">哮吼
+              (Croup)</button>
+            <button data-indication="nephrotic_syndrome"
+              class="indication-btn py-3 px-2 text-sm sm:text-base font-semibold bg-gray-200 text-gray-700 rounded-lg">腎病症候群</button>
+            <button data-indication="pulse_therapy"
+              class="indication-btn py-3 px-2 text-sm sm:text-base font-semibold bg-gray-200 text-gray-700 rounded-lg">脈衝療法</button>
+            <button data-indication="cerebral_edema"
+              class="indication-btn py-3 px-2 text-sm sm:text-base font-semibold bg-gray-200 text-gray-700 rounded-lg">腦水腫</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="results-container" class="space-y-6">
+      <div id="initial-message" class="text-center py-10 px-6 bg-gray-100 rounded-lg">
+        <p class="text-gray-600">請輸入體重並選擇適應症以開始計算。</p>
+      </div>
+    </div>
+
+    <footer class="text-center mt-12 text-sm text-gray-500">
+      <p class="font-bold text-red-600 bg-red-100 p-3 rounded-lg">免責聲明：本工具僅供臨床專業人員參考，計算結果不能取代臨床判斷。所有劑量皆須由合格醫師最終確認。</p>
+      <p class="mt-4">資料來源：兒童類固醇劑量與使用指南報告</p>
+    </footer>
+  </main>
+    <script>
+        let weightInput;
+        let indicationSelector;
+        let resultsContainer;
+        let initialMessage;
+
+        const steroidDoses = {
+            asthma: {
+                dexamethasone: { dose: '0.6', freq: 'QD', days: '1-2', note: '口服單劑，或分兩劑服用' },
+                prednisolone: { dose: '1-2', freq: 'QD/BID', days: '3-5', note: '最大劑量 60 mg/day' }
+            },
+            anti_inflammatory: {
+                dexamethame: { dose: '0.08-0.3', freq: 'QD/BID/TID', note: '依病情調整，劑量範圍廣' },
+                prednisolone: { dose: '0.5-2', freq: 'QD/BID', note: '依病情調整，劑量範圍廣' }
+            },
+            croup: {
+                dexamethasone: { dose: '0.15-0.6', freq: '單劑', note: '口服單劑，依嚴重度給予' }
+            },
+            nephrotic_syndrome: {
+                prednisolone: { dose: '2', freq: 'QD', days: '長期', note: '誘發緩解期每天 2 mg/kg/day (最大 60 mg/day)，直至尿蛋白轉陰性持續 3 天，之後減量或隔日給藥。' }
+            },
+            pulse_therapy: {
+                methylprednisolone: { dose: '15-30', freq: 'QD', days: '3-5', note: '每天 15-30 mg/kg，最大 1000 mg/day，靜脈注射。' }
+            },
+            cerebral_edema: {
+                dexamethasone: { dose: '0.25-0.5', freq: 'QID', note: '嚴重腦水腫初始劑量可達 1-2 mg/kg 單劑，隨後 0.25-0.5 mg/kg QID' }
+            }
+        };
+
+        function calculateDose() {
+            const weight = parseFloat(weightInput.value);
+            const selectedIndicationBtn = document.querySelector('.indication-btn.active');
+            const indication = selectedIndicationBtn ? selectedIndicationBtn.dataset.indication : null;
+
+            resultsContainer.innerHTML = '';
+            initialMessage.classList.add('hidden');
+
+            if (!weight || weight <= 0) {
+                resultsContainer.innerHTML = `
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md" role="alert">
+                        <p class="font-bold">輸入錯誤</p>
+                        <p>請輸入有效的兒童體重。</p>
+                    </div>
+                `;
+                initialMessage.classList.remove('hidden');
+                return;
+            }
+
+            if (!indication) {
+                resultsContainer.innerHTML = `
+                    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg shadow-md" role="alert">
+                        <p class="font-bold">提示</p>
+                        <p>請選擇一個臨床適應症以計算劑量。</p>
+                    </div>
+                `;
+                initialMessage.classList.remove('hidden');
+                return;
+            }
+
+            const doses = steroidDoses[indication];
+            if (doses) {
+                Object.entries(doses).forEach(([drug, info]) => {
+                    let doseCalculated = '';
+                    let totalDoseText = '';
+                    let fullNote = info.note ? `<p class="text-xs text-gray-500 mt-2">${info.note}</p>` : '';
+
+                    // Calculate dose based on drug and indication
+                    const minDose = parseFloat(info.dose.split('-')[0]);
+                    const maxDose = info.dose.includes('-') ? parseFloat(info.dose.split('-')[1]) : minDose;
+
+                    if (drug === 'dexamethasone') {
+                        // Dexamethasone has multiple calculation types based on indication
+                        if (indication === 'asthma') {
+                            const singleDose = (weight * 0.6);
+                            doseCalculated = `<strong>${singleDose.toFixed(2)} mg</strong>`;
+                            totalDoseText = `總劑量範圍: <strong>${(singleDose * (info.days ? parseFloat(info.days.split('-')[0]) : 1)).toFixed(2)} - ${(singleDose * (info.days ? parseFloat(info.days.split('-')[1] || info.days.split('-')[0]) : 1)).toFixed(2)} mg</strong>`;
+                            fullNote = `<p class="text-xs text-gray-500 mt-2">建議劑量為 ${info.dose} mg/kg，單次投予。</p>` + fullNote;
+                        } else if (indication === 'croup') {
+                            const singleDose = (weight * parseFloat(info.dose.split('-')[0]));
+                            doseCalculated = `<strong>${singleDose.toFixed(2)} mg</strong>`;
+                            totalDoseText = `單次總劑量: <strong>${singleDose.toFixed(2)} mg</strong>`;
+                            fullNote = `<p class="text-xs text-gray-500 mt-2">建議劑量為 ${info.dose} mg/kg，單次口服或靜脈注射。</p>` + fullNote;
+                        } else if (indication === 'anti_inflammatory' || indication === 'cerebral_edema') {
+                            const minDailyDose = weight * minDose;
+                            const maxDailyDose = weight * maxDose;
+                            doseCalculated = `<strong>${minDailyDose.toFixed(2)} - ${maxDailyDose.toFixed(2)} mg</strong>`;
+                            totalDoseText = `每日總劑量範圍: <strong>${minDailyDose.toFixed(2)} - ${maxDailyDose.toFixed(2)} mg</strong>`;
+                            fullNote = `<p class="text-xs text-gray-500 mt-2">建議劑量為 ${info.dose} mg/kg/day。</p>` + fullNote;
+                        } else {
+                            doseCalculated = `<strong>請選擇劑型</strong>`; // Fallback for other dexamethasone cases if any
+                        }
+                    } else if (drug === 'prednisolone') {
+                        const minDailyDose = weight * minDose;
+                        const maxDailyDode = weight * maxDose;
+                        doseCalculated = `<strong>${minDailyDose.toFixed(2)} - ${maxDailyDose.toFixed(2)} mg</strong>`;
+                        totalDoseText = `每日總劑量範圍: <strong>${minDailyDose.toFixed(2)} - ${maxDailyDose.toFixed(2)} mg</strong>`;
+                        fullNote = `<p class="text-xs text-gray-500 mt-2">建議劑量為 ${info.dose} mg/kg/day。</p>` + fullNote;
+                    } else if (drug === 'methylprednisolone') {
+                        const minDailyDose = weight * minDose;
+                        const maxDailyDose = weight * maxDose;
+                        doseCalculated = `<strong>${minDailyDose.toFixed(2)} - ${maxDailyDose.toFixed(2)} mg</strong>`;
+                        totalDoseText = `每日總劑量範圍: <strong>${minDailyDose.toFixed(2)} - ${maxDailyDose.toFixed(2)} mg</strong>`;
+                        fullNote = `<p class="text-xs text-gray-500 mt-2">建議劑量為 ${info.dose} mg/kg/day。</p>` + fullNote;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'result-card p-6 border-l-4 border-blue-500';
+                    card.innerHTML = `
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${drug.charAt(0).toUpperCase() + drug.slice(1)}</h3>
+                        <p class="text-lg text-gray-700 mb-1">建議劑量: ${doseCalculated} ${info.freq ? `(${info.freq})` : ''}</p>
+                        <p class="text-lg text-gray-700">${totalDoseText} ${info.days ? `(共 ${info.days} 天)` : ''}</p>
+                        ${fullNote}
+                    `;
+                    resultsContainer.appendChild(card);
+                });
+            }
+        }
+
+        function handleIndicationClick(event) {
+            document.querySelectorAll('.indication-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-gray-700', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            event.target.classList.add('active', 'bg-gray-700', 'text-white');
+            event.target.classList.remove('bg-gray-200', 'text-gray-700');
+            calculateDose(); // Recalculate when indication changes
+        }
+
+        function initChildrenSteroidDoseCalculator() {
+            weightInput = document.getElementById('weight');
+            indicationSelector = document.getElementById('indication-selector');
+            resultsContainer = document.getElementById('results-container');
+            initialMessage = document.getElementById('initial-message');
+
+            if (weightInput) {
+                weightInput.addEventListener('input', calculateDose);
+            } else {
+                console.error("Weight input element not found for initChildrenSteroidDoseCalculator!");
+            }
+            
+            if (indicationSelector) {
+                indicationSelector.addEventListener('click', handleIndicationClick);
+            } else {
+                console.error("Indication selector element not found for initChildrenSteroidDoseCalculator!");
+            }
+
+            // Initial calculation if there's pre-filled data
+            if (weightInput && weightInput.value && document.querySelector('.indication-btn.active')) {
+                calculateDose();
+            }
+        }
+
+        // Expose the initialization function globally
+        window.initChildrenSteroidDoseCalculator = initChildrenSteroidDoseCalculator;
+    </script>
+</body>
+</html>
