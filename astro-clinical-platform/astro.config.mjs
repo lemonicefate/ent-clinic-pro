@@ -11,10 +11,6 @@ export default defineConfig({
   adapter: cloudflare({
     platformProxy: {
       enabled: true
-    },
-    runtime: {
-      mode: 'local',
-      type: 'pages'
     }
   }),
   
@@ -59,15 +55,7 @@ export default defineConfig({
     inlineStylesheets: 'auto'
   },
 
-  // 排除測試文件和相關文件
-  exclude: [
-    '**/*.test.{ts,tsx,js,jsx}',
-    '**/*.spec.{ts,tsx,js,jsx}',
-    '**/test-setup.ts',
-    '**/__tests__/**',
-    '**/vitest.config.ts',
-    '**/vitest.unit.config.ts'
-  ],
+
 
   // SEO and performance optimizations
   compressHTML: true,

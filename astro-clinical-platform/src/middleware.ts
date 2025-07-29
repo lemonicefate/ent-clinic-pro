@@ -3,6 +3,9 @@
  * 處理多語言路由、重定向和路由保護
  */
 
+// Import Cloudflare Workers polyfills
+import './polyfills/cloudflare';
+
 import { defineMiddleware, sequence } from 'astro:middleware';
 import { getLocaleFromPath, supportedLocales, defaultLocale } from './utils/i18n';
 import { protectRoute, SessionManager } from './utils/route-protection';
