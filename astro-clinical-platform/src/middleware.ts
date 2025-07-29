@@ -36,8 +36,8 @@ const i18nMiddleware = defineMiddleware(async (context, next) => {
 
 // Security middleware for rate limiting and CSRF protection
 const securityMiddleware = defineMiddleware(async (context, next) => {
-  // Skip security middleware during prerendering
-  if (import.meta.env.SSR === false) {
+  // Skip security middleware during prerendering or if clientAddress is not available
+  if (!context.clientAddress) {
     return next();
   }
 
@@ -62,8 +62,8 @@ const securityMiddleware = defineMiddleware(async (context, next) => {
 
 // Authentication middleware for session management
 const authMiddleware = defineMiddleware(async (context, next) => {
-  // Skip authentication middleware during prerendering
-  if (import.meta.env.SSR === false) {
+  // Skip authentication middleware during prerendering or if clientAddress is not available
+  if (!context.clientAddress) {
     // Set default values for prerendering
     context.locals.user = null;
     context.locals.isAuthenticated = false;
