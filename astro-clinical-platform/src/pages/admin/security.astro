@@ -1,0 +1,522 @@
+---
+/**
+ * Admin Security Dashboard
+ * Displays security status, audit logs, and security controls
+ */
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProtectedRoute from '../../components/ProtectedRoute.astro';
+---
+
+<ProtectedRoute requiredRole="admin">
+  <BaseLayout title="安全管理 - 管理員面板">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">安全管理面板</h1>
+        <p class="text-gray-600">監控系統安全狀態、查看審計日誌並管理安全設定</p>
+      </div>
+
+      <!-- Security Status Overview -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">系統安全狀態</h2>
+            <div id="security-status-indicator" class="w-3 h-3 rounded-full bg-gray-400"></div>
+          </div>
+          <div id="security-status-content" class="space-y-2">
+            <div class="animate-pulse">載入中...</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">近期安全事件</h2>
+          <div id="recent-events-content" class="space-y-2">
+            <div class="animate-pulse">載入中...</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">速率限制狀態</h2>
+          <div id="rate-limit-content" class="space-y-2">
+            <div class="animate-pulse">載入中...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Controls -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">安全控制</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <button 
+            id="refresh-status-btn"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            刷新狀態
+          </button>
+          <button 
+            id="export-logs-btn"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            匯出日誌
+          </button>
+          <button 
+            id="cleanup-events-btn"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            清理舊事件
+          </button>
+          <button 
+            id="reset-rate-limits-btn"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            重置速率限制
+          </button>
+        </div>
+      </div>
+
+      <!-- Audit Logs -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">審計日誌</h2>
+          <div class="flex space-x-2">
+            <select id="event-type-filter" class="border border-gray-300 rounded-md px-3 py-1 text-sm">
+              <option value="">所有事件類型</option>
+              <option value="auth_success">登入成功</option>
+              <option value="auth_failure">登入失敗</option>
+              <option value="rate_limit_exceeded">速率限制超出</option>
+              <option value="csrf_validation_failed">CSRF 驗證失敗</option>
+              <option value="admin_unauthorized_access">未授權管理員存取</option>
+            </select>
+            <select id="severity-filter" class="border border-gray-300 rounded-md px-3 py-1 text-sm">
+              <option value="">所有嚴重程度</option>
+              <option value="low">低</option>
+              <option value="medium">中</option>
+              <option value="high">高</option>
+              <option value="critical">嚴重</option>
+            </select>
+            <button 
+              id="filter-logs-btn"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm transition-colors"
+            >
+              篩選
+            </button>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">時間</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">事件</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP 位址</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">嚴重程度</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">詳細資訊</th>
+              </tr>
+            </thead>
+            <tbody id="audit-logs-tbody" class="bg-white divide-y divide-gray-200">
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                  <div class="animate-pulse">載入審計日誌中...</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+        <div class="flex items-center space-x-3">
+          <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <span class="text-gray-700">處理中...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="message-container" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
+      // Security Dashboard JavaScript
+      class SecurityDashboard {
+        constructor() {
+          this.authToken = null;
+          this.init();
+        }
+
+        async init() {
+          await this.getAuthToken();
+          await this.loadSecurityStatus();
+          await this.loadAuditLogs();
+          this.setupEventListeners();
+          
+          // Auto-refresh every 30 seconds
+          setInterval(() => {
+            this.loadSecurityStatus();
+          }, 30000);
+        }
+
+        async getAuthToken() {
+          try {
+            // Get token from auth service
+            const response = await fetch('/api/auth/get-token', {
+              credentials: 'include'
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              this.authToken = data.accessToken;
+            }
+          } catch (error) {
+            console.error('Failed to get auth token:', error);
+          }
+        }
+
+        async loadSecurityStatus() {
+          try {
+            const response = await fetch('/api/admin/security-status', {
+              headers: {
+                'Authorization': `Bearer ${this.authToken}`,
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              this.updateSecurityStatusUI(data.data);
+            } else {
+              throw new Error('Failed to load security status');
+            }
+          } catch (error) {
+            console.error('Error loading security status:', error);
+            this.showMessage('載入安全狀態失敗', 'error');
+          }
+        }
+
+        updateSecurityStatusUI(status) {
+          // Update status indicator
+          const indicator = document.getElementById('security-status-indicator');
+          const statusColors = {
+            healthy: 'bg-green-500',
+            attention: 'bg-yellow-500',
+            warning: 'bg-orange-500',
+            critical: 'bg-red-500',
+          };
+          
+          indicator.className = `w-3 h-3 rounded-full ${statusColors[status.overall] || 'bg-gray-400'}`;
+
+          // Update status content
+          const content = document.getElementById('security-status-content');
+          content.innerHTML = `
+            <div class="text-sm space-y-1">
+              <div class="flex justify-between">
+                <span>整體狀態:</span>
+                <span class="font-medium ${this.getStatusTextColor(status.overall)}">${this.getStatusText(status.overall)}</span>
+              </div>
+              <div class="flex justify-between">
+                <span>近期失敗登入:</span>
+                <span class="font-medium">${status.metrics.recentFailedLogins}</span>
+              </div>
+              <div class="flex justify-between">
+                <span>高嚴重性事件:</span>
+                <span class="font-medium">${status.metrics.highSeverityEvents}</span>
+              </div>
+              <div class="flex justify-between">
+                <span>嚴重事件:</span>
+                <span class="font-medium text-red-600">${status.metrics.criticalEvents}</span>
+              </div>
+            </div>
+          `;
+
+          // Update recent events
+          const eventsContent = document.getElementById('recent-events-content');
+          eventsContent.innerHTML = `
+            <div class="text-sm space-y-1">
+              <div class="flex justify-between">
+                <span>總事件數:</span>
+                <span class="font-medium">${status.metrics.totalEvents}</span>
+              </div>
+              <div class="flex justify-between">
+                <span>每日失敗登入:</span>
+                <span class="font-medium">${status.metrics.dailyFailedLogins}</span>
+              </div>
+              <div class="text-xs text-gray-500 mt-2">
+                最後更新: ${new Date(status.lastUpdated).toLocaleString('zh-TW')}
+              </div>
+            </div>
+          `;
+
+          // Update rate limit content
+          const rateLimitContent = document.getElementById('rate-limit-content');
+          rateLimitContent.innerHTML = `
+            <div class="text-sm space-y-2">
+              <div class="flex justify-between">
+                <span>登入限制:</span>
+                <span class="font-medium ${status.rateLimiting.status.login.isLimited ? 'text-red-600' : 'text-green-600'}">
+                  ${status.rateLimiting.status.login.isLimited ? '已限制' : '正常'}
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span>API 限制:</span>
+                <span class="font-medium ${status.rateLimiting.status.api.isLimited ? 'text-red-600' : 'text-green-600'}">
+                  ${status.rateLimiting.status.api.isLimited ? '已限制' : '正常'}
+                </span>
+              </div>
+              <div class="text-xs text-gray-500">
+                狀態: ${status.rateLimiting.enabled ? '已啟用' : '已停用'}
+              </div>
+            </div>
+          `;
+        }
+
+        async loadAuditLogs(eventType = '', severity = '') {
+          try {
+            const params = new URLSearchParams();
+            if (eventType) params.append('type', eventType);
+            if (severity) params.append('severity', severity);
+            params.append('limit', '50');
+
+            const response = await fetch(`/api/admin/audit-logs?${params}`, {
+              headers: {
+                'Authorization': `Bearer ${this.authToken}`,
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              this.updateAuditLogsUI(data.data.events);
+            } else {
+              throw new Error('Failed to load audit logs');
+            }
+          } catch (error) {
+            console.error('Error loading audit logs:', error);
+            this.showMessage('載入審計日誌失敗', 'error');
+          }
+        }
+
+        updateAuditLogsUI(events) {
+          const tbody = document.getElementById('audit-logs-tbody');
+          
+          if (events.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                  沒有找到符合條件的審計日誌
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tbody.innerHTML = events.map(event => `
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${new Date(event.timestamp).toLocaleString('zh-TW')}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${this.formatEventType(event.event)}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${event.ip}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                  event.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }">
+                  ${event.success ? '成功' : '失敗'}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${this.getSeverityColor(event.severity)}">
+                  ${this.getSeverityText(event.severity)}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+                ${event.details ? JSON.stringify(event.details) : '-'}
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        setupEventListeners() {
+          // Refresh status button
+          document.getElementById('refresh-status-btn').addEventListener('click', () => {
+            this.loadSecurityStatus();
+            this.showMessage('安全狀態已刷新', 'success');
+          });
+
+          // Export logs button
+          document.getElementById('export-logs-btn').addEventListener('click', async () => {
+            await this.exportLogs();
+          });
+
+          // Cleanup events button
+          document.getElementById('cleanup-events-btn').addEventListener('click', async () => {
+            await this.cleanupEvents();
+          });
+
+          // Filter logs button
+          document.getElementById('filter-logs-btn').addEventListener('click', () => {
+            const eventType = document.getElementById('event-type-filter').value;
+            const severity = document.getElementById('severity-filter').value;
+            this.loadAuditLogs(eventType, severity);
+          });
+        }
+
+        async exportLogs() {
+          try {
+            this.showLoading(true);
+            
+            const response = await fetch('/api/admin/audit-logs?format=csv', {
+              headers: {
+                'Authorization': `Bearer ${this.authToken}`,
+              },
+              credentials: 'include',
+            });
+
+            if (response.ok) {
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `audit-logs-${new Date().toISOString().split('T')[0]}.csv`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(url);
+              
+              this.showMessage('審計日誌已匯出', 'success');
+            } else {
+              throw new Error('Export failed');
+            }
+          } catch (error) {
+            console.error('Export error:', error);
+            this.showMessage('匯出失敗', 'error');
+          } finally {
+            this.showLoading(false);
+          }
+        }
+
+        async cleanupEvents() {
+          try {
+            this.showLoading(true);
+            
+            const response = await fetch('/api/admin/security-status', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${this.authToken}`,
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                action: 'cleanup_events'
+              }),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              this.showMessage(data.data.message, 'success');
+              await this.loadAuditLogs();
+              await this.loadSecurityStatus();
+            } else {
+              throw new Error('Cleanup failed');
+            }
+          } catch (error) {
+            console.error('Cleanup error:', error);
+            this.showMessage('清理失敗', 'error');
+          } finally {
+            this.showLoading(false);
+          }
+        }
+
+        showLoading(show) {
+          const modal = document.getElementById('loading-modal');
+          modal.classList.toggle('hidden', !show);
+          modal.classList.toggle('flex', show);
+        }
+
+        showMessage(message, type) {
+          const container = document.getElementById('message-container');
+          const messageEl = document.createElement('div');
+          
+          const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+          
+          messageEl.className = `${bgColor} text-white px-4 py-2 rounded-md mb-2 shadow-lg`;
+          messageEl.textContent = message;
+          
+          container.appendChild(messageEl);
+          
+          setTimeout(() => {
+            container.removeChild(messageEl);
+          }, 5000);
+        }
+
+        getStatusText(status) {
+          const statusMap = {
+            healthy: '健康',
+            attention: '注意',
+            warning: '警告',
+            critical: '嚴重',
+          };
+          return statusMap[status] || '未知';
+        }
+
+        getStatusTextColor(status) {
+          const colorMap = {
+            healthy: 'text-green-600',
+            attention: 'text-yellow-600',
+            warning: 'text-orange-600',
+            critical: 'text-red-600',
+          };
+          return colorMap[status] || 'text-gray-600';
+        }
+
+        getSeverityColor(severity) {
+          const colorMap = {
+            low: 'bg-blue-100 text-blue-800',
+            medium: 'bg-yellow-100 text-yellow-800',
+            high: 'bg-orange-100 text-orange-800',
+            critical: 'bg-red-100 text-red-800',
+          };
+          return colorMap[severity] || 'bg-gray-100 text-gray-800';
+        }
+
+        getSeverityText(severity) {
+          const textMap = {
+            low: '低',
+            medium: '中',
+            high: '高',
+            critical: '嚴重',
+          };
+          return textMap[severity] || severity;
+        }
+
+        formatEventType(eventType) {
+          const typeMap = {
+            auth_success: '登入成功',
+            auth_failure: '登入失敗',
+            rate_limit_exceeded: '速率限制超出',
+            csrf_validation_failed: 'CSRF 驗證失敗',
+            admin_unauthorized_access: '未授權管理員存取',
+            csrf_token_generated: 'CSRF 令牌生成',
+            admin_security_status_accessed: '管理員查看安全狀態',
+            admin_audit_logs_accessed: '管理員查看審計日誌',
+          };
+          return typeMap[eventType] || eventType;
+        }
+      }
+
+      // Initialize dashboard when page loads
+      document.addEventListener('DOMContentLoaded', () => {
+        new SecurityDashboard();
+      });
+    </script>
+  </BaseLayout>
+</ProtectedRoute>

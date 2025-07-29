@@ -1,0 +1,297 @@
+{
+  "name": {
+    "zh-TW": "CHA₂DS₂-VASc 評分",
+    "en": "CHA₂DS₂-VASc Score",
+    "ja": "CHA₂DS₂-VASc スコア"
+  },
+  "slug": "cha2ds2-vasc",
+  "description": {
+    "zh-TW": "評估心房顫動患者中風風險的計算工具",
+    "en": "Risk assessment tool for stroke in atrial fibrillation patients",
+    "ja": "心房細動患者の脳卒中リスク評価ツール"
+  },
+  "category": "cardiology",
+  "fields": [
+    {
+      "id": "chf",
+      "type": "select",
+      "label": {
+        "zh-TW": "充血性心衰竭",
+        "en": "Congestive Heart Failure",
+        "ja": "うっ血性心不全"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "hypertension",
+      "type": "select",
+      "label": {
+        "zh-TW": "高血壓",
+        "en": "Hypertension",
+        "ja": "高血圧"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "age",
+      "type": "select",
+      "label": {
+        "zh-TW": "年齡",
+        "en": "Age",
+        "ja": "年齢"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "< 65歲",
+            "en": "< 65 years",
+            "ja": "< 65歳"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "65-74歲",
+            "en": "65-74 years",
+            "ja": "65-74歳"
+          }
+        },
+        {
+          "value": 2,
+          "label": {
+            "zh-TW": "≥ 75歲",
+            "en": "≥ 75 years",
+            "ja": "≥ 75歳"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "diabetes",
+      "type": "select",
+      "label": {
+        "zh-TW": "糖尿病",
+        "en": "Diabetes",
+        "ja": "糖尿病"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "stroke",
+      "type": "select",
+      "label": {
+        "zh-TW": "中風/TIA/血栓栓塞病史",
+        "en": "Stroke/TIA/Thromboembolism history",
+        "ja": "脳卒中/TIA/血栓塞栓症の既往"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 2,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "vascular",
+      "type": "select",
+      "label": {
+        "zh-TW": "血管疾病",
+        "en": "Vascular Disease",
+        "ja": "血管疾患"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "gender",
+      "type": "select",
+      "label": {
+        "zh-TW": "性別",
+        "en": "Gender",
+        "ja": "性別"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "男性",
+            "en": "Male",
+            "ja": "男性"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "女性",
+            "en": "Female",
+            "ja": "女性"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    }
+  ],
+  "calculationFunction": "calculateCHADSVASC",
+  "interpretation": [
+    {
+      "range": [0, 0],
+      "risk": "low",
+      "recommendation": {
+        "zh-TW": "低風險，可考慮不使用抗凝血劑",
+        "en": "Low risk, may consider no anticoagulation",
+        "ja": "低リスク、抗凝固薬なしを検討可能"
+      },
+      "color": "#27ae60"
+    },
+    {
+      "range": [1, 1],
+      "risk": "moderate",
+      "recommendation": {
+        "zh-TW": "中等風險，可考慮使用抗凝血劑",
+        "en": "Moderate risk, may consider anticoagulation",
+        "ja": "中等度リスク、抗凝固薬を検討可能"
+      },
+      "color": "#f39c12"
+    },
+    {
+      "range": [2, 9],
+      "risk": "high",
+      "recommendation": {
+        "zh-TW": "高風險，建議使用抗凝血劑",
+        "en": "High risk, anticoagulation recommended",
+        "ja": "高リスク、抗凝固薬推奨"
+      },
+      "color": "#e74c3c"
+    }
+  ],
+  "references": [
+    {
+      "title": "2020 ESC Guidelines for atrial fibrillation",
+      "url": "https://academic.oup.com/eurheartj/article/42/5/373/6007050",
+      "year": 2020
+    }
+  ],
+  "tags": ["atrial fibrillation", "stroke risk", "anticoagulation"],
+  "difficulty": "basic",
+  "isActive": true,
+  "clinicalGuidelines": {
+    "zh-TW": "根據歐洲心臟病學會指引，CHA₂DS₂-VASc 評分是評估心房顫動患者中風風險的標準工具。",
+    "en": "According to ESC guidelines, CHA₂DS₂-VASc score is the standard tool for stroke risk assessment in atrial fibrillation patients.",
+    "ja": "ESCガイドラインによると、CHA₂DS₂-VASc スコアは心房細動患者の脳卒中リスク評価の標準ツールです。"
+  },
+  "validationRules": {
+    "maxScore": 9,
+    "minScore": 0,
+    "requiredFields": ["chf", "hypertension", "age", "diabetes", "stroke", "vascular", "gender"]
+  },
+  "seoTitle": {
+    "zh-TW": "CHA₂DS₂-VASc 評分計算機 - 心房顫動中風風險評估",
+    "en": "CHA₂DS₂-VASc Score Calculator - Atrial Fibrillation Stroke Risk",
+    "ja": "CHA₂DS₂-VASc スコア計算機 - 心房細動脳卒中リスク"
+  },
+  "seoDescription": {
+    "zh-TW": "使用 CHA₂DS₂-VASc 評分工具評估心房顫動患者的中風風險，協助臨床決策制定。",
+    "en": "Use CHA₂DS₂-VASc score tool to assess stroke risk in atrial fibrillation patients for clinical decision making.",
+    "ja": "CHA₂DS₂-VASc スコアツールを使用して心房細動患者の脳卒中リスクを評価し、臨床決定を支援します。"
+  }
+}

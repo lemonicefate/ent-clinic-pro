@@ -1,0 +1,217 @@
+{
+  "id": "lipid-management",
+  "version": "1.0.0",
+  "name": {
+    "zh-TW": "血脂管理與心血管風險計算機",
+    "en": "Lipid Management & Cardiovascular Risk Calculator",
+    "ja": "脂質管理・心血管リスク計算機"
+  },
+  "description": {
+    "zh-TW": "根據2022臺灣高血壓、高血脂、糖尿病指引，評估心血管風險並提供血脂管理建議",
+    "en": "Assess cardiovascular risk and provide lipid management recommendations based on 2022 Taiwan guidelines",
+    "ja": "2022年台湾ガイドラインに基づく心血管リスク評価と脂質管理推奨"
+  },
+  "category": "cardiology",
+  "metadata": {
+    "difficulty": "intermediate",
+    "tags": ["cardiology", "lipid", "cholesterol", "cardiovascular-risk", "taiwan-guidelines"],
+    "author": "Astro Clinical Platform",
+    "license": "MIT",
+    "keywords": ["lipid", "cholesterol", "ldl", "triglycerides", "cardiovascular", "statin"]
+  },
+  "medical": {
+    "specialty": ["Cardiology", "Internal Medicine", "Family Medicine", "Endocrinology"],
+    "evidenceLevel": "A",
+    "clinicalGuidelines": {
+      "zh-TW": "基於2022臺灣高血壓、高血脂、糖尿病指引建議",
+      "en": "Based on 2022 Taiwan Guidelines for Hypertension, Hyperlipidemia, and Diabetes",
+      "ja": "2022年台湾高血圧・高脂血症・糖尿病ガイドラインに基づく"
+    },
+    "references": [
+      {
+        "title": "2022臺灣高血壓、高血脂、糖尿病指引",
+        "authors": ["台灣心臟學會", "台灣高血壓學會", "中華民國糖尿病學會"],
+        "year": "2022",
+        "url": "https://www.tsoc.org.tw/"
+      }
+    ]
+  },
+  "ui": {
+    "fields": [
+      {
+        "id": "hasASCVD",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "冠狀動脈、腦血管或周邊動脈疾病 (ASCVD)",
+          "en": "Coronary, cerebrovascular or peripheral artery disease (ASCVD)",
+          "ja": "冠動脈・脳血管・末梢動脈疾患 (ASCVD)"
+        },
+        "required": false
+      },
+      {
+        "id": "hasDM",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "糖尿病 (DM)",
+          "en": "Diabetes Mellitus (DM)",
+          "ja": "糖尿病 (DM)"
+        },
+        "required": false
+      },
+      {
+        "id": "hasCKD",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "慢性腎臟病 (CKD，第三期以上)",
+          "en": "Chronic Kidney Disease (CKD, Stage 3+)",
+          "ja": "慢性腎臓病 (CKD、ステージ3以上)"
+        },
+        "required": false
+      },
+      {
+        "id": "hasFH",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "家族性高膽固醇血症 (FH)",
+          "en": "Familial Hypercholesterolemia (FH)",
+          "ja": "家族性高コレステロール血症 (FH)"
+        },
+        "required": false
+      },
+      {
+        "id": "ldl",
+        "type": "number",
+        "label": {
+          "zh-TW": "低密度脂蛋白膽固醇 (LDL-C)",
+          "en": "Low-density lipoprotein cholesterol (LDL-C)",
+          "ja": "低密度リポ蛋白コレステロール (LDL-C)"
+        },
+        "required": true,
+        "validation": {
+          "min": 50,
+          "max": 500
+        },
+        "unit": {
+          "zh-TW": "mg/dL",
+          "en": "mg/dL",
+          "ja": "mg/dL"
+        }
+      },
+      {
+        "id": "tg",
+        "type": "number",
+        "label": {
+          "zh-TW": "三酸甘油脂 (TG)",
+          "en": "Triglycerides (TG)",
+          "ja": "トリグリセリド (TG)"
+        },
+        "required": true,
+        "validation": {
+          "min": 50,
+          "max": 1000
+        },
+        "unit": {
+          "zh-TW": "mg/dL",
+          "en": "mg/dL",
+          "ja": "mg/dL"
+        }
+      },
+      {
+        "id": "isMaleAge",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "男性 ≥ 45歲 或 女性 ≥ 55歲",
+          "en": "Male ≥ 45 years or Female ≥ 55 years",
+          "ja": "男性 ≥ 45歳 または 女性 ≥ 55歳"
+        },
+        "required": false
+      },
+      {
+        "id": "hasSmoking",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "目前吸菸",
+          "en": "Current smoking",
+          "ja": "現在喫煙"
+        },
+        "required": false
+      },
+      {
+        "id": "hasLowHDL",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "高密度脂蛋白膽固醇 (HDL-C) < 40 mg/dL",
+          "en": "High-density lipoprotein cholesterol (HDL-C) < 40 mg/dL",
+          "ja": "高密度リポ蛋白コレステロール (HDL-C) < 40 mg/dL"
+        },
+        "required": false
+      },
+      {
+        "id": "hasFamilyHistory",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "早發性冠心病家族史",
+          "en": "Family history of premature coronary heart disease",
+          "ja": "早発性冠心病の家族歴"
+        },
+        "required": false
+      },
+      {
+        "id": "hasHypertension",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "高血壓",
+          "en": "Hypertension",
+          "ja": "高血圧"
+        },
+        "required": false
+      }
+    ]
+  },
+  "interpretation": [
+    {
+      "range": "very-high",
+      "risk": "very-high",
+      "color": "#DC2626",
+      "ldlTarget": "< 70 mg/dL",
+      "recommendation": {
+        "zh-TW": "極高風險：需積極藥物治療，LDL-C 目標 < 70 mg/dL",
+        "en": "Very high risk: Aggressive drug therapy needed, LDL-C target < 70 mg/dL",
+        "ja": "超高リスク：積極的薬物療法が必要、LDL-C目標 < 70 mg/dL"
+      }
+    },
+    {
+      "range": "high",
+      "risk": "high",
+      "color": "#F59E0B",
+      "ldlTarget": "< 100 mg/dL",
+      "recommendation": {
+        "zh-TW": "中高風險：考慮藥物治療，LDL-C 目標 < 100 mg/dL",
+        "en": "High risk: Consider drug therapy, LDL-C target < 100 mg/dL",
+        "ja": "高リスク：薬物療法を検討、LDL-C目標 < 100 mg/dL"
+      }
+    },
+    {
+      "range": "moderate",
+      "risk": "moderate",
+      "color": "#10B981",
+      "ldlTarget": "< 130 mg/dL",
+      "recommendation": {
+        "zh-TW": "中風險：生活方式調整優先，LDL-C 目標 < 130 mg/dL",
+        "en": "Moderate risk: Lifestyle modification priority, LDL-C target < 130 mg/dL",
+        "ja": "中等度リスク：生活習慣改善優先、LDL-C目標 < 130 mg/dL"
+      }
+    },
+    {
+      "range": "low",
+      "risk": "low",
+      "color": "#6B7280",
+      "ldlTarget": "< 160 mg/dL",
+      "recommendation": {
+        "zh-TW": "低風險：生活方式調整，LDL-C 目標 < 160 mg/dL",
+        "en": "Low risk: Lifestyle modification, LDL-C target < 160 mg/dL",
+        "ja": "低リスク：生活習慣改善、LDL-C目標 < 160 mg/dL"
+      }
+    }
+  ]
+}

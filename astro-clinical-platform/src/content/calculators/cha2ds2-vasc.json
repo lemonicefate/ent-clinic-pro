@@ -1,0 +1,387 @@
+{
+  "id": "cha2ds2-vasc",
+  "name": {
+    "zh-TW": "CHA₂DS₂-VASc 評分",
+    "en": "CHA₂DS₂-VASc Score",
+    "ja": "CHA₂DS₂-VASc スコア"
+  },
+  "description": {
+    "zh-TW": "評估心房顫動患者中風風險的標準化計算工具，協助臨床醫師決定抗凝血治療策略。",
+    "en": "Standardized risk assessment tool for stroke in atrial fibrillation patients to guide anticoagulation therapy decisions.",
+    "ja": "心房細動患者の脳卒中リスクを評価し、抗凝固療法の決定を支援する標準化ツール。"
+  },
+  "category": "cardiology",
+  "fields": [
+    {
+      "id": "chf",
+      "type": "select",
+      "label": {
+        "zh-TW": "充血性心衰竭 (CHF)",
+        "en": "Congestive Heart Failure (CHF)",
+        "ja": "うっ血性心不全 (CHF)"
+      },
+      "helpText": {
+        "zh-TW": "包括左心室收縮功能不全或心衰竭病史",
+        "en": "Including LV systolic dysfunction or history of heart failure",
+        "ja": "左室収縮機能不全または心不全の既往を含む"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true,
+        "errorMessage": {
+          "zh-TW": "請選擇是否有充血性心衰竭",
+          "en": "Please select CHF status",
+          "ja": "心不全の有無を選択してください"
+        }
+      }
+    },
+    {
+      "id": "hypertension",
+      "type": "select",
+      "label": {
+        "zh-TW": "高血壓 (Hypertension)",
+        "en": "Hypertension",
+        "ja": "高血圧"
+      },
+      "helpText": {
+        "zh-TW": "收縮壓 ≥140 mmHg 或舒張壓 ≥90 mmHg，或正在使用降血壓藥物",
+        "en": "SBP ≥140 mmHg or DBP ≥90 mmHg, or on antihypertensive medication",
+        "ja": "収縮期血圧 ≥140 mmHg または拡張期血圧 ≥90 mmHg、または降圧薬使用中"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "age",
+      "type": "select",
+      "label": {
+        "zh-TW": "年齡 (Age)",
+        "en": "Age",
+        "ja": "年齢"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "< 65歲",
+            "en": "< 65 years",
+            "ja": "< 65歳"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "65-74歲",
+            "en": "65-74 years",
+            "ja": "65-74歳"
+          }
+        },
+        {
+          "value": 2,
+          "label": {
+            "zh-TW": "≥ 75歲",
+            "en": "≥ 75 years",
+            "ja": "≥ 75歳"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "diabetes",
+      "type": "select",
+      "label": {
+        "zh-TW": "糖尿病 (Diabetes)",
+        "en": "Diabetes Mellitus",
+        "ja": "糖尿病"
+      },
+      "helpText": {
+        "zh-TW": "空腹血糖 ≥126 mg/dL 或 HbA1c ≥6.5% 或正在使用降血糖藥物",
+        "en": "Fasting glucose ≥126 mg/dL or HbA1c ≥6.5% or on antidiabetic medication",
+        "ja": "空腹時血糖 ≥126 mg/dL または HbA1c ≥6.5% または糖尿病薬使用中"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "stroke",
+      "type": "select",
+      "label": {
+        "zh-TW": "中風/TIA/血栓栓塞病史",
+        "en": "Stroke/TIA/Thromboembolism History",
+        "ja": "脳卒中/TIA/血栓塞栓症の既往"
+      },
+      "helpText": {
+        "zh-TW": "包括缺血性中風、暫時性腦缺血發作或全身性栓塞",
+        "en": "Including ischemic stroke, TIA, or systemic embolism",
+        "ja": "虚血性脳卒中、TIA、または全身性塞栓症を含む"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 2,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "vascular",
+      "type": "select",
+      "label": {
+        "zh-TW": "血管疾病 (Vascular Disease)",
+        "en": "Vascular Disease",
+        "ja": "血管疾患"
+      },
+      "helpText": {
+        "zh-TW": "包括心肌梗塞、周邊動脈疾病或主動脈斑塊",
+        "en": "Including MI, peripheral artery disease, or aortic plaque",
+        "ja": "心筋梗塞、末梢動脈疾患、または大動脈プラークを含む"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "無",
+            "en": "No",
+            "ja": "なし"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "有",
+            "en": "Yes",
+            "ja": "あり"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "gender",
+      "type": "select",
+      "label": {
+        "zh-TW": "性別 (Sex Category)",
+        "en": "Sex Category",
+        "ja": "性別"
+      },
+      "helpText": {
+        "zh-TW": "女性患者額外增加 1 分",
+        "en": "Female sex adds 1 point",
+        "ja": "女性は1点追加"
+      },
+      "options": [
+        {
+          "value": 0,
+          "label": {
+            "zh-TW": "男性",
+            "en": "Male",
+            "ja": "男性"
+          }
+        },
+        {
+          "value": 1,
+          "label": {
+            "zh-TW": "女性",
+            "en": "Female",
+            "ja": "女性"
+          }
+        }
+      ],
+      "validation": {
+        "required": true
+      }
+    }
+  ],
+  "calculationFunction": "calculateCHADSVASC",
+  "validationRules": {
+    "maxScore": 9,
+    "minScore": 0,
+    "requiredFields": ["chf", "hypertension", "age", "diabetes", "stroke", "vascular", "gender"]
+  },
+  "interpretation": [
+    {
+      "range": [0, 0],
+      "risk": "low",
+      "recommendation": {
+        "zh-TW": "低風險：可考慮不使用抗凝血劑，或根據個別情況評估",
+        "en": "Low risk: May consider no anticoagulation or individual assessment",
+        "ja": "低リスク：抗凝固薬なしを検討、または個別評価"
+      },
+      "color": "#22c55e",
+      "icon": "check-circle",
+      "actionItems": [
+        {
+          "zh-TW": "定期追蹤心房顫動狀況",
+          "en": "Regular AF monitoring",
+          "ja": "心房細動の定期モニタリング"
+        },
+        {
+          "zh-TW": "評估出血風險",
+          "en": "Assess bleeding risk",
+          "ja": "出血リスクの評価"
+        }
+      ]
+    },
+    {
+      "range": [1, 1],
+      "risk": "moderate",
+      "recommendation": {
+        "zh-TW": "中等風險：可考慮使用抗凝血劑，需評估出血風險",
+        "en": "Moderate risk: May consider anticoagulation, assess bleeding risk",
+        "ja": "中等度リスク：抗凝固薬を検討、出血リスクを評価"
+      },
+      "color": "#f59e0b",
+      "icon": "exclamation-triangle",
+      "actionItems": [
+        {
+          "zh-TW": "使用 HAS-BLED 評估出血風險",
+          "en": "Use HAS-BLED to assess bleeding risk",
+          "ja": "HAS-BLEDで出血リスクを評価"
+        },
+        {
+          "zh-TW": "與患者討論治療選項",
+          "en": "Discuss treatment options with patient",
+          "ja": "患者と治療選択肢を相談"
+        }
+      ]
+    },
+    {
+      "range": [2, 9],
+      "risk": "high",
+      "recommendation": {
+        "zh-TW": "高風險：強烈建議使用抗凝血劑，除非有禁忌症",
+        "en": "High risk: Anticoagulation strongly recommended unless contraindicated",
+        "ja": "高リスク：禁忌がない限り抗凝固薬を強く推奨"
+      },
+      "color": "#ef4444",
+      "icon": "exclamation",
+      "actionItems": [
+        {
+          "zh-TW": "開始口服抗凝血劑 (DOAC 或 Warfarin)",
+          "en": "Start oral anticoagulation (DOAC or Warfarin)",
+          "ja": "経口抗凝固薬を開始 (DOAC または Warfarin)"
+        },
+        {
+          "zh-TW": "定期監測抗凝血效果",
+          "en": "Regular monitoring of anticoagulation",
+          "ja": "抗凝固効果の定期モニタリング"
+        }
+      ]
+    }
+  ],
+  "clinicalGuidelines": {
+    "zh-TW": "根據 2020 年歐洲心臟病學會心房顫動指引，CHA₂DS₂-VASc 評分是評估非瓣膜性心房顫動患者中風風險的標準工具。評分 ≥2 分建議使用抗凝血劑，評分 1 分可考慮使用，評分 0 分通常不需要。",
+    "en": "According to 2020 ESC Guidelines for atrial fibrillation, CHA₂DS₂-VASc score is the standard tool for stroke risk assessment in non-valvular AF patients. Score ≥2 recommends anticoagulation, score 1 may consider, score 0 usually no need.",
+    "ja": "2020年ESC心房細動ガイドラインによると、CHA₂DS₂-VASc スコアは非弁膜症性心房細動患者の脳卒中リスク評価の標準ツールです。スコア≥2で抗凝固薬推奨、スコア1で検討可能、スコア0で通常不要。"
+  },
+  "evidenceLevel": "A",
+  "references": [
+    {
+      "title": "2020 ESC Guidelines for the diagnosis and management of atrial fibrillation",
+      "authors": ["Hindricks G", "Potpara T", "Dagres N"],
+      "journal": "European Heart Journal",
+      "year": 2021,
+      "url": "https://academic.oup.com/eurheartj/article/42/5/373/6007050",
+      "doi": "10.1093/eurheartj/ehaa612"
+    },
+    {
+      "title": "Refining clinical risk stratification for predicting stroke and thromboembolism in atrial fibrillation",
+      "authors": ["Lip GY", "Nieuwlaat R", "Pisters R"],
+      "journal": "Chest",
+      "year": 2010,
+      "doi": "10.1378/chest.09-1584",
+      "pmid": "19762550"
+    }
+  ],
+  "tags": ["atrial fibrillation", "stroke risk", "anticoagulation", "cardiology", "risk assessment"],
+  "medicalSpecialties": ["cardiology"],
+  "difficulty": "basic",
+  "isActive": true,
+  "isFeatured": true,
+  "lastUpdated": "2024-01-15T00:00:00.000Z",
+  "seoTitle": {
+    "zh-TW": "CHA₂DS₂-VASc 評分計算機 - 心房顫動中風風險評估工具",
+    "en": "CHA₂DS₂-VASc Score Calculator - Atrial Fibrillation Stroke Risk Assessment",
+    "ja": "CHA₂DS₂-VASc スコア計算機 - 心房細動脳卒中リスク評価ツール"
+  },
+  "seoDescription": {
+    "zh-TW": "使用標準化的 CHA₂DS₂-VASc 評分工具評估心房顫動患者的中風風險，協助臨床醫師制定最適當的抗凝血治療策略。",
+    "en": "Use the standardized CHA₂DS₂-VASc score tool to assess stroke risk in atrial fibrillation patients and guide optimal anticoagulation therapy decisions.",
+    "ja": "標準化されたCHA₂DS₂-VASc スコアツールを使用して心房細動患者の脳卒中リスクを評価し、最適な抗凝固療法の決定を支援します。"
+  },
+  "keywords": ["CHA2DS2-VASc", "心房顫動", "中風風險", "抗凝血", "atrial fibrillation", "stroke risk", "anticoagulation"]
+}

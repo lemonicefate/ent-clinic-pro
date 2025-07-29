@@ -1,0 +1,966 @@
+[
+  {
+    "id": "colonoscopy-screening",
+    "name": {
+      "en": "Colonoscopy Screening",
+      "zh": "大腸鏡檢查",
+      "ja": "大腸内視鏡検査"
+    },
+    "category": "diagnostic",
+    "specialty": "gastroenterology",
+    "description": {
+      "en": "A diagnostic procedure to examine the large intestine (colon) using a flexible tube with a camera",
+      "zh": "使用帶有攝像頭的柔性管檢查大腸的診斷程序",
+      "ja": "カメラ付きの柔軟なチューブを使用して大腸を検査する診断手順"
+    },
+    "purpose": {
+      "en": "Screen for colorectal cancer, detect polyps, and diagnose bowel conditions",
+      "zh": "篩查結直腸癌、檢測息肉並診斷腸道疾病",
+      "ja": "大腸がんのスクリーニング、ポリープの検出、腸疾患の診断"
+    },
+    "duration": {
+      "typical": 30,
+      "range": {
+        "min": 20,
+        "max": 60
+      }
+    },
+    "preparation": {
+      "beforeProcedure": {
+        "en": [
+          "Follow clear liquid diet 24 hours before procedure",
+          "Take prescribed bowel preparation medication",
+          "Arrange transportation home",
+          "Remove jewelry and contact lenses"
+        ],
+        "zh": [
+          "檢查前24小時遵循清流質飲食",
+          "服用處方腸道準備藥物",
+          "安排回家交通",
+          "摘除首飾和隱形眼鏡"
+        ],
+        "ja": [
+          "検査24時間前から透明な液体食を摂取",
+          "処方された腸管洗浄薬を服用",
+          "帰宅の交通手段を手配",
+          "アクセサリーとコンタクトレンズを外す"
+        ]
+      },
+      "medications": {
+        "en": [
+          "Stop blood thinners 5-7 days before (consult doctor)",
+          "Continue essential medications with small sips of water",
+          "Avoid iron supplements for 1 week"
+        ],
+        "zh": [
+          "檢查前5-7天停止服用血液稀釋劑（諮詢醫生）",
+          "用少量水繼續服用必需藥物",
+          "1週內避免鐵補充劑"
+        ],
+        "ja": [
+          "5-7日前に血液希釈薬を中止（医師に相談）",
+          "少量の水で必要な薬を継続",
+          "1週間鉄サプリメントを避ける"
+        ]
+      },
+      "fasting": {
+        "required": true,
+        "duration": 8,
+        "description": {
+          "en": "No solid food 8 hours before procedure, clear liquids until 2 hours before",
+          "zh": "檢查前8小時禁食固體食物，檢查前2小時前可飲用透明液體",
+          "ja": "検査8時間前から固形物摂取禁止、2時間前まで透明な液体可"
+        }
+      }
+    },
+    "procedure": {
+      "steps": [
+        {
+          "step": 1,
+          "title": {
+            "en": "Patient positioning and sedation",
+            "zh": "患者定位和鎮靜",
+            "ja": "患者の体位と鎮静"
+          },
+          "description": {
+            "en": "Patient lies on left side, IV sedation administered for comfort",
+            "zh": "患者左側臥位，靜脈注射鎮靜劑以提供舒適感",
+            "ja": "患者は左側臥位、快適性のためIV鎮静薬を投与"
+          },
+          "duration": 5
+        },
+        {
+          "step": 2,
+          "title": {
+            "en": "Colonoscope insertion",
+            "zh": "結腸鏡插入",
+            "ja": "大腸内視鏡の挿入"
+          },
+          "description": {
+            "en": "Flexible colonoscope is gently inserted through the rectum into the colon",
+            "zh": "柔性結腸鏡通過直腸輕柔地插入結腸",
+            "ja": "柔軟な大腸内視鏡を直腸から大腸に優しく挿入"
+          },
+          "duration": 10
+        },
+        {
+          "step": 3,
+          "title": {
+            "en": "Colon examination",
+            "zh": "結腸檢查",
+            "ja": "大腸の検査"
+          },
+          "description": {
+            "en": "Doctor examines colon walls for abnormalities, polyps, or signs of disease",
+            "zh": "醫生檢查結腸壁是否有異常、息肉或疾病跡象",
+            "ja": "医師が大腸壁の異常、ポリープ、疾患の兆候を検査"
+          },
+          "duration": 15
+        },
+        {
+          "step": 4,
+          "title": {
+            "en": "Biopsy or polyp removal (if needed)",
+            "zh": "活檢或息肉切除（如需要）",
+            "ja": "生検またはポリープ除去（必要に応じて）"
+          },
+          "description": {
+            "en": "Tissue samples taken or polyps removed using specialized instruments",
+            "zh": "使用專用器械採集組織樣本或切除息肉",
+            "ja": "専用器具を使用して組織サンプルを採取またはポリープを除去"
+          },
+          "duration": 10
+        }
+      ],
+      "anesthesia": {
+        "type": "sedation",
+        "description": {
+          "en": "Conscious sedation with midazolam and fentanyl for patient comfort",
+          "zh": "使用咪達唑侖和芬太尼進行意識鎮靜以提供患者舒適感",
+          "ja": "患者の快適性のためミダゾラムとフェンタニルによる意識下鎮静"
+        }
+      },
+      "equipment": {
+        "en": [
+          "Flexible colonoscope with camera",
+          "Biopsy forceps",
+          "Polypectomy snare",
+          "CO2 insufflation system",
+          "Monitoring equipment"
+        ],
+        "zh": [
+          "帶攝像頭的柔性結腸鏡",
+          "活檢鉗",
+          "息肉切除圈套器",
+          "二氧化碳充氣系統",
+          "監護設備"
+        ],
+        "ja": [
+          "カメラ付き柔軟大腸内視鏡",
+          "生検鉗子",
+          "ポリペクトミースネア",
+          "CO2送気システム",
+          "モニタリング機器"
+        ]
+      }
+    },
+    "risks": {
+      "common": [
+        {
+          "risk": {
+            "en": "Mild abdominal discomfort",
+            "zh": "輕度腹部不適",
+            "ja": "軽度の腹部不快感"
+          },
+          "probability": "high",
+          "severity": "mild",
+          "description": {
+            "en": "Temporary bloating and cramping from air insufflation",
+            "zh": "由於充氣導致的暫時性腹脹和痙攣",
+            "ja": "送気による一時的な腹部膨満と痙攣"
+          }
+        },
+        {
+          "risk": {
+            "en": "Drowsiness from sedation",
+            "zh": "鎮靜引起的嗜睡",
+            "ja": "鎮静による眠気"
+          },
+          "probability": "high",
+          "severity": "mild",
+          "description": {
+            "en": "Temporary drowsiness lasting 2-4 hours after procedure",
+            "zh": "檢查後持續2-4小時的暫時性嗜睡",
+            "ja": "検査後2-4時間続く一時的な眠気"
+          }
+        }
+      ],
+      "serious": [
+        {
+          "risk": {
+            "en": "Perforation",
+            "zh": "穿孔",
+            "ja": "穿孔"
+          },
+          "probability": "low",
+          "severity": "severe",
+          "description": {
+            "en": "Rare tear in colon wall requiring surgical repair (1 in 1000 cases)",
+            "zh": "罕見的結腸壁撕裂需要手術修復（1000例中1例）",
+            "ja": "外科修復が必要な稀な大腸壁の裂傷（1000例中1例）"
+          }
+        },
+        {
+          "risk": {
+            "en": "Bleeding",
+            "zh": "出血",
+            "ja": "出血"
+          },
+          "probability": "low",
+          "severity": "moderate",
+          "description": {
+            "en": "Bleeding after polyp removal, usually stops on its own",
+            "zh": "息肉切除後出血，通常會自行停止",
+            "ja": "ポリープ除去後の出血、通常は自然に止血"
+          }
+        }
+      ]
+    },
+    "benefits": {
+      "en": [
+        "Early detection of colorectal cancer",
+        "Prevention through polyp removal",
+        "Accurate diagnosis of bowel conditions",
+        "Peace of mind with normal results"
+      ],
+      "zh": [
+        "早期發現結直腸癌",
+        "通過息肉切除進行預防",
+        "準確診斷腸道疾病",
+        "正常結果帶來安心"
+      ],
+      "ja": [
+        "大腸がんの早期発見",
+        "ポリープ除去による予防",
+        "腸疾患の正確な診断",
+        "正常結果による安心感"
+      ]
+    },
+    "alternatives": [
+      {
+        "procedure": {
+          "en": "CT Colonography (Virtual Colonoscopy)",
+          "zh": "CT結腸造影（虛擬結腸鏡）",
+          "ja": "CT大腸造影（バーチャル大腸内視鏡）"
+        },
+        "description": {
+          "en": "Non-invasive CT scan of the colon",
+          "zh": "結腸的非侵入性CT掃描",
+          "ja": "大腸の非侵襲的CTスキャン"
+        },
+        "pros": {
+          "en": [
+            "No sedation required",
+            "Lower risk of complications",
+            "Faster procedure"
+          ],
+          "zh": [
+            "無需鎮靜",
+            "併發症風險較低",
+            "檢查時間較短"
+          ],
+          "ja": [
+            "鎮静不要",
+            "合併症リスクが低い",
+            "検査時間が短い"
+          ]
+        },
+        "cons": {
+          "en": [
+            "Cannot remove polyps during procedure",
+            "May miss small lesions",
+            "Requires separate colonoscopy if abnormal"
+          ],
+          "zh": [
+            "檢查過程中無法切除息肉",
+            "可能遺漏小病變",
+            "如有異常需要單獨進行結腸鏡檢查"
+          ],
+          "ja": [
+            "検査中にポリープ除去不可",
+            "小さな病変を見逃す可能性",
+            "異常時は別途大腸内視鏡が必要"
+          ]
+        }
+      }
+    ],
+    "aftercare": {
+      "immediate": {
+        "en": [
+          "Rest in recovery area until sedation wears off",
+          "Have someone drive you home",
+          "Start with light foods and fluids",
+          "Avoid alcohol for 24 hours"
+        ],
+        "zh": [
+          "在恢復區休息直到鎮靜作用消失",
+          "請人開車送您回家",
+          "從清淡食物和液體開始",
+          "24小時內避免飲酒"
+        ],
+        "ja": [
+          "鎮静が覚めるまで回復室で休息",
+          "誰かに車で送ってもらう",
+          "軽い食事と水分から開始",
+          "24時間アルコール摂取を避ける"
+        ]
+      },
+      "recovery": {
+        "timeline": [
+          {
+            "period": "Day 1",
+            "activities": {
+              "en": [
+                "Rest at home",
+                "Light diet",
+                "Avoid driving"
+              ],
+              "zh": [
+                "在家休息",
+                "清淡飲食",
+                "避免開車"
+              ],
+              "ja": [
+                "自宅で休息",
+                "軽い食事",
+                "運転を避ける"
+              ]
+            }
+          },
+          {
+            "period": "Day 2-3",
+            "activities": {
+              "en": [
+                "Resume normal activities",
+                "Normal diet",
+                "Return to work if feeling well"
+              ],
+              "zh": [
+                "恢復正常活動",
+                "正常飲食",
+                "如感覺良好可返回工作"
+              ],
+              "ja": [
+                "通常の活動を再開",
+                "通常の食事",
+                "体調が良ければ仕事復帰"
+              ]
+            }
+          }
+        ],
+        "fullRecovery": {
+          "duration": 1,
+          "description": {
+            "en": "Most patients feel completely normal within 24 hours",
+            "zh": "大多數患者在24小時內感覺完全正常",
+            "ja": "ほとんどの患者は24時間以内に完全に正常に感じる"
+          }
+        }
+      },
+      "followUp": {
+        "required": true,
+        "schedule": {
+          "en": "Results discussion within 1-2 weeks, next screening in 10 years if normal",
+          "zh": "1-2週內討論結果，如正常則10年後進行下次篩查",
+          "ja": "1-2週以内に結果説明、正常であれば10年後に次回スクリーニング"
+        }
+      },
+      "warning_signs": {
+        "en": [
+          "Severe abdominal pain",
+          "Heavy rectal bleeding",
+          "Fever over 101°F (38.3°C)",
+          "Persistent nausea and vomiting",
+          "Signs of dehydration"
+        ],
+        "zh": [
+          "嚴重腹痛",
+          "大量直腸出血",
+          "發燒超過101°F（38.3°C）",
+          "持續噁心和嘔吐",
+          "脫水跡象"
+        ],
+        "ja": [
+          "激しい腹痛",
+          "大量の直腸出血",
+          "101°F（38.3°C）以上の発熱",
+          "持続する吐き気と嘔吐",
+          "脱水の兆候"
+        ]
+      }
+    },
+    "contraindications": {
+      "absolute": {
+        "en": [
+          "Acute diverticulitis",
+          "Suspected bowel perforation",
+          "Severe heart or lung disease",
+          "Pregnancy"
+        ],
+        "zh": [
+          "急性憩室炎",
+          "疑似腸穿孔",
+          "嚴重心肺疾病",
+          "懷孕"
+        ],
+        "ja": [
+          "急性憩室炎",
+          "腸穿孔の疑い",
+          "重篤な心肺疾患",
+          "妊娠"
+        ]
+      },
+      "relative": {
+        "en": [
+          "Recent heart attack",
+          "Severe bleeding disorders",
+          "Large abdominal hernia",
+          "Poor bowel preparation"
+        ],
+        "zh": [
+          "近期心臟病發作",
+          "嚴重出血性疾病",
+          "大型腹疝",
+          "腸道準備不良"
+        ],
+        "ja": [
+          "最近の心筋梗塞",
+          "重篤な出血性疾患",
+          "大きな腹部ヘルニア",
+          "不十分な腸管洗浄"
+        ]
+      }
+    },
+    "cost": {
+      "estimated": {
+        "min": 800,
+        "max": 2000,
+        "currency": "USD"
+      },
+      "factors": {
+        "en": [
+          "Geographic location",
+          "Facility type (hospital vs outpatient)",
+          "Insurance coverage",
+          "Need for polyp removal",
+          "Anesthesia type"
+        ],
+        "zh": [
+          "地理位置",
+          "設施類型（醫院vs門診）",
+          "保險覆蓋",
+          "是否需要息肉切除",
+          "麻醉類型"
+        ],
+        "ja": [
+          "地理的位置",
+          "施設タイプ（病院vs外来）",
+          "保険適用",
+          "ポリープ除去の必要性",
+          "麻酔タイプ"
+        ]
+      }
+    },
+    "cptCode": "45378",
+    "icdCodes": ["Z12.11"],
+    "references": [
+      {
+        "title": "Colorectal Cancer Screening Guidelines",
+        "authors": ["American Cancer Society"],
+        "year": 2023,
+        "url": "https://www.cancer.org/cancer/colon-rectal-cancer/detection-diagnosis-staging/screening-guidelines.html"
+      }
+    ],
+    "lastUpdated": "2024-01-15T00:00:00.000Z",
+    "reviewedBy": "Dr. Sarah Johnson, Gastroenterologist",
+    "images": {
+      "diagram": "/images/procedures/colonoscopy-diagram.jpg",
+      "during": "/images/procedures/colonoscopy-procedure.jpg"
+    }
+  },
+  {
+    "id": "cardiac-catheterization",
+    "name": {
+      "en": "Cardiac Catheterization",
+      "zh": "心導管檢查",
+      "ja": "心臓カテーテル検査"
+    },
+    "category": "diagnostic",
+    "specialty": "cardiology",
+    "description": {
+      "en": "A procedure to examine heart function and blood vessels using a thin, flexible tube (catheter)",
+      "zh": "使用細而柔軟的管子（導管）檢查心臟功能和血管的程序",
+      "ja": "細くて柔軟なチューブ（カテーテル）を使用して心機能と血管を検査する手順"
+    },
+    "purpose": {
+      "en": "Diagnose coronary artery disease, evaluate heart function, and guide treatment decisions",
+      "zh": "診斷冠狀動脈疾病、評估心臟功能並指導治療決策",
+      "ja": "冠動脈疾患の診断、心機能の評価、治療方針の決定"
+    },
+    "duration": {
+      "typical": 60,
+      "range": {
+        "min": 30,
+        "max": 120
+      }
+    },
+    "preparation": {
+      "beforeProcedure": {
+        "en": [
+          "Fast for 6-8 hours before procedure",
+          "Arrange transportation home",
+          "Inform doctor of all medications",
+          "Remove jewelry and dentures"
+        ],
+        "zh": [
+          "檢查前禁食6-8小時",
+          "安排回家交通",
+          "告知醫生所有藥物",
+          "摘除首飾和假牙"
+        ],
+        "ja": [
+          "検査6-8時間前から絶食",
+          "帰宅の交通手段を手配",
+          "すべての薬物を医師に報告",
+          "アクセサリーと義歯を外す"
+        ]
+      },
+      "medications": {
+        "en": [
+          "Continue heart medications unless instructed otherwise",
+          "Stop blood thinners if advised by doctor",
+          "Take prescribed pre-medications"
+        ],
+        "zh": [
+          "除非另有指示，否則繼續服用心臟藥物",
+          "如醫生建議，停止服用血液稀釋劑",
+          "服用處方的預防藥物"
+        ],
+        "ja": [
+          "指示がない限り心臓薬を継続",
+          "医師の指示があれば血液希釈薬を中止",
+          "処方された前投薬を服用"
+        ]
+      },
+      "fasting": {
+        "required": true,
+        "duration": 6,
+        "description": {
+          "en": "No food or drink 6 hours before procedure, except small sips of water with medications",
+          "zh": "檢查前6小時禁食禁水，除了服藥時少量水",
+          "ja": "検査6時間前から飲食禁止、薬服用時の少量の水は可"
+        }
+      }
+    },
+    "procedure": {
+      "steps": [
+        {
+          "step": 1,
+          "title": {
+            "en": "Access site preparation",
+            "zh": "穿刺部位準備",
+            "ja": "穿刺部位の準備"
+          },
+          "description": {
+            "en": "Local anesthesia applied to wrist or groin area, insertion site cleaned and draped",
+            "zh": "在手腕或腹股溝區域施行局部麻醉，清潔並覆蓋插入部位",
+            "ja": "手首または鼠径部に局所麻酔、挿入部位を清拭し覆布"
+          },
+          "duration": 10
+        },
+        {
+          "step": 2,
+          "title": {
+            "en": "Catheter insertion",
+            "zh": "導管插入",
+            "ja": "カテーテル挿入"
+          },
+          "description": {
+            "en": "Thin catheter inserted through artery and guided to the heart using X-ray guidance",
+            "zh": "細導管通過動脈插入，在X射線引導下導向心臟",
+            "ja": "細いカテーテルを動脈から挿入、X線ガイド下で心臓に誘導"
+          },
+          "duration": 15
+        },
+        {
+          "step": 3,
+          "title": {
+            "en": "Contrast injection and imaging",
+            "zh": "造影劑注射和成像",
+            "ja": "造影剤注入と撮影"
+          },
+          "description": {
+            "en": "Contrast dye injected to visualize coronary arteries and heart chambers",
+            "zh": "注射造影劑以顯示冠狀動脈和心腔",
+            "ja": "造影剤を注入して冠動脈と心腔を可視化"
+          },
+          "duration": 20
+        },
+        {
+          "step": 4,
+          "title": {
+            "en": "Assessment and intervention",
+            "zh": "評估和干預",
+            "ja": "評価と介入"
+          },
+          "description": {
+            "en": "Doctor evaluates results and may perform angioplasty or stent placement if needed",
+            "zh": "醫生評估結果，如需要可進行血管成形術或支架置入",
+            "ja": "医師が結果を評価、必要に応じて血管形成術やステント留置"
+          },
+          "duration": 30
+        }
+      ],
+      "anesthesia": {
+        "type": "local",
+        "description": {
+          "en": "Local anesthesia at catheter insertion site, conscious sedation may be used for comfort",
+          "zh": "導管插入部位局部麻醉，可使用意識鎮靜以提供舒適感",
+          "ja": "カテーテル挿入部位の局所麻酔、快適性のため意識下鎮静を使用することも"
+        }
+      },
+      "equipment": {
+        "en": [
+          "Cardiac catheters",
+          "Contrast dye",
+          "X-ray fluoroscopy machine",
+          "Pressure monitoring equipment",
+          "Emergency resuscitation equipment"
+        ],
+        "zh": [
+          "心導管",
+          "造影劑",
+          "X射線透視機",
+          "壓力監測設備",
+          "緊急復甦設備"
+        ],
+        "ja": [
+          "心臓カテーテル",
+          "造影剤",
+          "X線透視装置",
+          "圧力モニタリング機器",
+          "緊急蘇生機器"
+        ]
+      }
+    },
+    "risks": {
+      "common": [
+        {
+          "risk": {
+            "en": "Bruising at insertion site",
+            "zh": "插入部位瘀傷",
+            "ja": "挿入部位の内出血"
+          },
+          "probability": "moderate",
+          "severity": "mild",
+          "description": {
+            "en": "Temporary bruising and tenderness at catheter insertion site",
+            "zh": "導管插入部位暫時性瘀傷和壓痛",
+            "ja": "カテーテル挿入部位の一時的な内出血と圧痛"
+          }
+        }
+      ],
+      "serious": [
+        {
+          "risk": {
+            "en": "Heart attack",
+            "zh": "心臟病發作",
+            "ja": "心筋梗塞"
+          },
+          "probability": "low",
+          "severity": "severe",
+          "description": {
+            "en": "Rare risk of heart attack during or after procedure (less than 1%)",
+            "zh": "檢查期間或之後心臟病發作的罕見風險（少於1%）",
+            "ja": "検査中または検査後の心筋梗塞の稀なリスク（1%未満）"
+          }
+        },
+        {
+          "risk": {
+            "en": "Stroke",
+            "zh": "中風",
+            "ja": "脳卒中"
+          },
+          "probability": "low",
+          "severity": "severe",
+          "description": {
+            "en": "Very rare risk of stroke from blood clot or air bubble",
+            "zh": "血栓或氣泡導致中風的極罕見風險",
+            "ja": "血栓や気泡による脳卒中の極めて稀なリスク"
+          }
+        }
+      ]
+    },
+    "benefits": {
+      "en": [
+        "Accurate diagnosis of coronary artery disease",
+        "Assessment of heart function",
+        "Guide for treatment planning",
+        "Immediate treatment if blockages found"
+      ],
+      "zh": [
+        "準確診斷冠狀動脈疾病",
+        "評估心臟功能",
+        "治療計劃指導",
+        "發現阻塞時立即治療"
+      ],
+      "ja": [
+        "冠動脈疾患の正確な診断",
+        "心機能の評価",
+        "治療計画の指針",
+        "閉塞発見時の即座の治療"
+      ]
+    },
+    "alternatives": [
+      {
+        "procedure": {
+          "en": "CT Coronary Angiography",
+          "zh": "CT冠狀動脈造影",
+          "ja": "CT冠動脈造影"
+        },
+        "description": {
+          "en": "Non-invasive CT scan of coronary arteries",
+          "zh": "冠狀動脈的非侵入性CT掃描",
+          "ja": "冠動脈の非侵襲的CTスキャン"
+        },
+        "pros": {
+          "en": [
+            "Non-invasive",
+            "Lower risk",
+            "Faster procedure"
+          ],
+          "zh": [
+            "非侵入性",
+            "風險較低",
+            "檢查時間較短"
+          ],
+          "ja": [
+            "非侵襲的",
+            "リスクが低い",
+            "検査時間が短い"
+          ]
+        },
+        "cons": {
+          "en": [
+            "Cannot treat blockages during procedure",
+            "Less detailed than catheterization",
+            "Requires contrast dye"
+          ],
+          "zh": [
+            "檢查過程中無法治療阻塞",
+            "不如導管檢查詳細",
+            "需要造影劑"
+          ],
+          "ja": [
+            "検査中に閉塞治療不可",
+            "カテーテル検査ほど詳細でない",
+            "造影剤が必要"
+          ]
+        }
+      }
+    ],
+    "aftercare": {
+      "immediate": {
+        "en": [
+          "Lie flat for 4-6 hours to prevent bleeding",
+          "Keep insertion site dry and clean",
+          "Drink plenty of fluids to flush contrast dye",
+          "Monitor for signs of bleeding or infection"
+        ],
+        "zh": [
+          "平躺4-6小時以防止出血",
+          "保持插入部位乾燥清潔",
+          "多喝水以排出造影劑",
+          "監測出血或感染跡象"
+        ],
+        "ja": [
+          "出血防止のため4-6時間安静臥床",
+          "挿入部位を乾燥清潔に保つ",
+          "造影剤排出のため十分な水分摂取",
+          "出血や感染の兆候を監視"
+        ]
+      },
+      "recovery": {
+        "timeline": [
+          {
+            "period": "Day 1",
+            "activities": {
+              "en": [
+                "Rest at home",
+                "Avoid heavy lifting",
+                "Light walking encouraged"
+              ],
+              "zh": [
+                "在家休息",
+                "避免重物搬運",
+                "鼓勵輕度步行"
+              ],
+              "ja": [
+                "自宅で休息",
+                "重い物の持ち上げを避ける",
+                "軽い歩行を推奨"
+              ]
+            }
+          },
+          {
+            "period": "Week 1",
+            "activities": {
+              "en": [
+                "Gradually resume normal activities",
+                "Avoid strenuous exercise",
+                "Follow medication regimen"
+              ],
+              "zh": [
+                "逐漸恢復正常活動",
+                "避免劇烈運動",
+                "遵循藥物治療方案"
+              ],
+              "ja": [
+                "徐々に通常の活動を再開",
+                "激しい運動を避ける",
+                "薬物療法に従う"
+              ]
+            }
+          }
+        ],
+        "fullRecovery": {
+          "duration": 7,
+          "description": {
+            "en": "Most patients return to normal activities within a week",
+            "zh": "大多數患者在一週內恢復正常活動",
+            "ja": "ほとんどの患者は1週間以内に通常の活動に復帰"
+          }
+        }
+      },
+      "followUp": {
+        "required": true,
+        "schedule": {
+          "en": "Follow-up appointment in 1-2 weeks to discuss results and treatment plan",
+          "zh": "1-2週內複診討論結果和治療計劃",
+          "ja": "1-2週後に結果と治療計画について外来受診"
+        }
+      },
+      "warning_signs": {
+        "en": [
+          "Bleeding from insertion site",
+          "Chest pain or shortness of breath",
+          "Numbness or coldness in arm/leg",
+          "Signs of infection at insertion site",
+          "Severe headache or vision changes"
+        ],
+        "zh": [
+          "插入部位出血",
+          "胸痛或呼吸困難",
+          "手臂/腿部麻木或發冷",
+          "插入部位感染跡象",
+          "嚴重頭痛或視力變化"
+        ],
+        "ja": [
+          "挿入部位からの出血",
+          "胸痛または呼吸困難",
+          "腕/脚のしびれや冷感",
+          "挿入部位の感染兆候",
+          "激しい頭痛や視力変化"
+        ]
+      }
+    },
+    "contraindications": {
+      "absolute": {
+        "en": [
+          "Active bleeding",
+          "Severe kidney disease",
+          "Severe contrast allergy",
+          "Unstable angina"
+        ],
+        "zh": [
+          "活動性出血",
+          "嚴重腎病",
+          "嚴重造影劑過敏",
+          "不穩定心絞痛"
+        ],
+        "ja": [
+          "活動性出血",
+          "重篤な腎疾患",
+          "重篤な造影剤アレルギー",
+          "不安定狭心症"
+        ]
+      },
+      "relative": {
+        "en": [
+          "Mild kidney impairment",
+          "Diabetes",
+          "Previous contrast reaction",
+          "Severe hypertension"
+        ],
+        "zh": [
+          "輕度腎功能不全",
+          "糖尿病",
+          "既往造影劑反應",
+          "嚴重高血壓"
+        ],
+        "ja": [
+          "軽度腎機能障害",
+          "糖尿病",
+          "造影剤反応の既往",
+          "重篤な高血圧"
+        ]
+      }
+    },
+    "cost": {
+      "estimated": {
+        "min": 3000,
+        "max": 8000,
+        "currency": "USD"
+      },
+      "factors": {
+        "en": [
+          "Hospital vs outpatient facility",
+          "Geographic location",
+          "Insurance coverage",
+          "Need for intervention",
+          "Complications"
+        ],
+        "zh": [
+          "醫院vs門診設施",
+          "地理位置",
+          "保險覆蓋",
+          "是否需要干預",
+          "併發症"
+        ],
+        "ja": [
+          "病院vs外来施設",
+          "地理的位置",
+          "保険適用",
+          "介入の必要性",
+          "合併症"
+        ]
+      }
+    },
+    "cptCode": "93458",
+    "icdCodes": ["Z01.810"],
+    "references": [
+      {
+        "title": "ACC/AHA Guidelines for Cardiac Catheterization",
+        "authors": ["American College of Cardiology", "American Heart Association"],
+        "year": 2023,
+        "url": "https://www.acc.org/guidelines"
+      }
+    ],
+    "lastUpdated": "2024-01-15T00:00:00.000Z",
+    "reviewedBy": "Dr. Michael Chen, Interventional Cardiologist",
+    "images": {
+      "diagram": "/images/procedures/cardiac-cath-diagram.jpg",
+      "during": "/images/procedures/cardiac-cath-procedure.jpg"
+    }
+  }
+]

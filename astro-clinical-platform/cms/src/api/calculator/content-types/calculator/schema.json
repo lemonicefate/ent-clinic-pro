@@ -1,0 +1,142 @@
+{
+  "kind": "collectionType",
+  "collectionName": "calculators",
+  "info": {
+    "singularName": "calculator",
+    "pluralName": "calculators",
+    "displayName": "Medical Calculator",
+    "description": "Medical calculation tools for clinical decision making"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "cardiology",
+        "neurology",
+        "orthopedics",
+        "general",
+        "emergency",
+        "pediatrics",
+        "surgery",
+        "endocrinology",
+        "nephrology",
+        "pulmonology"
+      ],
+      "required": true
+    },
+    "fields": {
+      "type": "json",
+      "required": true
+    },
+    "calculationFunction": {
+      "type": "string",
+      "required": true
+    },
+    "interpretation": {
+      "type": "json",
+      "required": true
+    },
+    "references": {
+      "type": "json"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "difficulty": {
+      "type": "enumeration",
+      "enum": [
+        "basic",
+        "intermediate",
+        "advanced"
+      ],
+      "default": "basic"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "medicalSpecialty": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::medical-specialty.medical-specialty",
+      "mappedBy": "calculators"
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "featuredImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "usageCount": {
+      "type": "integer",
+      "default": 0
+    },
+    "lastUpdated": {
+      "type": "datetime",
+      "default": "2024-01-01T00:00:00.000Z"
+    },
+    "clinicalGuidelines": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "validationRules": {
+      "type": "json"
+    },
+    "seoTitle": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seoDescription": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

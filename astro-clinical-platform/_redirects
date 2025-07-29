@@ -1,0 +1,46 @@
+# Cloudflare Pages 重定向規則
+
+# 確保 trailing slash 一致性
+/tools /tools/ 301
+/education /education/ 301
+/about /about/ 301
+
+# 舊版 URL 重定向（如果有的話）
+/calculators/* /tools/:splat 301
+/patient-education/* /education/:splat 301
+
+# 語言重定向
+/zh/* /zh-TW/:splat 301
+/chinese/* /zh-TW/:splat 301
+
+# 醫療工具的友善 URL
+/cha2ds2vasc /tools/cha2ds2-vasc 301
+/chads-vasc /tools/cha2ds2-vasc 301
+/stroke-risk /tools/cha2ds2-vasc 301
+
+# 404 頁面
+/* /404.html 404
+
+# SPA 回退（如果需要客戶端路由）
+/admin/* /admin/index.html 200
+
+# 網站地圖重定向
+/sitemap /sitemap-index.xml 301
+
+# RSS 重定向（如果有的話）
+/rss /feed.xml 301
+/feed /feed.xml 301
+
+# 健康檢查端點
+/health /api/health 200
+/status /api/health 200
+
+# 舊版 API 重定向
+/v1/api/* /api/:splat 301
+
+# 強制 HTTPS（Cloudflare 會自動處理，但保留作為備份）
+http://astro-clinical-platform.com/* https://astro-clinical-platform.com/:splat 301!
+http://www.astro-clinical-platform.com/* https://www.astro-clinical-platform.com/:splat 301!
+
+# WWW 重定向（根據需要選擇）
+https://www.astro-clinical-platform.com/* https://astro-clinical-platform.com/:splat 301!

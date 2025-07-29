@@ -1,0 +1,98 @@
+[
+  {
+    "name": {
+      "zh-TW": "心臟科",
+      "en": "Cardiology",
+      "ja": "循環器科"
+    },
+    "slug": "cardiology",
+    "description": {
+      "zh-TW": "心血管疾病的診斷和治療",
+      "en": "Diagnosis and treatment of cardiovascular diseases",
+      "ja": "心血管疾患の診断と治療"
+    },
+    "color": "#e74c3c",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "name": {
+      "zh-TW": "神經科",
+      "en": "Neurology",
+      "ja": "神経科"
+    },
+    "slug": "neurology",
+    "description": {
+      "zh-TW": "神經系統疾病的診斷和治療",
+      "en": "Diagnosis and treatment of nervous system disorders",
+      "ja": "神経系疾患の診断と治療"
+    },
+    "color": "#9b59b6",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "name": {
+      "zh-TW": "骨科",
+      "en": "Orthopedics",
+      "ja": "整形外科"
+    },
+    "slug": "orthopedics",
+    "description": {
+      "zh-TW": "骨骼、關節和肌肉系統的診斷和治療",
+      "en": "Diagnosis and treatment of musculoskeletal system",
+      "ja": "筋骨格系の診断と治療"
+    },
+    "color": "#f39c12",
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "name": {
+      "zh-TW": "急診醫學",
+      "en": "Emergency Medicine",
+      "ja": "救急医学"
+    },
+    "slug": "emergency",
+    "description": {
+      "zh-TW": "急診和緊急醫療照護",
+      "en": "Emergency and urgent medical care",
+      "ja": "救急および緊急医療"
+    },
+    "color": "#e67e22",
+    "isActive": true,
+    "sortOrder": 4
+  },
+  {
+    "name": {
+      "zh-TW": "小兒科",
+      "en": "Pediatrics",
+      "ja": "小児科"
+    },
+    "slug": "pediatrics",
+    "description": {
+      "zh-TW": "兒童和青少年的醫療照護",
+      "en": "Medical care for children and adolescents",
+      "ja": "小児および青少年の医療"
+    },
+    "color": "#3498db",
+    "isActive": true,
+    "sortOrder": 5
+  },
+  {
+    "name": {
+      "zh-TW": "一般醫學",
+      "en": "General Medicine",
+      "ja": "一般内科"
+    },
+    "slug": "general",
+    "description": {
+      "zh-TW": "一般內科和家庭醫學",
+      "en": "General internal medicine and family practice",
+      "ja": "一般内科および家庭医学"
+    },
+    "color": "#27ae60",
+    "isActive": true,
+    "sortOrder": 6
+  }
+]

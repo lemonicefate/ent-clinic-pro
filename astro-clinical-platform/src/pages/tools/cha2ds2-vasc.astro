@@ -1,0 +1,282 @@
+---
+/**
+ * CHA₂DS₂-VASc 評分計算機頁面
+ * 心房顫動中風風險評估工具 - 使用新的插件系統
+ */
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+import type { SupportedLocale } from '../../types/calculator.js';
+
+const locale: SupportedLocale = 'zh-TW';
+
+// Static plugin metadata
+const pluginMetadata = {
+  id: 'cha2ds2-vasc',
+  namespace: 'cardiology',
+  version: '1.0.0',
+  name: {
+    'zh-TW': 'CHA₂DS₂-VASc 評分',
+    'en': 'CHA₂DS₂-VASc Score',
+    'ja': 'CHA₂DS₂-VAScスコア'
+  },
+  description: {
+    'zh-TW': '評估心房顫動患者中風風險的臨床評分工具',
+    'en': 'Clinical scoring tool for assessing stroke risk in atrial fibrillation patients',
+    'ja': '心房細動患者の脳卒中リスクを評価する臨床スコアリングツール'
+  },
+  tags: ['cardiology', 'stroke-risk', 'atrial-fibrillation', 'anticoagulation']
+};
+
+const breadcrumbs = [
+  { label: '首頁', href: '/' },
+  { label: '醫療工具', href: '/tools' },
+  { label: pluginMetadata.name[locale] || pluginMetadata.name['zh-TW'] || 'CHA₂DS₂-VASc Score' }
+];
+---
+
+<BaseLayout 
+  title={`${pluginMetadata.name[locale] || pluginMetadata.name['zh-TW']} | Astro Clinical Platform`}
+  description={pluginMetadata.description[locale] || pluginMetadata.description['zh-TW']}
+  locale={locale}
+  medicalContent={true}
+  pageType="calculator"
+  breadcrumbs={breadcrumbs}
+>
+  <main class="container mx-auto px-4 py-8">
+    <!-- 計算機標題和描述 -->
+    <div class="mb-8">
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+          <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            {pluginMetadata.name[locale] || pluginMetadata.name['zh-TW']}
+          </h1>
+          <div class="flex items-center space-x-4 mt-2">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              {pluginMetadata.namespace}
+            </span>
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+              中級
+            </span>
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              v{pluginMetadata.version}
+            </span>
+            {pluginMetadata.tags && pluginMetadata.tags.length > 0 && (
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                {pluginMetadata.tags.slice(0, 2).join(', ')}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <p class="text-lg text-gray-600 leading-relaxed">
+        {pluginMetadata.description[locale] || pluginMetadata.description['zh-TW']}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- 計算機主體 - 使用新的插件系統 -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <PluginCalculator 
+            client:load
+            transition:persist="cha2ds2-vasc-calculator"
+            pluginId="cardiology.cha2ds2-vasc"
+            locale={locale}
+            theme="light"
+            accessibility={{
+              highContrast: false,
+              largeText: false,
+              screenReader: false
+            }}
+            className="cha2ds2-vasc-calculator"
+          />
+        </div>
+      </div>
+
+      <!-- 側邊欄資訊 -->
+      <div class="space-y-6">
+        <!-- 評分解釋 -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            評分解釋
+          </h2>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-green-50 border-l-3 border-green-500">
+              <span class="text-sm font-medium text-green-800">0 分 (男性)</span>
+              <span class="text-sm text-green-600">低風險</span>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-yellow-50 border-l-3 border-yellow-500">
+              <span class="text-sm font-medium text-yellow-800">1 分</span>
+              <span class="text-sm text-yellow-600">低中等風險</span>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-red-50 border-l-3 border-red-500">
+              <span class="text-sm font-medium text-red-800">≥ 2 分</span>
+              <span class="text-sm text-red-600">高風險</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 評分項目 -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            評分項目
+          </h2>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-700">充血性心衰竭</span>
+              <span class="font-medium">1 分</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">高血壓</span>
+              <span class="font-medium">1 分</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">年齡 ≥ 75 歲</span>
+              <span class="font-medium">2 分</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">糖尿病</span>
+              <span class="font-medium">1 分</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">中風/TIA/血栓病史</span>
+              <span class="font-medium">2 分</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">血管疾病</span>
+              <span class="font-medium">1 分</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">年齡 65-74 歲</span>
+              <span class="font-medium">1 分</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">女性</span>
+              <span class="font-medium">1 分</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 重要提醒 -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <h2 class="text-lg font-semibold text-yellow-800 mb-3 flex items-center">
+            <svg class="h-5 w-5 text-yellow-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            重要提醒
+          </h2>
+          <ul class="text-sm text-yellow-700 space-y-2">
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-yellow-600 rounded-full mt-2 mr-3"></span>
+              本計算結果僅供臨床參考，不能取代專業醫師的判斷
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-yellow-600 rounded-full mt-2 mr-3"></span>
+              需同時評估出血風險（如 HAS-BLED 評分）
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-yellow-600 rounded-full mt-2 mr-3"></span>
+              治療決策應考慮患者個別情況和偏好
+            </li>
+          </ul>
+        </div>
+
+        <!-- 相關工具 -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            相關工具
+          </h2>
+          <div class="space-y-3">
+            <a href="/tools/has-bled" class="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+              <div class="font-medium text-gray-900 text-sm">HAS-BLED 評分</div>
+              <div class="text-xs text-gray-600 mt-1">評估抗凝血治療出血風險</div>
+            </a>
+            <a href="/tools/bmi" class="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+              <div class="font-medium text-gray-900 text-sm">BMI 計算機</div>
+              <div class="text-xs text-gray-600 mt-1">身體質量指數計算</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 參考文獻 -->
+    <div class="mt-12">
+      <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+          <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          參考文獻
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="border border-gray-200 rounded-lg p-4">
+            <h3 class="font-medium text-gray-900 mb-2 leading-tight">
+              Refining clinical risk stratification for predicting stroke and thromboembolism in atrial fibrillation using a novel risk factor-based approach
+            </h3>
+            <p class="text-sm text-gray-600 mb-2">
+              Lip GY, Nieuwlaat R, Pisters R, Lane DA, Crijns HJ
+            </p>
+            <p class="text-sm text-gray-500 mb-3">
+              <em>Chest</em> (2010)
+            </p>
+          </div>
+          
+          <div class="border border-gray-200 rounded-lg p-4">
+            <h3 class="font-medium text-gray-900 mb-2 leading-tight">
+              2020 ESC Guidelines for the diagnosis and management of atrial fibrillation
+            </h3>
+            <p class="text-sm text-gray-600 mb-2">
+              Hindricks G, Potpara T, Dagres N, et al.
+            </p>
+            <p class="text-sm text-gray-500 mb-3">
+              <em>European Heart Journal</em> (2021)
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  /* 確保計算機在小螢幕上的可用性 */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+  
+  /* 列印樣式 */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    .bg-white {
+      background: white !important;
+    }
+    
+    .border {
+      border: 1px solid #e5e7eb !important;
+    }
+  }
+</style>

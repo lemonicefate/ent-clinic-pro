@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "medical_specialties",
+  "info": {
+    "singularName": "medical-specialty",
+    "pluralName": "medical-specialties",
+    "displayName": "Medical Specialty",
+    "description": "Medical specialties for content categorization"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "color": {
+      "type": "string",
+      "description": "Hex color code for UI theming"
+    },
+    "calculators": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::calculator.calculator",
+      "inversedBy": "medicalSpecialty"
+    },
+    "educationContents": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::education.education",
+      "inversedBy": "medicalSpecialty"
+    },
+    "flowcharts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::flowchart.flowchart",
+      "inversedBy": "medicalSpecialty"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

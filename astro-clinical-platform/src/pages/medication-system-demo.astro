@@ -1,0 +1,255 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MedicationInformationSystem from '../components/islands/MedicationInformationSystem.tsx';
+import medicationsData from '../content/medications/sample-medications.json';
+
+const title = 'Medication Information System Demo';
+const description = 'Interactive medication information system with search, comparison, and detailed drug information';
+
+// Get locale from URL or default to 'en'
+const locale = Astro.url.searchParams.get('lang') || 'en';
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        {locale === 'zh' ? '藥物資訊系統演示' : 
+         locale === 'ja' ? '薬物情報システムデモ' : 
+         'Medication Information System Demo'}
+      </h1>
+      <p class="text-lg text-gray-600 max-w-3xl">
+        {locale === 'zh' ? 
+          '這是一個互動式藥物資訊系統，提供藥物搜尋、比較和詳細資訊功能。醫療專業人員可以快速查找藥物資訊，比較不同藥物，並獲得詳細的用藥指導。' :
+         locale === 'ja' ? 
+          'これは、薬物検索、比較、詳細情報機能を提供するインタラクティブな薬物情報システムです。医療従事者は薬物情報を迅速に検索し、異なる薬物を比較し、詳細な投薬ガイダンスを得ることができます。' :
+          'This is an interactive medication information system that provides drug search, comparison, and detailed information features. Healthcare professionals can quickly find medication information, compare different drugs, and get detailed prescribing guidance.'}
+      </p>
+    </div>
+
+    <div class="mb-8">
+      <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-blue-700">
+              {locale === 'zh' ? 
+                '注意：此為演示系統，僅供教育和展示用途。實際臨床使用前請諮詢醫療專業人員。' :
+               locale === 'ja' ? 
+                '注意：これはデモシステムであり、教育および展示目的のみです。実際の臨床使用前に医療従事者にご相談ください。' :
+                'Note: This is a demonstration system for educational and showcase purposes only. Please consult healthcare professionals before actual clinical use.'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+        {locale === 'zh' ? '功能特色' : 
+         locale === 'ja' ? '機能の特徴' : 
+         'Key Features'}
+      </h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">
+            {locale === 'zh' ? '智能搜尋' : 
+             locale === 'ja' ? 'スマート検索' : 
+             'Smart Search'}
+          </h3>
+          <p class="text-gray-600 text-sm">
+            {locale === 'zh' ? '按藥物名稱、通用名或分類快速搜尋藥物資訊' : 
+             locale === 'ja' ? '薬物名、一般名、またはカテゴリーで薬物情報を迅速に検索' : 
+             'Quickly search medications by name, generic name, or category'}
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">
+            {locale === 'zh' ? '藥物比較' : 
+             locale === 'ja' ? '薬物比較' : 
+             'Drug Comparison'}
+          </h3>
+          <p class="text-gray-600 text-sm">
+            {locale === 'zh' ? '並排比較多種藥物的效果、副作用和用法' : 
+             locale === 'ja' ? '複数の薬物の効果、副作用、用法を並べて比較' : 
+             'Side-by-side comparison of multiple medications\' effects, side effects, and usage'}
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">
+            {locale === 'zh' ? '詳細資訊' : 
+             locale === 'ja' ? '詳細情報' : 
+             'Detailed Information'}
+          </h3>
+          <p class="text-gray-600 text-sm">
+            {locale === 'zh' ? '完整的藥物資訊包括適應症、禁忌症、副作用和交互作用' : 
+             locale === 'ja' ? '適応症、禁忌、副作用、相互作用を含む完全な薬物情報' : 
+             'Complete medication information including indications, contraindications, side effects, and interactions'}
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">
+            {locale === 'zh' ? '安全警示' : 
+             locale === 'ja' ? '安全警告' : 
+             'Safety Alerts'}
+          </h3>
+          <p class="text-gray-600 text-sm">
+            {locale === 'zh' ? '重要的藥物交互作用和安全注意事項提醒' : 
+             locale === 'ja' ? '重要な薬物相互作用と安全上の注意事項の警告' : 
+             'Important drug interaction and safety precaution alerts'}
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">
+            {locale === 'zh' ? '多語言支援' : 
+             locale === 'ja' ? '多言語サポート' : 
+             'Multi-language Support'}
+          </h3>
+          <p class="text-gray-600 text-sm">
+            {locale === 'zh' ? '支援繁體中文、日文和英文介面' : 
+             locale === 'ja' ? '繁体字中国語、日本語、英語のインターフェースをサポート' : 
+             'Supports Traditional Chinese, Japanese, and English interfaces'}
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">
+            {locale === 'zh' ? '快速響應' : 
+             locale === 'ja' ? '高速レスポンス' : 
+             'Fast Response'}
+          </h3>
+          <p class="text-gray-600 text-sm">
+            {locale === 'zh' ? '優化的效能確保在臨床環境中快速存取資訊' : 
+             locale === 'ja' ? '最適化されたパフォーマンスで臨床環境での迅速な情報アクセスを保証' : 
+             'Optimized performance ensures quick information access in clinical settings'}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Language Switcher -->
+    <div class="mb-6">
+      <div class="flex gap-2">
+        <a 
+          href="?lang=en" 
+          class={`px-3 py-2 rounded-md text-sm font-medium ${locale === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+        >
+          English
+        </a>
+        <a 
+          href="?lang=zh" 
+          class={`px-3 py-2 rounded-md text-sm font-medium ${locale === 'zh' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+        >
+          繁體中文
+        </a>
+        <a 
+          href="?lang=ja" 
+          class={`px-3 py-2 rounded-md text-sm font-medium ${locale === 'ja' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+        >
+          日本語
+        </a>
+      </div>
+    </div>
+
+    <!-- Medication Information System Component -->
+    <MedicationInformationSystem 
+      medications={medicationsData} 
+      locale={locale}
+      client:load
+    />
+
+    <!-- Usage Instructions -->
+    <div class="mt-12 bg-gray-50 rounded-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">
+        {locale === 'zh' ? '使用說明' : 
+         locale === 'ja' ? '使用方法' : 
+         'How to Use'}
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-medium text-gray-900 mb-2">
+            {locale === 'zh' ? '搜尋藥物' : 
+             locale === 'ja' ? '薬物を検索' : 
+             'Search Medications'}
+          </h3>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• {locale === 'zh' ? '使用搜尋框輸入藥物名稱或通用名' : 
+                    locale === 'ja' ? '検索ボックスに薬物名または一般名を入力' : 
+                    'Use the search box to enter medication or generic names'}</li>
+            <li>• {locale === 'zh' ? '選擇特定分類進行篩選' : 
+                    locale === 'ja' ? '特定のカテゴリーを選択してフィルタリング' : 
+                    'Select specific categories to filter results'}</li>
+            <li>• {locale === 'zh' ? '按名稱、分類或劑量排序結果' : 
+                    locale === 'ja' ? '名前、カテゴリー、または用量で結果をソート' : 
+                    'Sort results by name, category, or strength'}</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-medium text-gray-900 mb-2">
+            {locale === 'zh' ? '比較功能' : 
+             locale === 'ja' ? '比較機能' : 
+             'Comparison Feature'}
+          </h3>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• {locale === 'zh' ? '點擊「比較」按鈕將藥物加入比較清單' : 
+                    locale === 'ja' ? '「比較」ボタンをクリックして薬物を比較リストに追加' : 
+                    'Click "Compare" button to add medications to comparison list'}</li>
+            <li>• {locale === 'zh' ? '最多可同時比較3種藥物' : 
+                    locale === 'ja' ? '最大3つの薬物を同時に比較可能' : 
+                    'Compare up to 3 medications simultaneously'}</li>
+            <li>• {locale === 'zh' ? '查看並排的詳細比較表格' : 
+                    locale === 'ja' ? '並列の詳細比較表を表示' : 
+                    'View side-by-side detailed comparison table'}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

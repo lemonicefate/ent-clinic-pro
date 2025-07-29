@@ -1,0 +1,321 @@
+---
+/**
+ * 頁面頁尾組件
+ * 提供網站資訊、連結和法律聲明
+ */
+
+import PrivacyControls from '../analytics/PrivacyControls.astro';
+
+export interface Props {
+  locale?: 'zh-TW' | 'en' | 'ja';
+}
+
+const { locale = 'zh-TW' } = Astro.props;
+
+// 多語言文字
+const texts = {
+  'zh-TW': {
+    siteName: 'Astro Clinical Platform',
+    tagline: '醫療專業數位平台',
+    description: '專為醫療專業人員設計的整合式數位平台，結合臨床決策工具和病患衛教功能。',
+    quickLinks: '快速連結',
+    resources: '資源',
+    support: '支援',
+    legal: '法律資訊',
+    medicalDisclaimer: '醫療免責聲明',
+    privacyPolicy: '隱私政策',
+    termsOfService: '服務條款',
+    accessibility: '無障礙聲明',
+    copyright: '版權所有',
+    allRightsReserved: '保留所有權利',
+    lastUpdated: '最後更新',
+    builtWith: '使用',
+    and: '和',
+    built: '建構',
+    medicalDisclaimerText: '本平台提供的醫療資訊僅供教育和參考用途，不能取代專業醫療建議、診斷或治療。',
+    contactUs: '聯絡我們',
+    documentation: '使用說明',
+    apiDocs: 'API 文件',
+    feedback: '意見回饋',
+    bugReport: '錯誤回報'
+  },
+  'en': {
+    siteName: 'Astro Clinical Platform',
+    tagline: 'Medical Professional Digital Platform',
+    description: 'An integrated digital platform designed for medical professionals, combining clinical decision tools with patient education functionality.',
+    quickLinks: 'Quick Links',
+    resources: 'Resources',
+    support: 'Support',
+    legal: 'Legal',
+    medicalDisclaimer: 'Medical Disclaimer',
+    privacyPolicy: 'Privacy Policy',
+    termsOfService: 'Terms of Service',
+    accessibility: 'Accessibility Statement',
+    copyright: 'Copyright',
+    allRightsReserved: 'All rights reserved',
+    lastUpdated: 'Last updated',
+    builtWith: 'Built with',
+    and: 'and',
+    built: 'built',
+    medicalDisclaimerText: 'The medical information provided on this platform is for educational and reference purposes only and cannot replace professional medical advice, diagnosis, or treatment.',
+    contactUs: 'Contact Us',
+    documentation: 'Documentation',
+    apiDocs: 'API Documentation',
+    feedback: 'Feedback',
+    bugReport: 'Bug Report'
+  },
+  'ja': {
+    siteName: 'Astro Clinical Platform',
+    tagline: '医療専門デジタルプラットフォーム',
+    description: '医療専門家向けに設計された統合デジタルプラットフォーム。臨床決定ツールと患者教育機能を組み合わせています。',
+    quickLinks: 'クイックリンク',
+    resources: 'リソース',
+    support: 'サポート',
+    legal: '法的情報',
+    medicalDisclaimer: '医療免責事項',
+    privacyPolicy: 'プライバシーポリシー',
+    termsOfService: '利用規約',
+    accessibility: 'アクセシビリティ声明',
+    copyright: '著作権',
+    allRightsReserved: '全著作権所有',
+    lastUpdated: '最終更新',
+    builtWith: '使用技術',
+    and: 'と',
+    built: '構築',
+    medicalDisclaimerText: 'このプラットフォームで提供される医療情報は教育および参考目的のみであり、専門的な医療アドバイス、診断、または治療に代わるものではありません。',
+    contactUs: 'お問い合わせ',
+    documentation: 'ドキュメント',
+    apiDocs: 'API ドキュメント',
+    feedback: 'フィードバック',
+    bugReport: 'バグ報告'
+  }
+};
+
+const t = texts[locale];
+
+// 獲取當前年份
+const currentYear = new Date().getFullYear();
+
+// 快速連結
+const quickLinks = [
+  { label: locale === 'zh-TW' ? '醫療工具' : locale === 'en' ? 'Medical Tools' : '医療ツール', href: locale === 'zh-TW' ? '/tools' : `/${locale}/tools` },
+  { label: locale === 'zh-TW' ? '衛教資源' : locale === 'en' ? 'Education' : '教育リソース', href: locale === 'zh-TW' ? '/education' : `/${locale}/education` },
+  { label: locale === 'zh-TW' ? '流程圖' : locale === 'en' ? 'Flowcharts' : 'フローチャート', href: locale === 'zh-TW' ? '/flowcharts' : `/${locale}/flowcharts` },
+  { label: locale === 'zh-TW' ? '專科分類' : locale === 'en' ? 'Specialties' : '専門科', href: locale === 'zh-TW' ? '/specialties' : `/${locale}/specialties` }
+];
+
+// 資源連結
+const resourceLinks = [
+  { label: t.documentation, href: locale === 'zh-TW' ? '/docs' : `/${locale}/docs` },
+  { label: t.apiDocs, href: locale === 'zh-TW' ? '/api-docs' : `/${locale}/api-docs` },
+  { label: locale === 'zh-TW' ? '常見問題' : locale === 'en' ? 'FAQ' : 'よくある質問', href: locale === 'zh-TW' ? '/faq' : `/${locale}/faq` },
+  { label: locale === 'zh-TW' ? '更新日誌' : locale === 'en' ? 'Changelog' : '更新履歴', href: locale === 'zh-TW' ? '/changelog' : `/${locale}/changelog` }
+];
+
+// 支援連結
+const supportLinks = [
+  { label: t.contactUs, href: locale === 'zh-TW' ? '/contact' : `/${locale}/contact` },
+  { label: t.feedback, href: locale === 'zh-TW' ? '/feedback' : `/${locale}/feedback` },
+  { label: t.bugReport, href: locale === 'zh-TW' ? '/bug-report' : `/${locale}/bug-report` },
+  { label: locale === 'zh-TW' ? '社群' : locale === 'en' ? 'Community' : 'コミュニティ', href: 'https://github.com/astro-clinical-platform/community' }
+];
+
+// 法律連結
+const legalLinks = [
+  { label: t.medicalDisclaimer, href: locale === 'zh-TW' ? '/medical-disclaimer' : `/${locale}/medical-disclaimer` },
+  { label: t.privacyPolicy, href: locale === 'zh-TW' ? '/privacy' : `/${locale}/privacy` },
+  { label: t.termsOfService, href: locale === 'zh-TW' ? '/terms' : `/${locale}/terms` },
+  { label: t.accessibility, href: locale === 'zh-TW' ? '/accessibility' : `/${locale}/accessibility` }
+];
+---
+
+<footer class="bg-medical-neutral-800 text-medical-neutral-100 mt-auto">
+  <!-- 主要頁尾內容 -->
+  <div class="container mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- 網站資訊 -->
+      <div class="lg:col-span-1">
+        <div class="flex items-center space-x-3 mb-4">
+          <svg class="h-8 w-8 text-medical-primary-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19.5 3.09L15 7.59V4a1 1 0 0 0-2 0v3.59L9.5 3.09a1 1 0 0 0-1.42 1.42L12 8.41l3.92-3.9a1 1 0 0 0 1.42-1.42zM12 10a1 1 0 0 0-.71.29L8 13.59V11a1 1 0 0 0-2 0v3.59l-3.5-3.5a1 1 0 0 0-1.42 1.42L5 16.41v3.59a1 1 0 0 0 2 0v-3.59l3.29 3.3a1 1 0 0 0 1.42 0L15 16.41v3.59a1 1 0 0 0 2 0v-3.59l3.92 3.9a1 1 0 0 0 1.42-1.42L19 15.59V12a1 1 0 0 0-2 0v3.59l-4.29-4.3A1 1 0 0 0 12 10z"/>
+          </svg>
+          <div>
+            <div class="font-bold text-lg">{t.siteName}</div>
+            <div class="text-sm text-medical-neutral-400">{t.tagline}</div>
+          </div>
+        </div>
+        <p class="text-sm text-medical-neutral-300 mb-4 leading-relaxed">
+          {t.description}
+        </p>
+        
+        <!-- 社群媒體連結 -->
+        <div class="flex space-x-4">
+          <a 
+            href="https://github.com/astro-clinical-platform" 
+            class="text-medical-neutral-400 hover:text-medical-primary-400 transition-colors focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 focus:ring-offset-medical-neutral-800 rounded"
+            aria-label="GitHub"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+          <a 
+            href="https://twitter.com/astroclinical" 
+            class="text-medical-neutral-400 hover:text-medical-primary-400 transition-colors focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 focus:ring-offset-medical-neutral-800 rounded"
+            aria-label="Twitter"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 快速連結 -->
+      <div>
+        <h3 class="font-semibold text-lg mb-4 text-medical-primary-400">{t.quickLinks}</h3>
+        <ul class="space-y-2">
+          {quickLinks.map((link) => (
+            <li>
+              <a 
+                href={link.href}
+                class="text-medical-neutral-300 hover:text-medical-primary-400 transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 focus:ring-offset-medical-neutral-800 rounded px-1 py-0.5"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- 資源 -->
+      <div>
+        <h3 class="font-semibold text-lg mb-4 text-medical-primary-400">{t.resources}</h3>
+        <ul class="space-y-2">
+          {resourceLinks.map((link) => (
+            <li>
+              <a 
+                href={link.href}
+                class="text-medical-neutral-300 hover:text-medical-primary-400 transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 focus:ring-offset-medical-neutral-800 rounded px-1 py-0.5"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- 支援和法律 -->
+      <div>
+        <h3 class="font-semibold text-lg mb-4 text-medical-primary-400">{t.support}</h3>
+        <ul class="space-y-2 mb-6">
+          {supportLinks.map((link) => (
+            <li>
+              <a 
+                href={link.href}
+                class="text-medical-neutral-300 hover:text-medical-primary-400 transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 focus:ring-offset-medical-neutral-800 rounded px-1 py-0.5"
+                {...(link.href.startsWith('http') && {
+                  target: '_blank',
+                  rel: 'noopener noreferrer'
+                })}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <h4 class="font-semibold mb-2 text-medical-primary-400">{t.legal}</h4>
+        <ul class="space-y-2">
+          {legalLinks.map((link) => (
+            <li>
+              <a 
+                href={link.href}
+                class="text-medical-neutral-300 hover:text-medical-primary-400 transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 focus:ring-offset-medical-neutral-800 rounded px-1 py-0.5"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 隱私控制 -->
+  <div class="bg-gray-50 border-t border-gray-200">
+    <div class="container mx-auto px-4 py-6">
+      <PrivacyControls locale={locale} />
+    </div>
+  </div>
+
+  <!-- 醫療免責聲明 -->
+  <div class="border-t border-medical-neutral-700 bg-medical-neutral-900">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-start space-x-3 text-sm">
+        <svg class="h-5 w-5 text-medical-warning-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+        <p class="text-medical-neutral-300 leading-relaxed">
+          <strong class="text-medical-warning-400">{t.medicalDisclaimer}:</strong> {t.medicalDisclaimerText}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 版權資訊 -->
+  <div class="border-t border-medical-neutral-700">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+        <div class="text-sm text-medical-neutral-400">
+          © {currentYear} {t.siteName}. {t.allRightsReserved}.
+        </div>
+        
+        <div class="flex items-center space-x-4 text-sm text-medical-neutral-400">
+          <span>{t.lastUpdated}: 2024-01-15</span>
+          <span class="hidden md:inline">|</span>
+          <span>
+            {t.builtWith} 
+            <a href="https://astro.build" class="text-medical-primary-400 hover:text-medical-primary-300 transition-colors" target="_blank" rel="noopener noreferrer">
+              Astro
+            </a> 
+            {t.and} 
+            <a href="https://tailwindcss.com" class="text-medical-primary-400 hover:text-medical-primary-300 transition-colors" target="_blank" rel="noopener noreferrer">
+              Tailwind CSS
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* 確保頁尾在頁面底部 */
+  footer {
+    margin-top: auto;
+  }
+  
+  /* 高對比模式支援 */
+  @media (prefers-contrast: high) {
+    footer {
+      background-color: #000;
+      color: #fff;
+    }
+    
+    footer a {
+      text-decoration: underline;
+    }
+  }
+  
+  /* 列印時隱藏 */
+  @media print {
+    footer {
+      display: none;
+    }
+  }
+</style>

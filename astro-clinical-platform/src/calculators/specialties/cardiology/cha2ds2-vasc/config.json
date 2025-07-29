@@ -1,0 +1,176 @@
+{
+  "id": "cha2ds2-vasc",
+  "version": "1.0.0",
+  "name": {
+    "zh-TW": "CHA2DS2-VASc 評分",
+    "en": "CHA2DS2-VASc Score",
+    "ja": "CHA2DS2-VAScスコア"
+  },
+  "description": {
+    "zh-TW": "評估心房顫動患者中風風險的臨床評分工具",
+    "en": "Clinical scoring tool for assessing stroke risk in atrial fibrillation patients",
+    "ja": "心房細動患者の脳卒中リスクを評価する臨床スコアリングツール"
+  },
+  "category": "cardiology",
+  "metadata": {
+    "difficulty": "intermediate",
+    "tags": ["cardiology", "stroke-risk", "atrial-fibrillation", "anticoagulation"],
+    "author": "Astro Clinical Platform",
+    "license": "MIT",
+    "keywords": ["cha2ds2-vasc", "stroke", "atrial fibrillation", "anticoagulation"]
+  },
+  "medical": {
+    "specialty": ["Cardiology", "Internal Medicine", "Emergency Medicine"],
+    "evidenceLevel": "A",
+    "clinicalGuidelines": {
+      "zh-TW": "基於 2020 年歐洲心臟病學會心房顫動管理指引",
+      "en": "Based on 2020 ESC Guidelines for the management of atrial fibrillation",
+      "ja": "2020年ESC心房細動管理ガイドラインに基づく"
+    },
+    "references": [
+      {
+        "title": "2020 ESC Guidelines for the diagnosis and management of atrial fibrillation",
+        "authors": ["Hindricks, G.", "Potpara, T.", "Dagres, N."],
+        "journal": "European Heart Journal",
+        "year": "2021",
+        "volume": "42",
+        "pages": "373-498",
+        "doi": "10.1093/eurheartj/ehaa612",
+        "url": "https://academic.oup.com/eurheartj/article/42/5/373/5899003"
+      }
+    ]
+  },
+  "ui": {
+    "fields": [
+      {
+        "id": "age",
+        "type": "number",
+        "label": {
+          "zh-TW": "年齡",
+          "en": "Age",
+          "ja": "年齢"
+        },
+        "required": true,
+        "validation": {
+          "min": 18,
+          "max": 120
+        },
+        "unit": {
+          "zh-TW": "歲",
+          "en": "years",
+          "ja": "歳"
+        }
+      },
+      {
+        "id": "gender",
+        "type": "select",
+        "label": {
+          "zh-TW": "性別",
+          "en": "Gender",
+          "ja": "性別"
+        },
+        "required": true,
+        "options": [
+          {
+            "value": "male",
+            "label": {
+              "zh-TW": "男性",
+              "en": "Male",
+              "ja": "男性"
+            }
+          },
+          {
+            "value": "female",
+            "label": {
+              "zh-TW": "女性",
+              "en": "Female",
+              "ja": "女性"
+            }
+          }
+        ]
+      },
+      {
+        "id": "congestiveHeartFailure",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "充血性心衰竭",
+          "en": "Congestive Heart Failure",
+          "ja": "うっ血性心不全"
+        },
+        "required": false
+      },
+      {
+        "id": "hypertension",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "高血壓",
+          "en": "Hypertension",
+          "ja": "高血圧"
+        },
+        "required": false
+      },
+      {
+        "id": "diabetes",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "糖尿病",
+          "en": "Diabetes Mellitus",
+          "ja": "糖尿病"
+        },
+        "required": false
+      },
+      {
+        "id": "strokeHistory",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "中風/TIA/血栓栓塞病史",
+          "en": "Stroke/TIA/Thromboembolism History",
+          "ja": "脳卒中/TIA/血栓塞栓症の既往"
+        },
+        "required": false
+      },
+      {
+        "id": "vascularDisease",
+        "type": "checkbox",
+        "label": {
+          "zh-TW": "血管疾病",
+          "en": "Vascular Disease",
+          "ja": "血管疾患"
+        },
+        "required": false
+      }
+    ]
+  },
+  "interpretation": [
+    {
+      "range": [0, 0],
+      "risk": "low",
+      "color": "#10B981",
+      "recommendation": {
+        "zh-TW": "低風險：男性 0 分，不建議抗凝治療",
+        "en": "Low risk: Male 0 points, anticoagulation not recommended",
+        "ja": "低リスク：男性0点、抗凝固療法は推奨されない"
+      }
+    },
+    {
+      "range": [1, 1],
+      "risk": "low-moderate",
+      "color": "#F59E0B",
+      "recommendation": {
+        "zh-TW": "低中等風險：考慮抗凝治療，評估出血風險",
+        "en": "Low-moderate risk: Consider anticoagulation, assess bleeding risk",
+        "ja": "低中等度リスク：抗凝固療法を検討、出血リスクを評価"
+      }
+    },
+    {
+      "range": [2, 9],
+      "risk": "high",
+      "color": "#EF4444",
+      "recommendation": {
+        "zh-TW": "高風險：建議抗凝治療，除非有禁忌症",
+        "en": "High risk: Anticoagulation recommended unless contraindicated",
+        "ja": "高リスク：禁忌でない限り抗凝固療法を推奨"
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "sections": [
+    {
+      "title": "CHA2DS2-VASc 評分結果",
+      "cards": [
+        {
+          "type": "primary",
+          "title": "總分",
+          "value": "{{score}}",
+          "unit": "分",
+          "color": "{{color}}",
+          "icon": "💓"
+        },
+        {
+          "type": "secondary",
+          "title": "風險等級",
+          "value": "{{risk}}",
+          "color": "{{color}}"
+        }
+      ],
+      "layout": "grid",
+      "columns": 2
+    },
+    {
+      "title": "治療建議",
+      "cards": [
+        {
+          "type": "info",
+          "title": "抗凝治療建議",
+          "value": "{{recommendation}}",
+          "description": "請結合出血風險評估"
+        }
+      ],
+      "layout": "list"
+    }
+  ],
+  "recommendations": [
+    {
+      "text": "建議同時評估出血風險（如 HAS-BLED 評分）",
+      "type": "warning"
+    },
+    {
+      "text": "抗凝治療決策應個人化，考慮患者偏好和生活品質",
+      "type": "info"
+    }
+  ],
+  "notes": [
+    "本評分適用於非瓣膜性心房顫動患者",
+    "女性患者在其他風險因素存在時才計入性別分數",
+    "中風/TIA/血栓栓塞病史為最高風險因子（2分）",
+    "建議定期重新評估風險變化"
+  ]
+}

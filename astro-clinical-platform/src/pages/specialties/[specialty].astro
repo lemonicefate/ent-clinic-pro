@@ -1,0 +1,253 @@
+---
+/**
+ * 醫療專科動態頁面
+ * 根據專科 ID 顯示相關的工具和內容
+ */
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const specialties = [
+    { id: 'cardiology', name: '心臟科', description: '心血管疾病診斷與治療工具' },
+    { id: 'neurology', name: '神經科', description: '神經系統疾病評估工具' },
+    { id: 'endocrinology', name: '內分泌科', description: '內分泌代謝疾病管理' },
+    { id: 'general', name: '一般醫學', description: '基礎醫療評估工具' },
+    { id: 'emergency', name: '急診醫學', description: '急診快速評估工具' },
+    { id: 'pediatrics', name: '小兒科', description: '兒童健康評估工具' }
+  ];
+
+  return specialties.map(specialty => ({
+    params: { specialty: specialty.id },
+    props: { specialty }
+  }));
+}
+
+const { specialty } = Astro.props;
+
+// 檢查 specialty 是否存在
+if (!specialty) {
+  throw new Error('Specialty not found');
+}
+
+// 獲取相關的計算機和教育內容
+let calculators = [];
+let education = [];
+
+try {
+  calculators = await getCollection('calculators');
+} catch (error) {
+  console.warn('Failed to load calculators collection:', error);
+  calculators = [];
+}
+
+try {
+  education = await getCollection('education');
+} catch (error) {
+  console.warn('Failed to load education collection:', error);
+  education = [];
+}
+
+const relatedCalculators = calculators.filter(calc => {
+  // 確保 calc.data 存在且有必要的屬性
+  if (!calc?.data) return false;
+  
+  const hasSpecialty = calc.data.medicalSpecialties?.includes(specialty.id);
+  const isActive = calc.data.isActive !== false; // 預設為 true 如果未定義
+  
+  return hasSpecialty && isActive;
+});
+
+const relatedEducation = education.filter(edu => {
+  // 確保 edu.data 存在且有必要的屬性
+  if (!edu?.data) return false;
+  
+  const hasSpecialty = edu.data.medicalSpecialties?.includes(specialty.id);
+  const isActive = edu.data.isActive !== false; // 預設為 true 如果未定義
+  
+  return hasSpecialty && isActive;
+});
+
+const pageTitle = `${specialty.name} - 醫療工具與資源`;
+const pageDescription = `${specialty.description}，包含相關的醫療計算機和衛教內容。`;
+const locale = 'zh-TW';
+---
+
+<BaseLayout 
+  title={pageTitle}
+  description={pageDescription}
+  locale={locale}
+  pageType="category"
+  specialty={specialty.id}
+>
+  <div class="container mx-auto px-4 py-8">
+    <!-- 專科標頭 -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        {specialty.name}
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        {specialty.description}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- 相關計算機 -->
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-6">
+          相關醫療工具
+        </h2>
+        
+        {relatedCalculators.length > 0 ? (
+          <div class="space-y-4">
+            {relatedCalculators.map((calculator) => (
+              <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                      {calculator.data?.name?.['zh-TW'] || calculator.data?.name || '未命名工具'}
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                      {calculator.data?.description?.['zh-TW'] || calculator.data?.description || '無描述'}
+                    </p>
+                  </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2 text-sm text-gray-500">
+                    <span class={`inline-flex items-center px-2 py-1 rounded text-xs ${
+                      calculator.data.difficulty === 'basic' ? 'bg-green-100 text-green-700' :
+                      calculator.data.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                      {calculator.data.difficulty === 'basic' ? '基礎' :
+                       calculator.data.difficulty === 'intermediate' ? '中級' : '進階'}
+                    </span>
+                    <span class="text-xs text-gray-400">
+                      證據等級: {calculator.data?.evidenceLevel || 'N/A'}
+                    </span>
+                  </div>
+                  <a 
+                    href={`/tools/${calculator.data?.id || calculator.id || '#'}`}
+                    class="inline-flex items-center text-medical-primary-600 hover:text-medical-primary-700 font-medium text-sm"
+                  >
+                    使用工具
+                    <svg class="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p class="text-gray-600">目前沒有 {specialty.name} 相關的醫療工具</p>
+          </div>
+        )}
+      </div>
+
+      <!-- 相關衛教內容 -->
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-6">
+          相關衛教內容
+        </h2>
+        
+        {relatedEducation.length > 0 ? (
+          <div class="space-y-4">
+            {relatedEducation.map((article) => (
+              <article class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center space-x-2 mb-3">
+                  <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    article.data.category === 'disease' ? 'bg-red-100 text-red-800' :
+                    article.data.category === 'medication' ? 'bg-blue-100 text-blue-800' :
+                    article.data.category === 'procedure' ? 'bg-purple-100 text-purple-800' :
+                    'bg-green-100 text-green-800'
+                  }`}>
+                    {article.data.category === 'disease' ? '疾病資訊' :
+                     article.data.category === 'medication' ? '藥物資訊' :
+                     article.data.category === 'procedure' ? '檢查程序' :
+                     '預防保健'}
+                  </span>
+                  {article.data.readingTime && (
+                    <span class="text-xs text-gray-500">
+                      {article.data.readingTime} 分鐘閱讀
+                    </span>
+                  )}
+                </div>
+                
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                  {article.data?.title?.['zh-TW'] || article.data?.title || '未命名文章'}
+                </h3>
+                
+                {article.data?.excerpt && (
+                  <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                    {article.data.excerpt['zh-TW'] || article.data.excerpt}
+                  </p>
+                )}
+                
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    {article.data.hasFlowchart && (
+                      <span class="inline-flex items-center text-xs text-medical-primary-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        流程圖
+                      </span>
+                    )}
+                    <span class={`text-xs ${
+                      article.data.difficulty === 'basic' ? 'text-green-600' :
+                      article.data.difficulty === 'intermediate' ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>
+                      {article.data.difficulty === 'basic' ? '基礎' :
+                       article.data.difficulty === 'intermediate' ? '中級' : '進階'}
+                    </span>
+                  </div>
+                  
+                  <a 
+                    href={`/education/${article.id || '#'}`}
+                    class="inline-flex items-center text-medical-primary-600 hover:text-medical-primary-700 font-medium text-sm"
+                  >
+                    閱讀更多
+                    <svg class="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <p class="text-gray-600">目前沒有 {specialty.name} 相關的衛教內容</p>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- 返回按鈕 -->
+    <div class="mt-12 text-center">
+      <a 
+        href="/specialties" 
+        class="inline-flex items-center bg-medical-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-medical-primary-700 transition-colors"
+      >
+        <svg class="mr-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        返回專科列表
+      </a>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,101 @@
+# Pagefind 搜尋引擎配置
+# 用於醫療平台的靜態搜尋功能
+
+# 基本設定
+site: "dist"
+output_path: "dist/pagefind"
+
+# 語言設定
+root_selector: "html"
+exclude_selectors:
+  - "nav"
+  - "header .no-search"
+  - "footer"
+  - ".breadcrumbs"
+  - ".pagination"
+  - ".sidebar"
+  - "script"
+  - "style"
+  - ".search-exclude"
+
+# 內容處理
+bundle_dir: "_pagefind"
+serve_from_filesystem: false
+
+# 醫療內容特定設定
+custom_records:
+  # 計算機頁面
+  - url: "/tools/*"
+    meta:
+      type: "calculator"
+    selectors:
+      title: "h1"
+      excerpt: ".calculator-description, .description"
+      category: "[data-category]"
+      specialty: "[data-specialty]"
+      
+  # 教育內容頁面  
+  - url: "/education/*"
+    meta:
+      type: "education"
+    selectors:
+      title: "h1"
+      excerpt: ".article-excerpt, .summary"
+      category: "[data-category]"
+      specialty: "[data-specialty]"
+      difficulty: "[data-difficulty]"
+      
+  # 流程圖頁面
+  - url: "/flowcharts/*"
+    meta:
+      type: "flowchart"
+    selectors:
+      title: "h1"
+      excerpt: ".flowchart-description, .description"
+      category: "[data-category]"
+      complexity: "[data-complexity]"
+
+# 多語言支援
+languages:
+  - code: "zh-TW"
+    name: "繁體中文"
+  - code: "en"
+    name: "English"  
+  - code: "ja"
+    name: "日本語"
+
+# 搜尋優化
+ranking:
+  page_rank_weight: 1.0
+  term_frequency_weight: 1.0
+  term_saturation_weight: 1.0
+  term_similarity_weight: 1.0
+
+# 索引優化
+glob: "**/*.{html}"
+force_language: false
+keep_index_url: false
+
+# 醫療內容加權
+boost_selectors:
+  - selector: "h1"
+    weight: 3.0
+  - selector: "h2"
+    weight: 2.0
+  - selector: ".medical-term"
+    weight: 2.5
+  - selector: ".clinical-guideline"
+    weight: 2.0
+  - selector: ".calculator-name"
+    weight: 3.0
+  - selector: ".disease-name"
+    weight: 2.5
+
+# 忽略的內容
+ignore_selectors:
+  - ".advertisement"
+  - ".social-share"
+  - ".comments"
+  - ".related-ads"
+  - ".cookie-banner"
+  - ".loading-spinner"

@@ -1,0 +1,342 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # 每日自動建構檢查（UTC 時間 02:00，台灣時間 10:00）
+    - cron: '0 2 * * *'
+
+env:
+  NODE_VERSION: '20.x'
+  CACHE_VERSION: v1
+
+jobs:
+  # 程式碼品質檢查
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'astro-clinical-platform/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ./astro-clinical-platform
+      run: npm ci
+
+    - name: Run type checking
+      working-directory: ./astro-clinical-platform
+      run: npm run check
+
+    - name: Run linting
+      working-directory: ./astro-clinical-platform
+      run: npm run lint
+
+    - name: Check formatting
+      working-directory: ./astro-clinical-platform
+      run: npm run format -- --check
+
+    - name: Security audit
+      working-directory: ./astro-clinical-platform
+      run: npm audit --audit-level=moderate
+
+  # 測試執行
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: 'astro-clinical-platform/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ./astro-clinical-platform
+      run: npm ci
+
+    - name: Run unit tests
+      working-directory: ./astro-clinical-platform
+      run: npm run test:coverage
+
+    - name: Upload coverage to Codecov
+      if: matrix.node-version == '20.x'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./astro-clinical-platform/coverage/lcov.info
+        flags: unittests
+        name: astro-clinical-platform
+        fail_ci_if_error: false
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.node-version }}
+        path: |
+          astro-clinical-platform/coverage/
+          astro-clinical-platform/test-results.xml
+        retention-days: 7
+
+  # 建構專案
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'astro-clinical-platform/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ./astro-clinical-platform
+      run: npm ci
+
+    - name: Build application
+      working-directory: ./astro-clinical-platform
+      run: npm run build
+      env:
+        PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL || 'https://astro-clinical-platform.vercel.app' }}
+        PUBLIC_ANALYTICS_ID: ${{ secrets.PUBLIC_ANALYTICS_ID }}
+        PUBLIC_CMS_URL: ${{ secrets.PUBLIC_CMS_URL }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files
+        path: astro-clinical-platform/dist/
+        retention-days: 7
+
+    - name: Generate build report
+      working-directory: ./astro-clinical-platform
+      run: |
+        echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- Build completed successfully ✅" >> $GITHUB_STEP_SUMMARY
+        echo "- Build size: $(du -sh dist/ | cut -f1)" >> $GITHUB_STEP_SUMMARY
+        echo "- Files generated: $(find dist/ -type f | wc -l)" >> $GITHUB_STEP_SUMMARY
+
+  # 部署到 Staging（develop 分支）
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+        path: astro-clinical-platform/dist/
+
+    - name: Deploy to Cloudflare Pages (Staging)
+      id: deploy
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: astro-clinical-platform
+        directory: astro-clinical-platform/dist
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        wranglerVersion: '3'
+
+    - name: Comment PR with staging URL
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `🚀 Staging deployment ready!\n\n**Preview URL:** ${{ steps.deploy.outputs.preview-url }}\n\nThis preview will be available until the PR is merged or closed.`
+          })
+
+  # 部署到 Production（main 分支）
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: ${{ secrets.PUBLIC_SITE_URL }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+        path: astro-clinical-platform/dist/
+
+    - name: Deploy to Cloudflare Pages (Production)
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: astro-clinical-platform
+        directory: astro-clinical-platform/dist
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        wranglerVersion: '3'
+
+    - name: Notify deployment success
+      run: |
+        echo "🎉 Production deployment successful!" >> $GITHUB_STEP_SUMMARY
+        echo "Site URL: ${{ secrets.PUBLIC_SITE_URL }}" >> $GITHUB_STEP_SUMMARY
+
+  # 效能與品質檢查
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Install Lighthouse CI
+      run: npm install -g @lhci/cli@0.12.x
+
+    - name: Run Lighthouse CI
+      run: lhci autorun
+      env:
+        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        LHCI_SERVER_BASE_URL: ${{ secrets.PUBLIC_SITE_URL }}
+
+    - name: Upload Lighthouse results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: lighthouse-results
+        path: .lighthouseci/
+        retention-days: 30
+
+  # 安全性掃描
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: './astro-clinical-platform'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  # 醫療內容驗證（可選）
+  medical-validation:
+    name: Medical Content Validation
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'astro-clinical-platform/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ./astro-clinical-platform
+      run: npm ci
+
+    - name: Validate calculator configurations
+      working-directory: ./astro-clinical-platform
+      run: |
+        echo "Validating medical calculator configurations..."
+        npm run test -- --testPathPattern=calculator --testNamePattern=validation
+
+    - name: Check medical content accuracy
+      working-directory: ./astro-clinical-platform
+      run: |
+        echo "⚕️ Medical content validation completed"
+        echo "Note: Clinical expert review required for production deployment" >> $GITHUB_STEP_SUMMARY
+
+  # 通知與報告
+  notify:
+    name: Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [deploy-production, lighthouse]
+    if: always() && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Create deployment summary
+      run: |
+        echo "## 🏥 Astro Clinical Platform Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Deployment Status" >> $GITHUB_STEP_SUMMARY
+        echo "- **Environment:** Production" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployed by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployment time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Quality Checks" >> $GITHUB_STEP_SUMMARY
+        echo "- Code Quality: ${{ needs.quality.result == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Tests: ${{ needs.test.result == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Build: ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Lighthouse: ${{ needs.lighthouse.result == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+        echo "- [ ] Clinical expert review of medical content" >> $GITHUB_STEP_SUMMARY
+        echo "- [ ] User acceptance testing" >> $GITHUB_STEP_SUMMARY
+        echo "- [ ] Monitor application performance" >> $GITHUB_STEP_SUMMARY

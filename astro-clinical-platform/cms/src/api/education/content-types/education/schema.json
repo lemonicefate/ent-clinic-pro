@@ -1,0 +1,172 @@
+{
+  "kind": "collectionType",
+  "collectionName": "education_contents",
+  "info": {
+    "singularName": "education",
+    "pluralName": "educations",
+    "displayName": "Educational Content",
+    "description": "Patient education materials and medical information"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "excerpt": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "disease",
+        "medication",
+        "procedure",
+        "prevention",
+        "lifestyle",
+        "symptoms",
+        "diagnosis",
+        "treatment"
+      ],
+      "required": true
+    },
+    "tags": {
+      "type": "json"
+    },
+    "difficulty": {
+      "type": "enumeration",
+      "enum": [
+        "basic",
+        "intermediate",
+        "advanced"
+      ],
+      "default": "basic"
+    },
+    "readingTime": {
+      "type": "integer",
+      "description": "Estimated reading time in minutes"
+    },
+    "featuredImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "videos"]
+    },
+    "flowchartCode": {
+      "type": "text",
+      "description": "Mermaid.js flowchart code"
+    },
+    "relatedCalculators": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::calculator.calculator",
+      "mappedBy": "relatedEducation"
+    },
+    "medicalSpecialty": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::medical-specialty.medical-specialty",
+      "mappedBy": "educationContents"
+    },
+    "author": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "reviewedBy": {
+      "type": "string",
+      "description": "Medical professional who reviewed this content"
+    },
+    "lastReviewDate": {
+      "type": "date"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "viewCount": {
+      "type": "integer",
+      "default": 0
+    },
+    "patientFriendly": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether content is suitable for patients"
+    },
+    "professionalLevel": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether content is for medical professionals"
+    },
+    "ageGroup": {
+      "type": "enumeration",
+      "enum": [
+        "all",
+        "pediatric",
+        "adult",
+        "geriatric"
+      ],
+      "default": "all"
+    },
+    "seoTitle": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seoDescription": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "keywords": {
+      "type": "json",
+      "description": "SEO keywords"
+    }
+  }
+}

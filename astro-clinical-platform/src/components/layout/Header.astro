@@ -1,0 +1,283 @@
+---
+/**
+ * 頁面標頭組件
+ * 包含導覽選單、搜尋功能和語言切換
+ */
+
+import Navigation from './Navigation.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Search from '../islands/Search.tsx';
+import LanguageSwitcher from '../islands/LanguageSwitcher.tsx';
+
+export interface Props {
+  locale?: 'zh-TW' | 'en' | 'ja';
+  breadcrumbs?: Array<{
+    label: string;
+    href?: string;
+  }>;
+}
+
+const { locale = 'zh-TW', breadcrumbs = [] } = Astro.props;
+
+// 多語言文字
+const texts = {
+  'zh-TW': {
+    siteName: 'Astro Clinical Platform',
+    tagline: '醫療專業數位平台',
+    searchPlaceholder: '搜尋醫療工具和衛教內容...',
+    menuToggle: '開啟選單',
+    skipToContent: '跳至主要內容'
+  },
+  'en': {
+    siteName: 'Astro Clinical Platform',
+    tagline: 'Medical Professional Digital Platform',
+    searchPlaceholder: 'Search medical tools and education...',
+    menuToggle: 'Open menu',
+    skipToContent: 'Skip to main content'
+  },
+  'ja': {
+    siteName: 'Astro Clinical Platform',
+    tagline: '医療専門デジタルプラットフォーム',
+    searchPlaceholder: '医療ツールと教育コンテンツを検索...',
+    menuToggle: 'メニューを開く',
+    skipToContent: 'メインコンテンツにスキップ'
+  }
+};
+
+const t = texts[locale];
+---
+
+<header class="bg-white shadow-lg border-b border-medical-neutral-200 sticky top-0 z-40">
+  <!-- 頂部公告欄 (可選) -->
+  <div class="bg-medical-primary-600 text-white text-sm py-2 no-print">
+    <div class="container mx-auto px-4 text-center">
+      <span class="inline-flex items-center space-x-2">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>本平台提供的醫療資訊僅供參考，請諮詢專業醫師</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 主要標頭區域 -->
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <!-- Logo 和網站名稱 -->
+      <div class="flex items-center space-x-4">
+        <a 
+          href="/" 
+          class="flex items-center space-x-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 rounded-lg p-1"
+          aria-label={`${t.siteName} 首頁`}
+        >
+          <!-- Logo -->
+          <div class="flex-shrink-0">
+            <svg class="h-8 w-8 lg:h-10 lg:w-10 text-medical-primary-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19.5 3.09L15 7.59V4a1 1 0 0 0-2 0v3.59L9.5 3.09a1 1 0 0 0-1.42 1.42L12 8.41l3.92-3.9a1 1 0 0 0 1.42-1.42zM12 10a1 1 0 0 0-.71.29L8 13.59V11a1 1 0 0 0-2 0v3.59l-3.5-3.5a1 1 0 0 0-1.42 1.42L5 16.41v3.59a1 1 0 0 0 2 0v-3.59l3.29 3.3a1 1 0 0 0 1.42 0L15 16.41v3.59a1 1 0 0 0 2 0v-3.59l3.92 3.9a1 1 0 0 0 1.42-1.42L19 15.59V12a1 1 0 0 0-2 0v3.59l-4.29-4.3A1 1 0 0 0 12 10z"/>
+            </svg>
+          </div>
+          
+          <!-- 網站名稱和標語 -->
+          <div class="hidden sm:block">
+            <div class="text-lg lg:text-xl font-bold text-medical-neutral-800">
+              {t.siteName}
+            </div>
+            <div class="text-xs lg:text-sm text-medical-neutral-600">
+              {t.tagline}
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- 桌面版導覽和工具 -->
+      <div class="hidden lg:flex items-center space-x-6">
+        <!-- 主要導覽 -->
+        <Navigation locale={locale} />
+        
+        <!-- 搜尋框 -->
+        <div class="relative">
+          <Search 
+            client:load
+            locale={locale}
+            placeholder={t.searchPlaceholder}
+            className="w-64 xl:w-80"
+          />
+        </div>
+        
+        <!-- 語言切換器 -->
+        <LanguageSwitcher client:load currentLocale={locale} />
+      </div>
+
+      <!-- 行動版工具列 -->
+      <div class="flex items-center space-x-3 lg:hidden">
+        <!-- 搜尋按鈕 -->
+        <button 
+          id="mobile-search-toggle"
+          class="p-2 text-medical-neutral-600 hover:text-medical-primary-600 hover:bg-medical-neutral-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-medical-primary-500"
+          aria-label="開啟搜尋"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+        
+        <!-- 語言切換按鈕 -->
+        <LanguageSwitcher client:load currentLocale={locale} mobile={true} />
+        
+        <!-- 選單切換按鈕 -->
+        <button 
+          id="mobile-menu-toggle"
+          class="p-2 text-medical-neutral-600 hover:text-medical-primary-600 hover:bg-medical-neutral-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-medical-primary-500"
+          aria-label={t.menuToggle}
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 行動版搜尋框 -->
+    <div id="mobile-search" class="hidden lg:hidden pb-4">
+      <Search 
+        client:load
+        locale={locale}
+        placeholder={t.searchPlaceholder}
+        className="w-full"
+      />
+    </div>
+  </div>
+
+  <!-- 行動版導覽選單 -->
+  <div id="mobile-menu" class="hidden lg:hidden border-t border-medical-neutral-200 bg-white">
+    <div class="container mx-auto px-4 py-4">
+      <Navigation locale={locale} mobile={true} />
+    </div>
+  </div>
+
+  <!-- 麵包屑導覽 -->
+  {breadcrumbs.length > 0 && (
+    <div class="border-t border-medical-neutral-200 bg-medical-neutral-50">
+      <div class="container mx-auto px-4 py-2">
+        <Breadcrumbs items={breadcrumbs} locale={locale} />
+      </div>
+    </div>
+  )}
+</header>
+
+<script>
+  // 行動版選單切換
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const searchToggle = document.getElementById('mobile-search-toggle');
+    const mobileSearch = document.getElementById('mobile-search');
+    
+    // 選單切換
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', function() {
+        const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        
+        menuToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+        mobileMenu.classList.toggle('hidden');
+        
+        // 更新圖示
+        const icon = menuToggle.querySelector('svg');
+        if (icon) {
+          if (isExpanded) {
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />';
+          } else {
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />';
+          }
+        }
+      });
+    }
+    
+    // 搜尋切換
+    if (searchToggle && mobileSearch) {
+      searchToggle.addEventListener('click', function() {
+        mobileSearch.classList.toggle('hidden');
+        
+        // 聚焦到搜尋框
+        if (!mobileSearch.classList.contains('hidden')) {
+          const searchInput = mobileSearch.querySelector('input[type="search"]');
+          if (searchInput) {
+            setTimeout(() => searchInput.focus(), 100);
+          }
+        }
+      });
+    }
+    
+    // 點擊外部關閉選單
+    document.addEventListener('click', function(event) {
+      if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+        const isClickInsideMenu = mobileMenu.contains(event.target);
+        const isClickOnToggle = menuToggle && menuToggle.contains(event.target);
+        
+        if (!isClickInsideMenu && !isClickOnToggle) {
+          mobileMenu.classList.add('hidden');
+          if (menuToggle) {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            const icon = menuToggle.querySelector('svg');
+            if (icon) {
+              icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />';
+            }
+          }
+        }
+      }
+    });
+    
+    // ESC 鍵關閉選單
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          if (menuToggle) {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            menuToggle.focus();
+          }
+        }
+        
+        if (mobileSearch && !mobileSearch.classList.contains('hidden')) {
+          mobileSearch.classList.add('hidden');
+          if (searchToggle) {
+            searchToggle.focus();
+          }
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  /* 確保標頭在滾動時保持可見 */
+  header {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  
+  /* 平滑的選單動畫 */
+  #mobile-menu {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  #mobile-search {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* 高對比模式支援 */
+  @media (prefers-contrast: high) {
+    header {
+      border-bottom: 2px solid #000;
+    }
+  }
+  
+  /* 列印時隱藏 */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
+</style>

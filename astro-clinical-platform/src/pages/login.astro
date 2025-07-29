@@ -1,0 +1,283 @@
+---
+/**
+ * Login page for the Astro Clinical Platform
+ * Demonstrates the authentication system implementation
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AuthenticationForm from '../components/islands/AuthenticationForm.tsx';
+
+const title = '登入 - 醫療平台';
+const description = '醫療專業人員登入頁面，存取管理功能和進階工具';
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="login-page">
+    <div class="login-container">
+      <div class="login-header">
+        <h1 class="platform-title">
+          <svg class="platform-icon" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4H8v-2h4V7h2v4h4v2h-4v4z"/>
+          </svg>
+          Astro 醫療平台
+        </h1>
+        <p class="platform-subtitle">
+          專為醫療專業人員設計的臨床決策支援平台
+        </p>
+      </div>
+
+      <div class="auth-form-container">
+        <AuthenticationForm 
+          client:load 
+          redirectUrl={Astro.url.searchParams.get('redirect') || '/'}
+          showRegister={false}
+        />
+      </div>
+
+      <div class="demo-credentials">
+        <h3 class="demo-title">測試帳號</h3>
+        <div class="demo-accounts">
+          <div class="demo-account">
+            <h4>管理員帳號</h4>
+            <p><strong>帳號:</strong> admin@medical.com</p>
+            <p><strong>密碼:</strong> admin123</p>
+            <p class="account-description">擁有完整管理權限</p>
+          </div>
+          <div class="demo-account">
+            <h4>醫師帳號</h4>
+            <p><strong>帳號:</strong> doctor@medical.com</p>
+            <p><strong>密碼:</strong> doctor123</p>
+            <p class="account-description">一般使用者權限</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="security-features">
+        <h3 class="features-title">安全功能</h3>
+        <ul class="features-list">
+          <li>
+            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+            </svg>
+            JWT 令牌認證
+          </li>
+          <li>
+            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+            HttpOnly Cookie 儲存
+          </li>
+          <li>
+            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd" />
+            </svg>
+            登入嘗試限制
+          </li>
+          <li>
+            <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+            </svg>
+            自動令牌刷新
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .login-container {
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 400px 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .login-header {
+    text-align: center;
+    color: white;
+  }
+
+  .platform-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .platform-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .platform-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+
+  .auth-form-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+  }
+
+  .demo-credentials {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
+    color: white;
+  }
+
+  .demo-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .demo-accounts {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .demo-account {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .demo-account h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #fbbf24;
+  }
+
+  .demo-account p {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .account-description {
+    font-size: 0.75rem !important;
+    opacity: 0.8;
+    font-style: italic;
+    margin-top: 0.5rem !important;
+  }
+
+  .security-features {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
+    color: white;
+  }
+
+  .features-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .features-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .feature-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #34d399;
+    flex-shrink: 0;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .login-container {
+      grid-template-columns: 1fr;
+      max-width: 500px;
+      gap: 2rem;
+    }
+
+    .login-header {
+      order: 1;
+    }
+
+    .auth-form-container {
+      order: 2;
+    }
+
+    .demo-credentials {
+      order: 3;
+    }
+
+    .security-features {
+      order: 4;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .login-page {
+      padding: 1rem;
+    }
+
+    .platform-title {
+      font-size: 1.5rem;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .platform-icon {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .demo-accounts {
+      gap: 1rem;
+    }
+
+    .demo-account {
+      padding: 1rem;
+    }
+
+    .features-list {
+      gap: 0.75rem;
+    }
+  }
+</style>
+
+<script>
+  // Import auth styles
+  import '../styles/auth.css';
+</script>

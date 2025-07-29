@@ -1,0 +1,34 @@
+{
+  "id": "cardiology",
+  "name": {
+    "zh-TW": "心臟科",
+    "en": "Cardiology",
+    "ja": "循環器科"
+  },
+  "slug": "cardiology",
+  "description": {
+    "zh-TW": "心臟科專精於心血管疾病的診斷、治療和預防，包括冠心病、心律不整、心衰竭、高血壓和先天性心臟病等。我們的目標是透過先進的診斷技術和個人化治療方案，幫助患者維持心血管健康。",
+    "en": "Cardiology specializes in the diagnosis, treatment, and prevention of cardiovascular diseases, including coronary artery disease, arrhythmias, heart failure, hypertension, and congenital heart disease. Our goal is to help patients maintain cardiovascular health through advanced diagnostic techniques and personalized treatment plans.",
+    "ja": "循環器科は、冠動脈疾患、不整脈、心不全、高血圧、先天性心疾患などの心血管疾患の診断、治療、予防を専門としています。先進的な診断技術と個別化治療計画を通じて、患者の心血管健康の維持を目標としています。"
+  },
+  "color": "#e74c3c",
+  "icon": "heart",
+  "coverImage": "/images/specialties/cardiology-cover.jpg",
+  "sortOrder": 1,
+  "isActive": true,
+  "isFeatured": true,
+  "calculatorCount": 15,
+  "educationCount": 28,
+  "flowchartCount": 12,
+  "seoTitle": {
+    "zh-TW": "心臟科醫療工具與衛教資源 - 心血管疾病診療指引",
+    "en": "Cardiology Medical Tools and Educational Resources - Cardiovascular Disease Management",
+    "ja": "循環器科医療ツールと教育リソース - 心血管疾患管理"
+  },
+  "seoDescription": {
+    "zh-TW": "提供完整的心臟科醫療計算工具、病患衛教資料和臨床決策流程圖。包含心房顫動、冠心病、心衰竭等常見心血管疾病的診斷治療指引，協助醫療專業人員提供優質照護。",
+    "en": "Comprehensive cardiology medical calculation tools, patient education materials, and clinical decision flowcharts. Includes diagnostic and treatment guidelines for common cardiovascular diseases such as atrial fibrillation, coronary artery disease, and heart failure to help healthcare professionals provide quality care.",
+    "ja": "包括的な循環器科医療計算ツール、患者教育資料、臨床決定フローチャートを提供。心房細動、冠動脈疾患、心不全などの一般的な心血管疾患の診断治療ガイドラインを含み、医療専門家が質の高いケアを提供するのを支援します。"
+  },
+  "keywords": ["心臟科", "心血管疾病", "心律不整", "冠心病", "心衰竭", "cardiology", "cardiovascular disease", "arrhythmia", "coronary artery disease", "heart failure", "循環器科", "心血管疾患", "不整脈"]
+}

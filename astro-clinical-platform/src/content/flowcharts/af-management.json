@@ -1,0 +1,100 @@
+{
+  "id": "af-management",
+  "title": {
+    "zh-TW": "心房顫動診斷與治療流程",
+    "en": "Atrial Fibrillation Diagnosis and Management Flowchart",
+    "ja": "心房細動の診断と管理フローチャート"
+  },
+  "slug": "af-management",
+  "description": {
+    "zh-TW": "心房顫動患者的標準化診斷和治療決策流程，包含風險評估和治療選擇指引。",
+    "en": "Standardized diagnostic and treatment decision flowchart for atrial fibrillation patients, including risk assessment and treatment selection guidance.",
+    "ja": "心房細動患者の標準化された診断と治療決定フローチャート、リスク評価と治療選択の指針を含む。"
+  },
+  "mermaidCode": "graph TD\n    A[\"疑似心房顫動症狀<br/>心悸、胸悶、呼吸困難\"] --> B[\"12導程心電圖\"]\n    B --> C{\"心電圖確診<br/>心房顫動?\"}\n    C -->|是| D[\"確診心房顫動\"]\n    C -->|否| E[\"24小時心電圖監測\"]\n    E --> F{\"發現心房顫動?\"}\n    F -->|是| D\n    F -->|否| G[\"考慮其他診斷<br/>持續監測\"]\n    \n    D --> H[\"評估血流動力學穩定性\"]\n    H --> I{\"血流動力學<br/>不穩定?\"}\n    I -->|是| J[\"緊急處理<br/>電氣心律轉復\"]\n    I -->|否| K[\"穩定患者評估\"]\n    \n    K --> L[\"病史詢問與理學檢查\"]\n    L --> M[\"基本檢查<br/>• 血液檢查<br/>• 胸部X光<br/>• 心臟超音波\"]\n    M --> N[\"評估心房顫動類型\"]\n    \n    N --> O[\"中風風險評估<br/>CHA₂DS₂-VASc 評分\"]\n    O --> P{\"CHA₂DS₂-VASc<br/>評分 ≥2?\"}\n    P -->|是| Q[\"建議抗凝血治療\"]\n    P -->|否| R{\"評分 = 1?\"}\n    R -->|是| S[\"考慮抗凝血治療<br/>評估個別風險效益\"]\n    R -->|否| T[\"低風險<br/>定期追蹤\"]\n    \n    Q --> U[\"出血風險評估<br/>HAS-BLED 評分\"]\n    S --> U\n    U --> V[\"選擇抗凝血藥物<br/>• DOAC (首選)<br/>• Warfarin\"]\n    \n    V --> W[\"症狀控制策略\"]\n    T --> W\n    W --> X{\"症狀明顯?\"}\n    X -->|是| Y[\"心律控制 vs 心跳控制\"]\n    X -->|否| Z[\"定期追蹤\"]\n    \n    Y --> AA{\"適合心律控制?<br/>• 年輕患者<br/>• 症狀明顯<br/>• 心衰竭\"}\n    AA -->|是| BB[\"心律控制<br/>• 抗心律不整藥物<br/>• 電氣心律轉復<br/>• 心房顫動燒灼術\"]\n    AA -->|否| CC[\"心跳控制<br/>• β阻斷劑<br/>• 鈣離子通道阻斷劑<br/>• Digoxin\"]\n    \n    BB --> DD[\"定期追蹤<br/>• 心電圖<br/>• 症狀評估<br/>• 藥物監測\"]\n    CC --> DD\n    Z --> DD\n    \n    DD --> EE[\"長期管理<br/>• 生活方式調整<br/>• 風險因子控制<br/>• 併發症預防\"]\n    \n    J --> FF[\"穩定後評估\"]\n    FF --> L\n    \n    style A fill:#e1f5fe\n    style D fill:#fff3e0\n    style J fill:#ffebee\n    style Q fill:#e8f5e8\n    style BB fill:#f3e5f5\n    style CC fill:#f3e5f5\n    style EE fill:#e0f2f1",
+  "category": "diagnostic",
+  "complexity": "complex",
+  "medicalSpecialties": ["cardiology", "emergency"],
+  "tags": ["atrial fibrillation", "diagnosis", "treatment", "anticoagulation", "rhythm control"],
+  "accessibility": {
+    "textAlternative": {
+      "zh-TW": "心房顫動診斷與治療流程圖：從症狀識別開始，經過心電圖確診，評估血流動力學穩定性，進行中風風險評估（CHA₂DS₂-VASc評分），決定抗凝血治療，選擇症狀控制策略（心律控制或心跳控制），最後進行長期管理。",
+      "en": "Atrial fibrillation diagnosis and treatment flowchart: Starting from symptom identification, through ECG confirmation, assessing hemodynamic stability, stroke risk evaluation (CHA₂DS₂-VASc score), anticoagulation decision, symptom control strategy selection (rhythm vs rate control), and long-term management.",
+      "ja": "心房細動の診断と治療フローチャート：症状の識別から始まり、心電図による確認、血行動態の安定性評価、脳卒中リスク評価（CHA₂DS₂-VASc スコア）、抗凝固治療の決定、症状コントロール戦略の選択（リズムコントロール vs レートコントロール）、長期管理まで。"
+    },
+    "ariaLabel": {
+      "zh-TW": "心房顫動診斷與治療決策流程圖",
+      "en": "Atrial fibrillation diagnosis and treatment decision flowchart",
+      "ja": "心房細動の診断と治療決定フローチャート"
+    },
+    "keyboardNavigation": false,
+    "screenReaderInstructions": {
+      "zh-TW": "此流程圖顯示心房顫動的完整診斷和治療路徑。從上到下依序為：症狀評估、診斷確認、穩定性評估、風險分層、治療選擇和長期管理。",
+      "en": "This flowchart shows the complete diagnostic and treatment pathway for atrial fibrillation. From top to bottom: symptom assessment, diagnostic confirmation, stability evaluation, risk stratification, treatment selection, and long-term management.",
+      "ja": "このフローチャートは心房細動の完全な診断と治療経路を示しています。上から下へ：症状評価、診断確認、安定性評価、リスク層別化、治療選択、長期管理。"
+    }
+  },
+  "clinicalContext": {
+    "zh-TW": "本流程圖基於 2020 年歐洲心臟病學會心房顫動指引制定，適用於成人非瓣膜性心房顫動患者的診斷和治療決策。流程強調個人化治療方案，考慮患者的臨床特徵、併發症風險和治療偏好。",
+    "en": "This flowchart is based on the 2020 ESC Guidelines for atrial fibrillation and applies to the diagnosis and treatment decisions for adult non-valvular atrial fibrillation patients. The process emphasizes individualized treatment plans considering patient clinical characteristics, complication risks, and treatment preferences.",
+    "ja": "このフローチャートは2020年ESC心房細動ガイドラインに基づいており、成人の非弁膜症性心房細動患者の診断と治療決定に適用されます。プロセスは患者の臨床的特徴、合併症リスク、治療の好みを考慮した個別化治療計画を重視しています。"
+  },
+  "usageInstructions": {
+    "zh-TW": "使用此流程圖時，請從患者症狀開始，依序進行各項評估。每個決策點都需要結合患者的具體情況和最新的臨床證據。重要的評估工具包括 CHA₂DS₂-VASc 評分和 HAS-BLED 評分。",
+    "en": "When using this flowchart, start with patient symptoms and proceed through each assessment sequentially. Each decision point should combine the patient's specific situation with the latest clinical evidence. Important assessment tools include CHA₂DS₂-VASc score and HAS-BLED score.",
+    "ja": "このフローチャートを使用する際は、患者の症状から始めて、各評価を順次進めてください。各決定ポイントでは、患者の具体的な状況と最新の臨床エビデンスを組み合わせる必要があります。重要な評価ツールには、CHA₂DS₂-VASc スコアとHAS-BLEDスコアが含まれます。"
+  },
+  "evidenceLevel": "A",
+  "relatedCalculators": ["cha2ds2-vasc", "has-bled"],
+  "relatedEducation": ["atrial-fibrillation", "anticoagulation-guide"],
+  "references": [
+    {
+      "title": "2020 ESC Guidelines for the diagnosis and management of atrial fibrillation",
+      "authors": ["Hindricks G", "Potpara T", "Dagres N"],
+      "guideline": "European Society of Cardiology",
+      "year": 2021,
+      "url": "https://academic.oup.com/eurheartj/article/42/5/373/6007050"
+    },
+    {
+      "title": "2019 AHA/ACC/HRS Focused Update on Atrial Fibrillation",
+      "authors": ["January CT", "Wann LS", "Calkins H"],
+      "guideline": "American Heart Association",
+      "year": 2019,
+      "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000000665"
+    }
+  ],
+  "version": "2.0",
+  "lastUpdated": "2024-01-15T00:00:00.000Z",
+  "changeLog": [
+    {
+      "version": "2.0",
+      "date": "2024-01-15T00:00:00.000Z",
+      "changes": [
+        "更新至 2020 ESC 指引",
+        "增加 DOAC 優先選擇建議",
+        "強化個人化治療決策"
+      ]
+    },
+    {
+      "version": "1.0",
+      "date": "2023-01-01T00:00:00.000Z",
+      "changes": [
+        "初始版本發布"
+      ]
+    }
+  ],
+  "isActive": true,
+  "thumbnail": "/images/flowcharts/af-management-thumb.jpg",
+  "previewImage": "/images/flowcharts/af-management-preview.jpg",
+  "seoTitle": {
+    "zh-TW": "心房顫動診斷治療流程圖 - 臨床決策指引",
+    "en": "Atrial Fibrillation Diagnosis and Treatment Flowchart - Clinical Decision Guide",
+    "ja": "心房細動診断治療フローチャート - 臨床決定ガイド"
+  },
+  "seoDescription": {
+    "zh-TW": "基於最新臨床指引的心房顫動診斷與治療決策流程圖，包含風險評估、抗凝血治療選擇和症狀控制策略，協助醫療專業人員制定個人化治療計畫。",
+    "en": "Evidence-based atrial fibrillation diagnosis and treatment decision flowchart including risk assessment, anticoagulation selection, and symptom control strategies to help healthcare professionals develop individualized treatment plans.",
+    "ja": "最新の臨床ガイドラインに基づく心房細動の診断と治療決定フローチャート。リスク評価、抗凝固治療の選択、症状コントロール戦略を含み、医療専門家が個別化治療計画を策定するのを支援します。"
+  },
+  "keywords": ["心房顫動", "診斷流程", "治療指引", "CHA2DS2-VASc", "抗凝血", "atrial fibrillation", "diagnosis flowchart", "treatment guidelines", "anticoagulation", "心房細動", "診断フローチャート", "治療ガイドライン"]
+}

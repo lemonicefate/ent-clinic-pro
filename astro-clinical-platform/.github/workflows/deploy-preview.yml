@@ -1,0 +1,186 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'astro-clinical-platform/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ./astro-clinical-platform
+      run: npm ci
+
+    - name: Build for preview
+      working-directory: ./astro-clinical-platform
+      run: npm run build
+      env:
+        PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL || 'https://astro-clinical-platform.vercel.app' }}
+        PUBLIC_ANALYTICS_ID: ${{ secrets.PUBLIC_ANALYTICS_ID }}
+
+    - name: Deploy to Cloudflare Pages Preview
+      id: deploy
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: astro-clinical-platform
+        directory: astro-clinical-platform/dist
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        wranglerVersion: '3'
+
+    - name: Run Lighthouse on Preview
+      id: lighthouse
+      uses: treosh/lighthouse-ci-action@v10
+      with:
+        urls: |
+          ${{ steps.deploy.outputs.preview-url }}
+          ${{ steps.deploy.outputs.preview-url }}/tools
+          ${{ steps.deploy.outputs.preview-url }}/education
+        configPath: './astro-clinical-platform/lighthouserc.js'
+        uploadArtifacts: true
+        temporaryPublicStorage: true
+
+    - name: Comment PR with preview info
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('🚀 Preview Deployment')
+          );
+
+          const commentBody = `## 🚀 Preview Deployment Ready!
+
+          **Preview URL:** ${{ steps.deploy.outputs.url }}
+
+          ### 📊 Lighthouse Results
+          ${{ steps.lighthouse.outputs.links }}
+
+          ### 🔍 What to Test
+          - [ ] Calculator functionality on different devices
+          - [ ] Educational content rendering
+          - [ ] Multi-language switching
+          - [ ] Search functionality
+          - [ ] Accessibility with screen readers
+          - [ ] Performance on mobile devices
+
+          ### 📱 Test URLs
+          - **Homepage:** ${{ steps.deploy.outputs.url }}
+          - **Tools:** ${{ steps.deploy.outputs.url }}/tools
+          - **Education:** ${{ steps.deploy.outputs.url }}/education
+          - **English:** ${{ steps.deploy.outputs.url }}/en
+          - **Japanese:** ${{ steps.deploy.outputs.url }}/ja
+
+          ---
+          *This preview will be available until the PR is merged or closed.*
+          `;
+
+          if (botComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: commentBody
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody
+            });
+          }
+
+    - name: Add PR labels based on changes
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: files } = await github.rest.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+
+          const labels = [];
+          
+          // Check for medical content changes
+          if (files.some(file => file.filename.includes('content/calculators'))) {
+            labels.push('medical-calculators');
+          }
+          
+          if (files.some(file => file.filename.includes('content/education'))) {
+            labels.push('medical-education');
+          }
+          
+          // Check for UI changes
+          if (files.some(file => file.filename.includes('components') || file.filename.includes('styles'))) {
+            labels.push('ui-changes');
+          }
+          
+          // Check for configuration changes
+          if (files.some(file => file.filename.includes('astro.config') || file.filename.includes('package.json') || file.filename.includes('wrangler.toml'))) {
+            labels.push('configuration');
+          }
+
+          // Check for Cloudflare Pages changes
+          if (files.some(file => file.filename.includes('_headers') || file.filename.includes('_redirects') || file.filename.includes('wrangler.toml'))) {
+            labels.push('cloudflare-pages');
+          }
+
+          if (labels.length > 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: labels
+            });
+          }
+
+  # 清理舊的預覽部署
+  cleanup-previews:
+    name: Cleanup Old Previews
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed'
+    
+    steps:
+    - name: Delete preview deployment
+      uses: actions/github-script@v7
+      with:
+        script: |
+          console.log('PR closed, preview deployment will be automatically cleaned up by Cloudflare Pages');
+          
+    - name: Comment cleanup notification
+      uses: actions/github-script@v7
+      with:
+        script: |
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: '🧹 Preview deployment has been cleaned up automatically.'
+          });

@@ -1,0 +1,248 @@
+{
+  "id": "amoxicillin-clavulanate-dose",
+  "version": "1.0.0",
+  "name": {
+    "zh-TW": "兒童 Amoxicillin/Clavulanate 劑量計算器",
+    "en": "Pediatric Amoxicillin/Clavulanate Dose Calculator",
+    "ja": "小児用アモキシシリン/クラブラン酸用量計算機"
+  },
+  "description": {
+    "zh-TW": "根據兒童體重與治療目標，智能計算最佳 Amoxicillin/Clavulanate 藥錠組合的專業工具",
+    "en": "Professional tool for calculating optimal Amoxicillin/Clavulanate tablet combinations based on pediatric weight and treatment goals",
+    "ja": "小児の体重と治療目標に基づいて、最適なアモキシシリン/クラブラン酸錠剤の組み合わせを計算する専門ツール"
+  },
+  "category": "pediatrics",
+  "metadata": {
+    "difficulty": "intermediate",
+    "tags": ["pediatrics", "antibiotics", "amoxicillin", "clavulanate", "dose-calculation", "infection"],
+    "author": "Astro Clinical Platform",
+    "license": "MIT",
+    "keywords": ["amoxicillin", "clavulanate", "pediatric", "dose", "antibiotic"]
+  },
+  "medical": {
+    "specialty": ["Pediatrics", "Family Medicine", "Internal Medicine", "Infectious Disease"],
+    "evidenceLevel": "A",
+    "clinicalGuidelines": {
+      "zh-TW": "基於兒科抗生素使用指引，Amoxicillin/Clavulanate 為治療兒童細菌感染的第一線或第二線抗生素，特別適用於中耳炎、鼻竇炎等感染。劑量計算需考慮 Amoxicillin 的治療效果與 Clavulanate 的安全限制。",
+      "en": "Based on pediatric antibiotic guidelines, Amoxicillin/Clavulanate is a first or second-line antibiotic for treating bacterial infections in children, particularly effective for otitis media and sinusitis. Dosing calculations must consider both Amoxicillin efficacy and Clavulanate safety limits.",
+      "ja": "小児抗生物質ガイドラインに基づき、アモキシシリン/クラブラン酸は小児の細菌感染症治療における第一選択または第二選択抗生物質で、特に中耳炎や副鼻腔炎に有効です。用量計算では、アモキシシリンの治療効果とクラブラン酸の安全性制限の両方を考慮する必要があります。"
+    },
+    "references": [
+      {
+        "title": "Pediatric Antimicrobial Stewardship Guidelines",
+        "authors": ["American Academy of Pediatrics"],
+        "journal": "Pediatrics",
+        "year": "2023",
+        "doi": "10.1542/peds.2023-061891"
+      }
+    ]
+  },
+  "ui": {
+    "fields": [
+      {
+        "id": "weight",
+        "type": "number",
+        "label": {
+          "zh-TW": "兒童體重",
+          "en": "Child Weight",
+          "ja": "小児体重"
+        },
+        "helpText": {
+          "zh-TW": "請輸入兒童的體重（公斤）",
+          "en": "Enter the child's weight in kilograms",
+          "ja": "小児の体重をキログラムで入力してください"
+        },
+        "required": true,
+        "validation": {
+          "min": 1,
+          "max": 100
+        },
+        "unit": {
+          "zh-TW": "公斤",
+          "en": "kg",
+          "ja": "kg"
+        },
+        "placeholder": {
+          "zh-TW": "例如：15",
+          "en": "e.g., 15",
+          "ja": "例：15"
+        }
+      },
+      {
+        "id": "doseTarget",
+        "type": "radio-cards",
+        "label": {
+          "zh-TW": "Amoxicillin 劑量目標",
+          "en": "Amoxicillin Dose Target",
+          "ja": "アモキシシリン用量目標"
+        },
+        "helpText": {
+          "zh-TW": "選擇適合的劑量目標，標準劑量適用於一般感染，高劑量適用於頑固細菌感染",
+          "en": "Choose appropriate dose target: standard dose for general infections, high dose for resistant bacterial infections",
+          "ja": "適切な用量目標を選択：標準用量は一般感染用、高用量は耐性菌感染用"
+        },
+        "required": true,
+        "options": [
+          {
+            "value": "low",
+            "label": {
+              "zh-TW": "標準劑量",
+              "en": "Standard Dose",
+              "ja": "標準用量"
+            },
+            "description": {
+              "zh-TW": "45 mg/kg/day",
+              "en": "45 mg/kg/day",
+              "ja": "45 mg/kg/day"
+            },
+            "subtitle": {
+              "zh-TW": "適用於一般感染",
+              "en": "For general infections",
+              "ja": "一般感染用"
+            }
+          },
+          {
+            "value": "high",
+            "label": {
+              "zh-TW": "高劑量",
+              "en": "High Dose",
+              "ja": "高用量"
+            },
+            "description": {
+              "zh-TW": "80-90 mg/kg/day",
+              "en": "80-90 mg/kg/day",
+              "ja": "80-90 mg/kg/day"
+            },
+            "subtitle": {
+              "zh-TW": "適用於頑固細菌，如中耳炎",
+              "en": "For resistant bacteria, such as otitis media",
+              "ja": "中耳炎などの耐性菌用"
+            }
+          }
+        ]
+      },
+      {
+        "id": "frequency",
+        "type": "select",
+        "label": {
+          "zh-TW": "用藥頻次",
+          "en": "Dosing Frequency",
+          "ja": "投与頻度"
+        },
+        "helpText": {
+          "zh-TW": "選擇每日用藥次數",
+          "en": "Select daily dosing frequency",
+          "ja": "1日の投与回数を選択"
+        },
+        "required": true,
+        "defaultValue": "3",
+        "options": [
+          {
+            "value": "2",
+            "label": {
+              "zh-TW": "1天2次 (BID)",
+              "en": "Twice Daily (BID)",
+              "ja": "1日2回 (BID)"
+            }
+          },
+          {
+            "value": "3",
+            "label": {
+              "zh-TW": "1天3次 (TID)",
+              "en": "Three Times Daily (TID)",
+              "ja": "1日3回 (TID)"
+            }
+          },
+          {
+            "value": "4",
+            "label": {
+              "zh-TW": "1天4次 (QID)",
+              "en": "Four Times Daily (QID)",
+              "ja": "1日4回 (QID)"
+            }
+          }
+        ]
+      },
+      {
+        "id": "days",
+        "type": "select",
+        "label": {
+          "zh-TW": "治療天數",
+          "en": "Treatment Days",
+          "ja": "治療日数"
+        },
+        "helpText": {
+          "zh-TW": "選擇總治療天數",
+          "en": "Select total treatment days",
+          "ja": "総治療日数を選択"
+        },
+        "required": true,
+        "defaultValue": "3",
+        "options": [
+          {
+            "value": "1",
+            "label": {
+              "zh-TW": "1 天",
+              "en": "1 Day",
+              "ja": "1日"
+            }
+          },
+          {
+            "value": "2",
+            "label": {
+              "zh-TW": "2 天",
+              "en": "2 Days",
+              "ja": "2日"
+            }
+          },
+          {
+            "value": "3",
+            "label": {
+              "zh-TW": "3 天",
+              "en": "3 Days",
+              "ja": "3日"
+            }
+          },
+          {
+            "value": "4",
+            "label": {
+              "zh-TW": "4 天",
+              "en": "4 Days",
+              "ja": "4日"
+            }
+          },
+          {
+            "value": "5",
+            "label": {
+              "zh-TW": "5 天",
+              "en": "5 Days",
+              "ja": "5日"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "calculation": {
+    "functionName": "calculateAmoxicillinClavulanateDose",
+    "algorithm": "Optimal tablet combination algorithm with safety constraints"
+  },
+  "interpretation": [
+    {
+      "condition": "safe_combination_found",
+      "recommendation": {
+        "zh-TW": "已找到安全且最佳的藥錠組合，請按照建議進行配藥",
+        "en": "Safe and optimal tablet combination found, please follow the dispensing recommendations",
+        "ja": "安全で最適な錠剤の組み合わせが見つかりました。調剤の推奨事項に従ってください"
+      }
+    },
+    {
+      "condition": "no_safe_combination",
+      "recommendation": {
+        "zh-TW": "找不到符合安全規範的組合，請諮詢醫師或藥師",
+        "en": "No safe combination found, please consult with physician or pharmacist",
+        "ja": "安全な組み合わせが見つかりません。医師または薬剤師にご相談ください"
+      }
+    }
+  ]
+}

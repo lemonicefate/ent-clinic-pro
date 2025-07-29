@@ -1,0 +1,296 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PersonalizedRecommendations from '../components/islands/PersonalizedRecommendations.tsx';
+import EnhancedSearch from '../components/islands/EnhancedSearch.tsx';
+
+const title = "個人化推薦 | Astro Clinical Platform";
+const description = "基於您的使用習慣和興趣，為您推薦相關的醫療計算工具和衛教內容";
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="min-h-screen bg-gray-50">
+    <!-- 頁面標題 -->
+    <div class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="text-center">
+          <h1 class="text-3xl font-bold text-gray-900 mb-4">
+            個人化推薦
+          </h1>
+          <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            基於您的使用習慣和興趣，我們為您精選了相關的醫療工具和衛教內容
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- 搜尋區域 -->
+      <div class="mb-8">
+        <EnhancedSearch 
+          client:load
+          placeholder="搜尋更多醫療內容..."
+          showRecommendations={false}
+          className="max-w-2xl mx-auto"
+        />
+      </div>
+
+      <!-- 推薦內容區域 -->
+      <div class="space-y-12">
+        <!-- 主要推薦 -->
+        <section>
+          <PersonalizedRecommendations 
+            client:load
+            title="為您推薦"
+            limit={9}
+            showReason={true}
+            className="mb-8"
+          />
+        </section>
+
+        <!-- 使用者統計 -->
+        <section class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">您的使用統計</h2>
+          <div id="user-stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- 統計內容將由 JavaScript 動態載入 -->
+          </div>
+        </section>
+
+        <!-- 分類推薦 -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- 計算工具推薦 -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              </svg>
+              推薦計算工具
+            </h2>
+            <div id="calculator-recommendations" class="space-y-4">
+              <!-- 計算工具推薦將由 JavaScript 動態載入 -->
+            </div>
+          </div>
+
+          <!-- 衛教文章推薦 -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+              推薦衛教文章
+            </h2>
+            <div id="education-recommendations" class="space-y-4">
+              <!-- 衛教文章推薦將由 JavaScript 動態載入 -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 個人化設定 -->
+        <section class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">個人化設定</h2>
+          <div class="space-y-6">
+            <!-- 專科偏好 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                專科偏好
+              </label>
+              <select id="specialty-preference" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <option value="">請選擇專科</option>
+                <option value="cardiology">心臟科</option>
+                <option value="endocrinology">內分泌科</option>
+                <option value="nephrology">腎臟科</option>
+                <option value="neurology">神經科</option>
+                <option value="emergency">急診科</option>
+                <option value="pediatrics">小兒科</option>
+                <option value="psychiatry">精神科</option>
+              </select>
+            </div>
+
+            <!-- 興趣標籤 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                興趣標籤
+              </label>
+              <div id="interest-tags" class="flex flex-wrap gap-2">
+                <!-- 興趣標籤將由 JavaScript 動態載入 -->
+              </div>
+            </div>
+
+            <!-- 操作按鈕 -->
+            <div class="flex space-x-4">
+              <button
+                id="save-preferences"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                儲存設定
+              </button>
+              <button
+                id="clear-data"
+                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                清除個人資料
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    import { IntelligentRecommendationEngine } from '../utils/content-recommendation';
+
+    // 初始化頁面
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // 初始化推薦引擎
+        IntelligentRecommendationEngine.initialize();
+        
+        // 載入使用者統計
+        loadUserStats();
+        
+        // 載入分類推薦
+        loadCategoryRecommendations();
+        
+        // 載入個人化設定
+        loadPersonalizationSettings();
+        
+        // 綁定事件監聽器
+        bindEventListeners();
+      } catch (error) {
+        console.error('Failed to initialize recommendations page:', error);
+      }
+    });
+
+    function loadUserStats() {
+      const stats = IntelligentRecommendationEngine.getUserStats();
+      const statsContainer = document.getElementById('user-stats');
+      
+      if (statsContainer) {
+        statsContainer.innerHTML = `
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">${stats.totalViews}</div>
+            <div class="text-sm text-gray-600">總瀏覽次數</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">${stats.totalCalculations}</div>
+            <div class="text-sm text-gray-600">計算次數</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-purple-600">${stats.topInterests.length}</div>
+            <div class="text-sm text-gray-600">興趣領域</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-orange-600">${stats.recentActivity.length}</div>
+            <div class="text-sm text-gray-600">最近活動</div>
+          </div>
+        `;
+      }
+    }
+
+    async function loadCategoryRecommendations() {
+      try {
+        // 載入計算工具推薦
+        const calculatorRecs = await IntelligentRecommendationEngine.getPersonalizedRecommendations(undefined, 5);
+        const calculatorRecsFiltered = calculatorRecs.filter(rec => rec.type === 'calculator');
+        
+        const calculatorContainer = document.getElementById('calculator-recommendations');
+        if (calculatorContainer && calculatorRecsFiltered.length > 0) {
+          calculatorContainer.innerHTML = calculatorRecsFiltered.map(rec => `
+            <a href="${rec.url}" class="block p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-sm transition-all">
+              <h3 class="font-medium text-gray-900">${rec.title}</h3>
+              <p class="text-sm text-gray-600 mt-1">${rec.description || ''}</p>
+              <div class="flex items-center justify-between mt-2">
+                <span class="text-xs text-blue-600">${rec.category || ''}</span>
+                <span class="text-xs text-gray-500">${rec.reason}</span>
+              </div>
+            </a>
+          `).join('');
+        }
+
+        // 載入衛教文章推薦
+        const educationRecs = calculatorRecs.filter(rec => rec.type === 'education');
+        const educationContainer = document.getElementById('education-recommendations');
+        if (educationContainer && educationRecs.length > 0) {
+          educationContainer.innerHTML = educationRecs.map(rec => `
+            <a href="${rec.url}" class="block p-3 border border-gray-200 rounded-lg hover:border-green-300 hover:shadow-sm transition-all">
+              <h3 class="font-medium text-gray-900">${rec.title}</h3>
+              <p class="text-sm text-gray-600 mt-1">${rec.description || ''}</p>
+              <div class="flex items-center justify-between mt-2">
+                <span class="text-xs text-green-600">${rec.category || ''}</span>
+                <span class="text-xs text-gray-500">${rec.reason}</span>
+              </div>
+            </a>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Failed to load category recommendations:', error);
+      }
+    }
+
+    function loadPersonalizationSettings() {
+      const stats = IntelligentRecommendationEngine.getUserStats();
+      
+      // 載入專科偏好
+      const specialtySelect = document.getElementById('specialty-preference') as HTMLSelectElement;
+      if (specialtySelect && stats.favoriteSpecialty) {
+        specialtySelect.value = stats.favoriteSpecialty;
+      }
+
+      // 載入興趣標籤
+      const interestContainer = document.getElementById('interest-tags');
+      if (interestContainer && stats.topInterests.length > 0) {
+        interestContainer.innerHTML = stats.topInterests.map(interest => `
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+            ${interest}
+            <button type="button" class="ml-2 text-blue-600 hover:text-blue-800" onclick="removeInterest('${interest}')">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </span>
+        `).join('');
+      }
+    }
+
+    function bindEventListeners() {
+      // 儲存設定
+      const saveButton = document.getElementById('save-preferences');
+      if (saveButton) {
+        saveButton.addEventListener('click', () => {
+          const specialtySelect = document.getElementById('specialty-preference') as HTMLSelectElement;
+          if (specialtySelect && specialtySelect.value) {
+            // 這裡應該更新用戶偏好
+            alert('設定已儲存');
+          }
+        });
+      }
+
+      // 清除資料
+      const clearButton = document.getElementById('clear-data');
+      if (clearButton) {
+        clearButton.addEventListener('click', () => {
+          if (confirm('確定要清除所有個人資料嗎？此操作無法復原。')) {
+            IntelligentRecommendationEngine.clearUserData();
+            location.reload();
+          }
+        });
+      }
+    }
+
+    // 全域函數
+    window.removeInterest = function(interest: string) {
+      // 這裡應該實現移除興趣的邏輯
+      console.log('Remove interest:', interest);
+      loadPersonalizationSettings();
+    };
+  </script>
+</BaseLayout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

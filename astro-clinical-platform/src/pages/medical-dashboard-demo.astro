@@ -1,0 +1,262 @@
+---
+/**
+ * 互動式醫療儀表板示例頁面
+ * 展示綜合的醫療數據視覺化和互動功能
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InteractiveMedicalDashboard from '../components/islands/InteractiveMedicalDashboard.tsx';
+
+const locale = 'zh-TW';
+---
+
+<BaseLayout 
+  title="互動式醫療儀表板"
+  description="綜合醫療數據視覺化和分析工具，提供患者風險評估、生命徵象監測、藥物比較等功能"
+  locale={locale}
+>
+  <main class="container mx-auto px-4 py-8">
+    <!-- 頁面標題 -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-medical-neutral-900 mb-4">
+        互動式醫療儀表板
+      </h1>
+      <p class="text-lg text-medical-neutral-600 max-w-3xl mx-auto">
+        整合多種醫療數據視覺化組件，提供全面的患者健康狀況分析和臨床決策支援。
+      </p>
+    </div>
+
+    <!-- 互動式儀表板 -->
+    <InteractiveMedicalDashboard 
+      locale={locale}
+      client:load
+    />
+
+    <!-- 功能說明 -->
+    <section class="mt-12 bg-medical-neutral-50 rounded-lg p-8">
+      <h2 class="text-2xl font-semibold text-medical-neutral-900 mb-6 text-center">
+        儀表板功能特色
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <div class="w-12 h-12 bg-medical-primary-100 rounded-lg flex items-center justify-center mb-4">
+            <span class="text-2xl">📊</span>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-3">
+            多維度數據視覺化
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            整合風險評估、生命徵象、藥物比較、症狀評估等多種醫療數據，提供全面的患者健康狀況視圖。
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <div class="w-12 h-12 bg-medical-primary-100 rounded-lg flex items-center justify-center mb-4">
+            <span class="text-2xl">🔄</span>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-3">
+            即時互動控制
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            支援患者切換、時間範圍調整、進階指標開關等互動功能，讓醫療專業人員能靈活查看所需資訊。
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <div class="w-12 h-12 bg-medical-primary-100 rounded-lg flex items-center justify-center mb-4">
+            <span class="text-2xl">📋</span>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-3">
+            智能醫療摘要
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            自動分析患者數據並生成醫療摘要，突出重要發現和建議，協助快速臨床決策。
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <div class="w-12 h-12 bg-medical-primary-100 rounded-lg flex items-center justify-center mb-4">
+            <span class="text-2xl">📱</span>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-3">
+            響應式設計
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            完全響應式設計，在桌面、平板和手機上都能完美顯示，適合各種臨床環境使用。
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <div class="w-12 h-12 bg-medical-primary-100 rounded-lg flex items-center justify-center mb-4">
+            <span class="text-2xl">⚡</span>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-3">
+            高性能渲染
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            基於 Chart.js 和 React 的高性能圖表渲染，支援大量數據的流暢顯示和互動。
+          </p>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <div class="w-12 h-12 bg-medical-primary-100 rounded-lg flex items-center justify-center mb-4">
+            <span class="text-2xl">🎨</span>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-3">
+            專業醫療設計
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            採用醫療專業的顏色配置和視覺設計，符合醫療環境的使用習慣和審美要求。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 使用場景 -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold text-medical-neutral-900 mb-6 text-center">
+        適用場景
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-lg p-6 shadow-sm border border-medical-neutral-200">
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-4">
+            🏥 臨床診療
+          </h3>
+          <ul class="space-y-2 text-medical-neutral-600 text-sm">
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              門診和住院患者的綜合健康狀況評估
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              多科會診時的患者資料整合展示
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              治療方案選擇和效果評估
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              患者病情變化趨勢監測
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow-sm border border-medical-neutral-200">
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-4">
+            📊 醫療管理
+          </h3>
+          <ul class="space-y-2 text-medical-neutral-600 text-sm">
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              人群健康管理和風險分層
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              醫療品質指標監測和分析
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              藥物使用效果和安全性評估
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-medical-primary-600 rounded-full mt-2 mr-3"></span>
+              臨床決策支援和指引制定
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 技術特點 -->
+    <section class="mt-12 bg-gradient-to-r from-medical-primary-50 to-medical-accent-50 rounded-lg p-8">
+      <h2 class="text-2xl font-semibold text-medical-neutral-900 mb-6 text-center">
+        技術架構
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <span class="text-2xl">⚛️</span>
+          </div>
+          <h3 class="font-semibold text-medical-neutral-900 mb-2">React Islands</h3>
+          <p class="text-sm text-medical-neutral-600">
+            使用 Astro Islands 架構，只在需要時載入互動組件
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <span class="text-2xl">📈</span>
+          </div>
+          <h3 class="font-semibold text-medical-neutral-900 mb-2">Chart.js</h3>
+          <p class="text-sm text-medical-neutral-600">
+            基於 Chart.js 的高性能圖表渲染引擎
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <span class="text-2xl">🎨</span>
+          </div>
+          <h3 class="font-semibold text-medical-neutral-900 mb-2">Tailwind CSS</h3>
+          <p class="text-sm text-medical-neutral-600">
+            使用 Tailwind CSS 的醫療主題設計系統
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <span class="text-2xl">🔧</span>
+          </div>
+          <h3 class="font-semibold text-medical-neutral-900 mb-2">TypeScript</h3>
+          <p class="text-sm text-medical-neutral-600">
+            完整的 TypeScript 類型支援，確保代碼品質
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>
+
+<style>
+  /* 確保圖表容器的響應式行為 */
+  :global(.medical-dashboard) {
+    min-height: 100vh;
+  }
+  
+  /* 平滑的標籤切換動畫 */
+  :global(.medical-dashboard nav button) {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* 高對比模式支援 */
+  @media (prefers-contrast: high) {
+    :global(.medical-dashboard) {
+      filter: contrast(1.1);
+    }
+  }
+  
+  /* 減少動畫偏好 */
+  @media (prefers-reduced-motion: reduce) {
+    :global(.medical-dashboard *) {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* 確保在小螢幕上的可用性 */
+  @media (max-width: 768px) {
+    :global(.medical-dashboard) {
+      font-size: 14px;
+    }
+    
+    :global(.medical-dashboard .grid) {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

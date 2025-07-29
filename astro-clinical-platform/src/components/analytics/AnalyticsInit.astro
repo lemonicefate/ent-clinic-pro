@@ -1,0 +1,329 @@
+---
+/**
+ * 分析工具初始化組件
+ * 負責初始化隱私友善的分析追蹤
+ */
+
+export interface Props {
+  domain?: string;
+  locale?: 'zh-TW' | 'en' | 'ja';
+  medicalContent?: boolean;
+  pageType?: 'home' | 'calculator' | 'education' | 'search' | 'category';
+  contentId?: string;
+  specialty?: string;
+}
+
+const {
+  domain = import.meta.env.PUBLIC_ANALYTICS_DOMAIN,
+  locale = 'zh-TW',
+  medicalContent = false,
+  pageType = 'home',
+  contentId,
+  specialty
+} = Astro.props;
+
+// 只在生產環境和有設定 domain 時載入分析
+const shouldLoadAnalytics = import.meta.env.PROD && domain;
+
+// 生成頁面特定的分析屬性
+const pageProps = {
+  pageType,
+  locale,
+  medicalContent: medicalContent.toString(),
+  ...(contentId && { contentId }),
+  ...(specialty && { specialty }),
+  timestamp: Date.now()
+};
+---
+
+{shouldLoadAnalytics && (
+  <>
+    <!-- Plausible Analytics Script -->
+    <script 
+      is:inline
+      defer 
+      data-domain={domain}
+      data-api="https://plausible.io/api/event"
+      src="https://plausible.io/js/script.outbound-links.js"
+    ></script>
+    
+    <!-- Analytics Initialization -->
+    <script is:inline define:vars={{ pageProps, domain }}>
+      // 等待 DOM 載入完成
+      document.addEventListener('DOMContentLoaded', function() {
+        // 動態載入分析模組
+        import('/src/utils/privacy-analytics.ts').then(function(module) {
+          const { initializeAnalytics, trackPageView, trackMedicalContent } = module;
+          // 初始化分析工具
+          const analytics = initializeAnalytics({
+            domain: domain,
+            enabled: true,
+            trackOutboundLinks: true,
+            trackFileDownloads: true,
+            respectDoNotTrack: true,
+            sessionTimeout: 30
+          });
+          
+          // 追蹤頁面瀏覽
+          trackPageView({
+            pageType: pageProps.pageType,
+            locale: pageProps.locale,
+            medicalContent: pageProps.medicalContent === 'true',
+            ...(pageProps.contentId && { contentId: pageProps.contentId }),
+            ...(pageProps.specialty && { specialty: pageProps.specialty })
+          });
+          
+          // 如果是醫療內容，追蹤醫療內容使用
+          if (pageProps.medicalContent === 'true' && pageProps.contentId) {
+            trackMedicalContent({
+              contentType: pageProps.pageType === 'calculator' ? 'calculator' : 'education',
+              contentId: pageProps.contentId,
+              specialty: pageProps.specialty,
+              language: pageProps.locale
+            });
+          }
+          
+          // 設定全域分析實例供其他腳本使用
+          window.medicalAnalytics = analytics;
+          
+          // 發送自定義事件通知分析已初始化
+          window.dispatchEvent(new CustomEvent('analytics:initialized', {
+            detail: { analytics }
+          }));
+        }).catch(function(error) {
+          console.warn('Failed to load analytics:', error);
+        });
+      });
+    </script>
+    
+    <!-- 醫療內容特定追蹤 -->
+    {medicalContent && (
+      <script is:inline define:vars={{ pageProps }}>
+        // 追蹤醫療免責聲明互動
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+          if (target && target.id === 'disclaimer-accept') {
+            if (window.medicalAnalytics && window.medicalAnalytics.trackEvent) {
+              window.medicalAnalytics.trackEvent({
+                name: 'Medical Disclaimer Accepted',
+                properties: {
+                  contentId: pageProps.contentId || 'unknown',
+                  pageType: pageProps.pageType
+                }
+              });
+            }
+          }
+        });
+        
+        // 追蹤醫療內容滾動深度
+        let maxScrollDepth = 0;
+        let scrollTimer;
+        
+        window.addEventListener('scroll', function() {
+          clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(function() {
+            const scrollDepth = Math.round(
+              (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+            );
+            
+            if (scrollDepth > maxScrollDepth) {
+              maxScrollDepth = scrollDepth;
+              
+              // 追蹤重要的滾動里程碑
+              if ([25, 50, 75, 90].includes(scrollDepth)) {
+                window.medicalAnalytics?.trackEvent({
+                  name: 'Medical Content Scroll',
+                  properties: {
+                    scrollDepth: scrollDepth,
+                    contentId: pageProps.contentId || 'unknown',
+                    contentType: pageProps.pageType
+                  }
+                });
+              }
+            }
+          }, 100);
+        });
+        
+        // 追蹤頁面停留時間
+        let startTime = Date.now();
+        let isActive = true;
+        
+        // 檢測使用者是否活躍
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+          document.addEventListener(event, () => {
+            isActive = true;
+          }, { passive: true });
+        });
+        
+        // 定期檢查並記錄活躍時間
+        setInterval(() => {
+          if (isActive) {
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            
+            // 每 30 秒記錄一次活躍時間
+            if (timeSpent > 0 && timeSpent % 30 === 0) {
+              window.medicalAnalytics?.trackEvent({
+                name: 'Medical Content Engagement',
+                properties: {
+                  timeSpent: timeSpent,
+                  contentId: pageProps.contentId || 'unknown',
+                  contentType: pageProps.pageType,
+                  isActive: true
+                }
+              });
+            }
+            
+            isActive = false;
+          }
+        }, 1000);
+        
+        // 頁面離開時記錄總停留時間
+        window.addEventListener('beforeunload', () => {
+          const totalTime = Math.round((Date.now() - startTime) / 1000);
+          
+          if (totalTime > 5) { // 只記錄超過 5 秒的停留
+            window.medicalAnalytics?.trackEvent({
+              name: 'Medical Content Session End',
+              properties: {
+                totalTime: totalTime,
+                maxScrollDepth: maxScrollDepth,
+                contentId: pageProps.contentId || 'unknown',
+                contentType: pageProps.pageType
+              }
+            });
+          }
+        });
+      </script>
+    )}
+    
+    <!-- 計算機特定追蹤 -->
+    {pageType === 'calculator' && (
+      <script is:inline define:vars={{ pageProps }}>
+        // 監聽計算機事件
+        window.addEventListener('calculator:used', function(e) {
+          var detail = e.detail;
+          var calculatorId = detail.calculatorId;
+          var inputs = detail.inputs;
+          var result = detail.result;
+          var calculationTime = detail.calculationTime;
+          
+          if (window.medicalAnalytics && window.medicalAnalytics.trackCalculatorUsage) {
+            window.medicalAnalytics.trackCalculatorUsage({
+              name: 'Calculator Usage',
+              contentType: 'calculator',
+              contentId: calculatorId,
+              calculatorId: calculatorId,
+              inputFields: Object.keys(inputs),
+              resultType: result && result.risk ? result.risk : 'unknown',
+              calculationTime: calculationTime,
+              specialty: pageProps.specialty,
+              language: pageProps.locale
+            });
+          }
+        });
+        
+        // 監聽計算機錯誤
+        window.addEventListener('calculator:error', function(e) {
+          var detail = e.detail;
+          var calculatorId = detail.calculatorId;
+          var error = detail.error;
+          var inputs = detail.inputs;
+          
+          if (window.medicalAnalytics && window.medicalAnalytics.trackEvent) {
+            window.medicalAnalytics.trackEvent({
+              name: 'Calculator Error',
+              properties: {
+                calculatorId: calculatorId,
+                error: error.substring(0, 100), // 限制錯誤訊息長度
+                inputCount: Object.keys(inputs || {}).length
+              }
+            });
+          }
+        });
+      </script>
+    )}
+    
+    <!-- 搜尋頁面特定追蹤 -->
+    {pageType === 'search' && (
+      <script is:inline>
+        // 監聽搜尋事件
+        window.addEventListener('search:performed', function(e) {
+          var detail = e.detail;
+          var query = detail.query;
+          var results = detail.results;
+          var category = detail.category;
+          var searchTime = detail.searchTime;
+          
+          if (window.medicalAnalytics && window.medicalAnalytics.trackSearch) {
+            window.medicalAnalytics.trackSearch(query, results, category);
+          }
+          
+          // 追蹤搜尋效能
+          if (searchTime && window.medicalAnalytics && window.medicalAnalytics.trackEvent) {
+            window.medicalAnalytics.trackEvent({
+              name: 'Search Performance',
+              properties: {
+                searchTime: searchTime,
+                queryLength: query.length,
+                resultCount: results
+              }
+            });
+          }
+        });
+        
+        // 監聽搜尋結果點擊
+        window.addEventListener('search:result_clicked', function(e) {
+          var detail = e.detail;
+          var query = detail.query;
+          var resultType = detail.resultType;
+          var resultId = detail.resultId;
+          var position = detail.position;
+          
+          if (window.medicalAnalytics && window.medicalAnalytics.trackEvent) {
+            window.medicalAnalytics.trackEvent({
+              name: 'Search Result Clicked',
+              properties: {
+                query: query.substring(0, 50),
+                resultType: resultType,
+                resultId: resultId,
+                position: position
+              }
+            });
+          }
+        });
+      </script>
+    )}
+  </>
+)}
+
+<!-- 開發環境分析模擬 -->
+{!shouldLoadAnalytics && import.meta.env.DEV && (
+  <script is:inline define:vars={{ pageProps }}>
+    // 開發環境下的分析模擬
+    console.log('Analytics (DEV MODE):', {
+      pageType: pageProps.pageType,
+      locale: pageProps.locale,
+      medicalContent: pageProps.medicalContent,
+      contentId: pageProps.contentId,
+      specialty: pageProps.specialty
+    });
+    
+    // 提供模擬的全域分析物件
+    window.medicalAnalytics = {
+      trackEvent: (event) => console.log('Analytics Event (DEV):', event),
+      trackMedicalContent: (event) => console.log('Medical Content (DEV):', event),
+      trackCalculatorUsage: (event) => console.log('Calculator Usage (DEV):', event),
+      trackSearch: (query, results, category) => console.log('Search (DEV):', { query, results, category }),
+      trackUserJourney: (event) => console.log('User Journey (DEV):', event),
+      optOut: () => console.log('Analytics Opt Out (DEV)'),
+      optIn: () => console.log('Analytics Opt In (DEV)'),
+      isOptedOut: () => false,
+      clearLocalData: () => console.log('Clear Analytics Data (DEV)')
+    };
+    
+    // 發送模擬初始化事件
+    window.dispatchEvent(new CustomEvent('analytics:initialized', {
+      detail: { analytics: window.medicalAnalytics }
+    }));
+  </script>
+)}

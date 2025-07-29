@@ -1,0 +1,11 @@
+# Redirects for ENT Clinic Pro
+
+# Legacy paths (if any)
+/calculator/* /tools/:splat 301
+/calc/* /tools/:splat 301
+
+# Admin redirect to CMS (when implemented)
+/admin/* https://cms.ent-clinic-pro.com/:splat 302
+
+# SPA fallback for client-side routing
+/* /index.html 200

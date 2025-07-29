@@ -1,0 +1,144 @@
+{
+  "kind": "collectionType",
+  "collectionName": "flowcharts",
+  "info": {
+    "singularName": "flowchart",
+    "pluralName": "flowcharts",
+    "displayName": "Medical Flowchart",
+    "description": "Interactive medical decision trees and diagnostic flowcharts"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "mermaidCode": {
+      "type": "text",
+      "required": true,
+      "description": "Mermaid.js flowchart syntax"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "diagnostic",
+        "treatment",
+        "emergency",
+        "screening",
+        "management",
+        "prevention"
+      ],
+      "required": true
+    },
+    "complexity": {
+      "type": "enumeration",
+      "enum": [
+        "simple",
+        "moderate",
+        "complex"
+      ],
+      "default": "simple"
+    },
+    "medicalSpecialty": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::medical-specialty.medical-specialty",
+      "mappedBy": "flowcharts"
+    },
+    "relatedEducation": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::education.education",
+      "mappedBy": "relatedFlowcharts"
+    },
+    "accessibility": {
+      "type": "json",
+      "required": true,
+      "description": "Accessibility information including text alternatives"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "usageCount": {
+      "type": "integer",
+      "default": 0
+    },
+    "lastUpdated": {
+      "type": "datetime"
+    },
+    "clinicalContext": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "description": "Clinical context and usage guidelines"
+    },
+    "evidenceLevel": {
+      "type": "enumeration",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "description": "Evidence level for clinical recommendations"
+    },
+    "references": {
+      "type": "json",
+      "description": "Clinical references and guidelines"
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "seoTitle": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seoDescription": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

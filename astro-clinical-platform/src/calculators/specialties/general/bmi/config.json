@@ -1,0 +1,144 @@
+{
+  "id": "bmi",
+  "name": {
+    "zh-TW": "BMI 身體質量指數計算機",
+    "en": "BMI Body Mass Index Calculator",
+    "ja": "BMI 体格指数計算機"
+  },
+  "description": {
+    "zh-TW": "計算身體質量指數 (BMI) 並評估體重狀態，協助評估肥胖相關健康風險。",
+    "en": "Calculate Body Mass Index (BMI) and assess weight status to help evaluate obesity-related health risks.",
+    "ja": "体格指数 (BMI) を計算し、体重状態を評価して肥胖関連の健康リスクを評価します。"
+  },
+  "category": "general",
+  "version": "1.0.0",
+  "status": "active",
+  "fields": [
+    {
+      "id": "weight",
+      "type": "number",
+      "label": {
+        "zh-TW": "體重 (Weight)",
+        "en": "Weight",
+        "ja": "体重"
+      },
+      "helpText": {
+        "zh-TW": "請輸入您的體重，單位為公斤",
+        "en": "Enter your weight in kilograms",
+        "ja": "体重をキログラムで入力してください"
+      },
+      "unit": "kg",
+      "placeholder": {
+        "zh-TW": "例如：70",
+        "en": "e.g., 70",
+        "ja": "例：70"
+      },
+      "required": true,
+      "min": 20,
+      "max": 300,
+      "step": 0.1
+    },
+    {
+      "id": "height",
+      "type": "number",
+      "label": {
+        "zh-TW": "身高 (Height)",
+        "en": "Height",
+        "ja": "身長"
+      },
+      "helpText": {
+        "zh-TW": "請輸入您的身高，單位為公分",
+        "en": "Enter your height in centimeters",
+        "ja": "身長をセンチメートルで入力してください"
+      },
+      "unit": "cm",
+      "placeholder": {
+        "zh-TW": "例如：170",
+        "en": "e.g., 170",
+        "ja": "例：170"
+      },
+      "required": true,
+      "min": 100,
+      "max": 250,
+      "step": 0.1
+    },
+    {
+      "id": "age",
+      "type": "number",
+      "label": {
+        "zh-TW": "年齡 (Age)",
+        "en": "Age",
+        "ja": "年齢"
+      },
+      "helpText": {
+        "zh-TW": "年齡用於提供更精確的健康建議",
+        "en": "Age is used to provide more accurate health recommendations",
+        "ja": "年齢はより正確な健康アドバイスを提供するために使用されます"
+      },
+      "unit": "歲",
+      "placeholder": {
+        "zh-TW": "例如：30",
+        "en": "e.g., 30",
+        "ja": "例：30"
+      },
+      "required": false,
+      "min": 2,
+      "max": 120,
+      "step": 1
+    },
+    {
+      "id": "gender",
+      "type": "select",
+      "label": {
+        "zh-TW": "性別 (Gender)",
+        "en": "Gender",
+        "ja": "性別"
+      },
+      "helpText": {
+        "zh-TW": "性別用於提供更個人化的健康建議",
+        "en": "Gender is used to provide more personalized health recommendations",
+        "ja": "性別はより個人化された健康アドバイスを提供するために使用されます"
+      },
+      "options": [
+        {
+          "value": "male",
+          "label": {
+            "zh-TW": "男性",
+            "en": "Male",
+            "ja": "男性"
+          }
+        },
+        {
+          "value": "female",
+          "label": {
+            "zh-TW": "女性",
+            "en": "Female",
+            "ja": "女性"
+          }
+        }
+      ],
+      "required": false
+    }
+  ],
+  "calculation": {
+    "functionName": "calculateBMI",
+    "formula": "BMI = weight (kg) / height (m)²"
+  },
+  "medical": {
+    "specialty": ["general", "internal-medicine", "endocrinology"],
+    "evidenceLevel": "A",
+    "clinicalGuidelines": {
+      "zh-TW": "根據世界衛生組織 (WHO) 和台灣衛生福利部的標準，BMI 是評估成人體重狀態的重要指標。正常 BMI 範圍為 18.5-24.9 kg/m²。BMI ≥27 被定義為肥胖，需要積極的健康管理。",
+      "en": "According to World Health Organization (WHO) standards, BMI is an important indicator for assessing adult weight status. Normal BMI range is 18.5-24.9 kg/m². BMI ≥30 is defined as obesity requiring active health management.",
+      "ja": "世界保健機関（WHO）の基準によると、BMIは成人の体重状態を評価する重要な指標です。正常なBMI範囲は18.5-24.9 kg/m²です。BMI≥25は過体重、BMI≥30は肥満と定義され、積極的な健康管理が必要です。"
+    }
+  },
+  "metadata": {
+    "author": "Astro Clinical Platform",
+    "lastUpdated": "2024-01-15T00:00:00.000Z",
+    "tags": ["BMI", "body mass index", "obesity", "weight management", "health assessment"],
+    "difficulty": "basic",
+    "isActive": true,
+    "isFeatured": true
+  }
+}

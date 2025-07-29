@@ -1,0 +1,27 @@
+# 測試文件
+**/*.test.ts
+**/*.test.tsx
+**/*.test.js
+**/*.test.jsx
+**/*.spec.ts
+**/*.spec.tsx
+**/*.spec.js
+**/*.spec.jsx
+
+# 測試目錄
+**/__tests__/**
+**/tests/**
+
+# 測試配置文件
+vitest.config.ts
+vitest.unit.config.ts
+src/test-setup.ts
+
+# Storybook 測試
+**/*.stories.ts
+**/*.stories.tsx
+**/*.stories.js
+**/*.stories.jsx
+
+# 測試工具
+src/test-utils/**

@@ -1,0 +1,58 @@
+---
+/**
+ * 動態教育內容頁面
+ * 根據 slug 參數載入對應的教育內容
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FlowchartRenderer from '../../components/islands/FlowchartRenderer.tsx';
+import type { SupportedLocale } from '../../env.d';
+
+// 獲取所有教育內容以生成靜態路由
+export async function getStaticPaths() {
+  const educationEntries = await getCollection('education');
+  
+  return educationEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// 從路由中獲取語言（這裡簡化為預設值）
+const locale: SupportedLocale = 'zh-TW';
+
+// 檢查內容是否啟用
+if (!entry.data.isActive) {
+  return Astro.redirect('/404');
+}
+---
+
+<BaseLayout 
+  title={entry.data.title}
+  description={entry.data.description}
+  locale={locale}
+>
+  <!-- 主要內容 -->
+  <Content />
+  
+  <!-- 流程圖渲染 -->
+  {entry.data.hasFlowchart && entry.data.flowchartCode && (
+    <div class="mt-12">
+      <h2 class="text-2xl font-semibold text-medical-neutral-900 mb-6">
+        診療流程圖
+      </h2>
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6">
+        <FlowchartRenderer 
+          client:load
+          code={entry.data.flowchartCode}
+          title={entry.data.title[locale] + ' 流程圖'}
+          locale={locale}
+        />
+      </div>
+    </div>
+  )}
+</BaseLayout>

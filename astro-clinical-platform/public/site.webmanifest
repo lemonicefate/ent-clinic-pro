@@ -1,0 +1,19 @@
+{
+  "name": "Astro Clinical Platform",
+  "short_name": "AstroClinical",
+  "description": "專為醫療專業人員設計的整合式數位平台",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e40af",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["medical", "health", "productivity"],
+  "lang": "zh-TW"
+}
