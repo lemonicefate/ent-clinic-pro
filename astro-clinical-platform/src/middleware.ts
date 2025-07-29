@@ -41,6 +41,11 @@ const securityMiddleware = defineMiddleware(async (context, next) => {
     return next();
   }
 
+  // Only apply security middleware to API routes
+  if (!context.url.pathname.startsWith('/api/')) {
+    return next();
+  }
+
   // Apply rate limiting to authentication endpoints
   if (context.url.pathname.startsWith('/api/auth/') && context.request.method === 'POST') {
     const rateLimitResponse = await SecurityMiddleware.applyRateLimit(context, 'login');
@@ -50,11 +55,9 @@ const securityMiddleware = defineMiddleware(async (context, next) => {
   }
 
   // Apply general API rate limiting
-  if (context.url.pathname.startsWith('/api/')) {
-    const rateLimitResponse = await SecurityMiddleware.applyRateLimit(context, 'api');
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
+  const rateLimitResponse = await SecurityMiddleware.applyRateLimit(context, 'api');
+  if (rateLimitResponse) {
+    return rateLimitResponse;
   }
 
   return next();
@@ -65,6 +68,17 @@ const authMiddleware = defineMiddleware(async (context, next) => {
   // Skip authentication middleware during prerendering or if clientAddress is not available
   if (!context.clientAddress) {
     // Set default values for prerendering
+    context.locals.user = null;
+    context.locals.isAuthenticated = false;
+    return next();
+  }
+
+  // Only apply authentication to protected routes
+  const protectedPaths = ['/admin', '/api/admin', '/api/auth'];
+  const needsAuth = protectedPaths.some(path => context.url.pathname.startsWith(path));
+  
+  if (!needsAuth) {
+    // Set default values for non-protected routes
     context.locals.user = null;
     context.locals.isAuthenticated = false;
     return next();
@@ -82,6 +96,11 @@ const authMiddleware = defineMiddleware(async (context, next) => {
 
 // Route protection middleware
 const routeProtectionMiddleware = defineMiddleware(async (context, next) => {
+  // Skip route protection during prerendering or if clientAddress is not available
+  if (!context.clientAddress) {
+    return next();
+  }
+  
   return protectRoute(context, next);
 });
 
@@ -102,13 +121,62 @@ const headersMiddleware = defineMiddleware(async (context, next) => {
 });
 
 // Combine all middleware in sequence
-export const onRequest = sequence(
-  i18nMiddleware,
-  securityMiddleware,
-  authMiddleware,
-  routeProtectionMiddleware,
-  headersMiddleware
-);
+export const onRequest = defineMiddleware(async (context, next) => {
+  // Set locale for all requests
+  const pathname = context.url.pathname;
+  const currentLocale = getLocaleFromPath(pathname);
+  context.locals.locale = currentLocale;
+  context.locals.pathname = pathname;
+  
+  // Set default auth values
+  context.locals.user = null;
+  context.locals.isAuthenticated = false;
+  
+  // Skip all other middleware during prerendering
+  if (!context.clientAddress) {
+    return next();
+  }
+  
+  // Only apply security and auth middleware to API routes and protected pages
+  if (context.url.pathname.startsWith('/api/') || context.url.pathname.startsWith('/admin/')) {
+    // Apply security middleware
+    if (context.url.pathname.startsWith('/api/auth/') && context.request.method === 'POST') {
+      const rateLimitResponse = await SecurityMiddleware.applyRateLimit(context, 'login');
+      if (rateLimitResponse) {
+        return rateLimitResponse;
+      }
+    } else if (context.url.pathname.startsWith('/api/')) {
+      const rateLimitResponse = await SecurityMiddleware.applyRateLimit(context, 'api');
+      if (rateLimitResponse) {
+        return rateLimitResponse;
+      }
+    }
+    
+    // Apply authentication for protected routes
+    const protectedPaths = ['/admin', '/api/admin', '/api/auth'];
+    const needsAuth = protectedPaths.some(path => context.url.pathname.startsWith(path));
+    
+    if (needsAuth) {
+      const user = await SessionManager.validateAndRefreshSession(context);
+      context.locals.user = user;
+      context.locals.isAuthenticated = !!user;
+      
+      // Apply route protection
+      const response = await protectRoute(context, next);
+      return SecurityMiddleware.addSecurityHeaders(response);
+    }
+  }
+  
+  const response = await next();
+  
+  // Add language headers
+  if (context.locals.locale) {
+    response.headers.set('Content-Language', context.locals.locale);
+  }
+  response.headers.set('Vary', 'Accept-Language');
+  
+  return SecurityMiddleware.addSecurityHeaders(response);
+});
 
 // 擴展 Astro.locals 類型
 declare global {
