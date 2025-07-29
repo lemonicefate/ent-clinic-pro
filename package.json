@@ -1,0 +1,26 @@
+{
+  "name": "ent-clinic-pro",
+  "version": "1.0.0",
+  "description": "一個基於 Astro 的現代化耳鼻喉科醫療平台，提供模組化醫療計算工具和衛教內容管理系統",
+  "scripts": {
+    "build": "cd astro-clinical-platform && npm install && npm run build",
+    "dev": "cd astro-clinical-platform && npm run dev",
+    "preview": "cd astro-clinical-platform && npm run preview",
+    "test": "cd astro-clinical-platform && npm test"
+  },
+  "keywords": [
+    "astro",
+    "medical",
+    "healthcare",
+    "ent",
+    "typescript",
+    "react"
+  ],
+  "author": "lemonicefate",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lemonicefate/ent-clinic-pro.git"
+  },
+  "homepage": "https://ent-clinic-pro.pages.dev"
+}

@@ -33,11 +33,13 @@
 ```yaml
 專案名稱: ent-clinic-pro
 生產分支: master
-建置命令: cd astro-clinical-platform && npm run build
-建置輸出目錄: astro-clinical-platform/dist
-根目錄: /
+建置命令: npm run build
+建置輸出目錄: dist
+根目錄: astro-clinical-platform
 Node.js 版本: 18
 ```
+
+**重要**：請將 **根目錄** 設定為 `astro-clinical-platform`，這樣 Cloudflare Pages 就能找到正確的 `package.json` 檔案。
 
 ### 步驟 5: 環境變數設定（可選）
 
