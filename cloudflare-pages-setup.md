@@ -39,6 +39,16 @@
 Node.js 版本: 18
 ```
 
+### 重要配置說明
+
+專案現在使用 **Server-Side Rendering (SSR)** 模式配合 Cloudflare 適配器：
+
+- ✅ 使用 `@astrojs/cloudflare` 適配器
+- ✅ 輸出模式設定為 `server`
+- ✅ API 路由設定為 `prerender = false` 以支援動態功能
+- ✅ 支援 Cloudflare Workers 環境
+- ✅ 修正了 `clientAddress` 和 `request.headers` 的預渲染問題
+
 **重要**：請將 **根目錄** 設定為 `astro-clinical-platform`，這樣 Cloudflare Pages 就能找到正確的 `package.json` 檔案。
 
 ### 步驟 5: 環境變數設定（可選）
