@@ -1,10 +1,18 @@
 # GitHub 發布設定指南
 
-## 步驟 1: 建立 GitHub 儲存庫後，執行以下指令
+## 步驟 1: 建立 GitHub 儲存庫
+
+### 儲存庫設定
+- **Repository name**: `ent-clinic-pro`
+- **Description**: `一個基於 Astro 的現代化耳鼻喉科醫療平台，提供模組化醫療計算工具和衛教內容管理系統`
+- **Visibility**: Public（公開）
+- **License**: MIT License
+
+### 推送程式碼
 
 ```bash
-# 添加 GitHub 遠端儲存庫（請替換為您的實際 GitHub 用戶名）
-git remote add origin https://github.com/YOUR_USERNAME/astro-clinical-platform.git
+# 添加 GitHub 遠端儲存庫（請替換 YOUR_USERNAME 為您的實際 GitHub 用戶名）
+git remote add origin https://github.com/YOUR_USERNAME/ent-clinic-pro.git
 
 # 推送程式碼到 GitHub
 git push -u origin master
@@ -20,9 +28,9 @@ git push -u origin master
 4. 選擇您的 GitHub 儲存庫
 5. 設定建置配置：
    - **Framework preset**: Astro
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-   - **Root directory**: `astro-clinical-platform`
+   - **Build command**: `cd astro-clinical-platform && npm run build`
+   - **Build output directory**: `astro-clinical-platform/dist`
+   - **Root directory**: `/`
 
 ### 選項 B: GitHub Pages
 

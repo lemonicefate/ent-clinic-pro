@@ -1,12 +1,12 @@
 # 貢獻指南
 
-感謝您對 Astro Clinical Platform 的興趣！我們歡迎各種形式的貢獻。
+感謝您對 ENT Clinic Pro 的興趣！我們歡迎各種形式的貢獻。
 
 ## 🚀 快速開始
 
 1. Fork 此儲存庫
-2. 克隆您的 fork：`git clone https://github.com/YOUR_USERNAME/astro-clinical-platform.git`
-3. 安裝依賴：`cd astro-clinical-platform && npm install`
+2. 克隆您的 fork：`git clone https://github.com/YOUR_USERNAME/ent-clinic-pro.git`
+3. 安裝依賴：`cd ent-clinic-pro/astro-clinical-platform && npm install`
 4. 建立功能分支：`git checkout -b feature/your-feature-name`
 
 ## 📋 貢獻類型
