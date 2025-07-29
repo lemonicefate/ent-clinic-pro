@@ -1,17 +1,27 @@
-# Wrangler configuration for Cloudflare Pages
+# Cloudflare Pages 配置文件
 name = "ent-clinic-pro"
-compatibility_date = "2024-07-29"
+main = "./dist/_worker.js/index.js"
 
-# Pages configuration
-[env.production]
-compatibility_date = "2024-07-29"
+# 更新到今天的日期
+compatibility_date = "2025-01-30"
 
-# KV bindings for session storage
-[[env.production.kv_namespaces]]
+# 啟用 Node.js 兼容性模式 - 這將解決 MessageChannel 問題
+compatibility_flags = ["nodejs_compat"]
+
+# 資產配置
+[assets]
+binding = "ASSETS"
+directory = "./dist"
+
+# KV 命名空間配置（用於 session 存儲）
+[[kv_namespaces]]
 binding = "SESSION"
-id = "your-kv-namespace-id"
-preview_id = "your-preview-kv-namespace-id"
+id = "your-kv-namespace-id"  # 需要替換為實際的 KV namespace ID
 
-# Environment variables
-[env.production.vars]
+# 可觀測性配置
+[observability]
+enabled = true
+
+# 環境變數（如果需要）
+[vars]
 NODE_ENV = "production"
