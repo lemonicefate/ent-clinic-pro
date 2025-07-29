@@ -94,7 +94,13 @@ export const POST: APIRoute = async (context) => {
     // Validate input
     if (!email || !password) {
       // Record failed attempt for rate limiting
-      const identifier = `${context.clientAddress || 'unknown'}:login`;
+      let clientIP = 'unknown';
+      try {
+        clientIP = context.clientAddress || 'unknown';
+      } catch (error) {
+        // Skip rate limiting during prerendering
+      }
+      const identifier = `${clientIP}:login`;
       RateLimiter.recordAttempt(identifier, false);
       
       // Log failed attempt
@@ -111,7 +117,13 @@ export const POST: APIRoute = async (context) => {
     const user = MOCK_USERS.find(u => u.email === email);
     if (!user) {
       // Record failed attempt for rate limiting
-      const identifier = `${context.clientAddress || 'unknown'}:login`;
+      let clientIP = 'unknown';
+      try {
+        clientIP = context.clientAddress || 'unknown';
+      } catch (error) {
+        // Skip rate limiting during prerendering
+      }
+      const identifier = `${clientIP}:login`;
       RateLimiter.recordAttempt(identifier, false);
       
       // Log failed attempt
@@ -127,7 +139,13 @@ export const POST: APIRoute = async (context) => {
     // Verify password
     if (!verifyPassword(password, user.password)) {
       // Record failed attempt for rate limiting
-      const identifier = `${context.clientAddress || 'unknown'}:login`;
+      let clientIP = 'unknown';
+      try {
+        clientIP = context.clientAddress || 'unknown';
+      } catch (error) {
+        // Skip rate limiting during prerendering
+      }
+      const identifier = `${clientIP}:login`;
       RateLimiter.recordAttempt(identifier, false);
       
       // Log failed attempt
@@ -162,7 +180,13 @@ export const POST: APIRoute = async (context) => {
     };
 
     // Record successful attempt for rate limiting
-    const identifier = `${context.clientAddress || 'unknown'}:login`;
+    let clientIP = 'unknown';
+    try {
+      clientIP = context.clientAddress || 'unknown';
+    } catch (error) {
+      // Skip rate limiting during prerendering
+    }
+    const identifier = `${clientIP}:login`;
     RateLimiter.recordAttempt(identifier, true);
     
     // Log successful attempt

@@ -39,7 +39,14 @@ export const GET: APIRoute = async (context) => {
         sessionId = sessionCookie.split('=')[1];
       } else {
         // Generate new session ID
-        sessionId = generateSessionId(request, context.clientAddress);
+        let clientIP = 'unknown';
+        try {
+          clientIP = context.clientAddress || 'unknown';
+        } catch (error) {
+          // Use fallback during prerendering
+          clientIP = 'unknown';
+        }
+        sessionId = generateSessionId(request, clientIP);
       }
     }
 

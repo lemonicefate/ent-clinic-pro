@@ -37,7 +37,12 @@ const i18nMiddleware = defineMiddleware(async (context, next) => {
 // Security middleware for rate limiting and CSRF protection
 const securityMiddleware = defineMiddleware(async (context, next) => {
   // Skip security middleware during prerendering or if clientAddress is not available
-  if (!context.clientAddress) {
+  try {
+    if (!context.clientAddress) {
+      return next();
+    }
+  } catch (error) {
+    // clientAddress throws during prerendering
     return next();
   }
 
@@ -66,8 +71,15 @@ const securityMiddleware = defineMiddleware(async (context, next) => {
 // Authentication middleware for session management
 const authMiddleware = defineMiddleware(async (context, next) => {
   // Skip authentication middleware during prerendering or if clientAddress is not available
-  if (!context.clientAddress) {
-    // Set default values for prerendering
+  try {
+    if (!context.clientAddress) {
+      // Set default values for prerendering
+      context.locals.user = null;
+      context.locals.isAuthenticated = false;
+      return next();
+    }
+  } catch (error) {
+    // clientAddress throws during prerendering
     context.locals.user = null;
     context.locals.isAuthenticated = false;
     return next();
@@ -97,7 +109,12 @@ const authMiddleware = defineMiddleware(async (context, next) => {
 // Route protection middleware
 const routeProtectionMiddleware = defineMiddleware(async (context, next) => {
   // Skip route protection during prerendering or if clientAddress is not available
-  if (!context.clientAddress) {
+  try {
+    if (!context.clientAddress) {
+      return next();
+    }
+  } catch (error) {
+    // clientAddress throws during prerendering
     return next();
   }
   
@@ -132,8 +149,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
   context.locals.user = null;
   context.locals.isAuthenticated = false;
   
-  // Skip all other middleware during prerendering
-  if (!context.clientAddress) {
+  // Skip all other middleware during prerendering or if clientAddress is not available
+  let hasClientAddress = false;
+  try {
+    hasClientAddress = !!context.clientAddress;
+  } catch (error) {
+    // clientAddress throws during prerendering
+    hasClientAddress = false;
+  }
+  
+  if (!hasClientAddress) {
     return next();
   }
   

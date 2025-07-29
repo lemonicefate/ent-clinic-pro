@@ -400,10 +400,19 @@ export class AuditLogger {
       return;
     }
 
+    // Skip logging if clientAddress is not available (during prerendering)
+    let clientIP = 'unknown';
+    try {
+      clientIP = context.clientAddress || 'unknown';
+    } catch (error) {
+      // clientAddress might throw during prerendering, skip logging
+      return;
+    }
+
     const securityEvent: SecurityEvent = {
       timestamp: new Date(),
       event,
-      ip: context.clientAddress || 'unknown',
+      ip: clientIP,
       userAgent: context.request?.headers.get('user-agent') || undefined,
       success,
       details,
@@ -535,11 +544,18 @@ export class SecurityMiddleware {
     type: string = 'api'
   ): Promise<Response | null> {
     // Skip rate limiting if clientAddress is not available (during prerendering)
-    if (!context.clientAddress) {
+    let clientIP: string;
+    try {
+      clientIP = context.clientAddress;
+      if (!clientIP) {
+        return null;
+      }
+    } catch (error) {
+      // clientAddress might throw during prerendering
       return null;
     }
 
-    const identifier = `${context.clientAddress}:${type}`;
+    const identifier = `${clientIP}:${type}`;
     
     if (RateLimiter.isRateLimited(identifier, type)) {
       const status = RateLimiter.getStatus(identifier, type);
