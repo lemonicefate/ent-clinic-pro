@@ -1,0 +1,11 @@
+# Cloudflare Pages 部署觸發器
+# 此檔案用於強制觸發 Cloudflare Pages 重新部署
+
+部署時間: 2025-07-29 23:15:00
+修正內容: 
+- 修正 API 路由預渲染問題
+- 配置 Cloudflare 適配器
+- 修正中間件 clientAddress 問題
+- 使用 server 模式而非 static 模式
+
+注意: 如果部署仍然顯示 static 模式，請檢查 Cloudflare Pages 是否使用了正確的分支和 commit。
