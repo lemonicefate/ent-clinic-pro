@@ -1,0 +1,5 @@
+# 設置一個未來的日期以啟用最新功能
+compatibility_date = "2025-07-30"
+
+# 啟用 Node.js 相容性模式，解決 MessageChannel 錯誤
+compatibility_flags = ["nodejs_compat"]
