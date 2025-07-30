@@ -2,17 +2,11 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
-import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://ent-clinic-pro.pages.dev', // Cloudflare Pages URL
-  output: 'server', // Server-side rendering for Cloudflare Pages
-  adapter: cloudflare({
-    platformProxy: {
-      enabled: true
-    }
-  }),
+  output: 'static', // Static site generation
   
   // 多語言配置
   i18n: {

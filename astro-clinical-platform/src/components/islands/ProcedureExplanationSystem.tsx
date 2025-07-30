@@ -400,8 +400,9 @@ export default function ProcedureExplanationSystem({
         </div>
       </div>
     );
-  }  ret
-urn (
+  }
+
+  return (
     <div className="procedure-system bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">

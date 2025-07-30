@@ -11,13 +11,11 @@ import {
   Background,
   useNodesState,
   useEdgesState,
-  addEdge,
-  Node,
-  Edge,
-  Connection,
   BackgroundVariant,
   Position,
-  Handle
+  Handle,
+  type Node,
+  type Edge
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 

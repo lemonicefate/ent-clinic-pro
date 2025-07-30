@@ -25,7 +25,7 @@ const availableCalculators = {
   'cha2ds2-vasc': 'cardiology.cha2ds2-vasc'
 };
 
-// For SSR mode, we need to add getStaticPaths for dynamic routes
+// For SSG mode, we need to add getStaticPaths for dynamic routes
 export function getStaticPaths() {
   return [
     { params: { calculator: 'bmi' } },
@@ -34,11 +34,8 @@ export function getStaticPaths() {
   ];
 }
 
-// Validate calculator parameter
-if (!calculatorId || !availableCalculators[calculatorId]) {
-  Astro.response.status = 404;
-  return Astro.rewrite('/404');
-}
+// Validate calculator parameter (only needed for SSR)
+// In SSG mode, getStaticPaths ensures only valid calculators are generated
 
 const pluginId = availableCalculators[calculatorId];
 
