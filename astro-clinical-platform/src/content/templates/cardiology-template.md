@@ -7,7 +7,7 @@ excerpt:
   zh_TW: "簡潔描述本文章的主要內容，幫助讀者快速了解文章重點。建議50-200字元。"
   en: "Brief description of the main content of this article to help readers quickly understand the key points. Recommended 50-200 characters."
   ja: "この記事の主な内容を簡潔に説明し、読者が要点を素早く理解できるようにします。50-200文字を推奨。"
-category: "disease" # disease, medication, procedure, prevention, lifestyle, symptoms, diagnosis, treatment
+category: "cardiology"
 status: "draft" # draft, in-review, needs-revision, quality-check, ready-to-publish, published
 version: "1.0"
 medicalSpecialties: ["cardiology"]
@@ -21,7 +21,7 @@ tags:
   - "心血管疾病"
   - "心臟健康"
   - "預防醫學"
-lastUpdated: 2025-01-30T00:00:00.000Z
+lastUpdated: "2025-01-30"
 author:
   zh_TW: "心臟科醫師"
   en: "Cardiologist"

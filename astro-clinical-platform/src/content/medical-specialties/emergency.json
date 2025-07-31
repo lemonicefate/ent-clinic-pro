@@ -12,7 +12,7 @@
     "ja": "急性疾患と外傷の治療を専門とする医学分野で、生命に関わる疾患の初期安定化と治療を含む24時間継続的な救急医療サービスを提供。"
   },
   "workflowConfig": {
-    "reviewerRoles": ["emergency-physician", "medical-editor", "content-reviewer"],
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
     "requiredApprovals": 2,
     "reviewTimeLimit": 3,
     "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review"],

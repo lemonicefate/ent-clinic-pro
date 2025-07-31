@@ -12,7 +12,7 @@
     "ja": "乳児、小児、青少年の健康管理を専門とする医学分野で、出生から18歳までの疾病予防、診断、治療、健康増進を含みます。"
   },
   "workflowConfig": {
-    "reviewerRoles": ["pediatrician", "medical-editor", "content-reviewer"],
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
     "requiredApprovals": 3,
     "reviewTimeLimit": 5,
     "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review", "ethics-review"],

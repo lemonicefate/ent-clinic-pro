@@ -12,7 +12,7 @@
     "ja": "骨、関節、筋肉、靭帯、腱などの筋骨格系の外傷、疾患、変形を診断・治療する医学専門分野。"
   },
   "workflowConfig": {
-    "reviewerRoles": ["orthopedic-surgeon", "medical-editor", "content-reviewer"],
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
     "requiredApprovals": 2,
     "reviewTimeLimit": 7,
     "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review"],

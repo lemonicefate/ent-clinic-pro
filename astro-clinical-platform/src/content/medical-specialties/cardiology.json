@@ -12,7 +12,7 @@
     "ja": "心臓および血管疾患の診断と治療を専門とする医学分野で、冠動脈疾患、不整脈、心不全などの予防、診断、治療を含みます。"
   },
   "workflowConfig": {
-    "reviewerRoles": ["cardiologist", "medical-editor", "content-reviewer"],
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
     "requiredApprovals": 2,
     "reviewTimeLimit": 7,
     "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review"],

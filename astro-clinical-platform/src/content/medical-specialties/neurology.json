@@ -12,7 +12,7 @@
     "ja": "脳、脊髄、末梢神経系の疾患を診断・治療する医学専門分野で、脳卒中、てんかん、パーキンソン病、認知症などを含みます。"
   },
   "workflowConfig": {
-    "reviewerRoles": ["neurologist", "medical-editor", "content-reviewer"],
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
     "requiredApprovals": 2,
     "reviewTimeLimit": 10,
     "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review", "statistical-review"],

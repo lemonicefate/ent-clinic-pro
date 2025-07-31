@@ -776,12 +776,102 @@ const sopWorkflowSettings = defineCollection({
 });
 
 /**
+ * 內容模板集合
+ * 用於標準化內容撰寫格式
+ */
+const templates = defineCollection({
+  type: 'content',
+  schema: z.object({
+    // 基本資訊
+    title: multiLangString,
+    excerpt: multiLangString.optional(),
+    category: medicalCategorySchema,
+    
+    // SOP 工作流程欄位
+    status: articleStatusSchema.default('draft'),
+    version: z.string().default('1.0'),
+    
+    // 內容分類
+    medicalSpecialties: z.array(z.string()).default([]),
+    difficulty: difficultySchema.default('basic'),
+    
+    // 目標受眾
+    patientFriendly: z.boolean().default(true),
+    professionalLevel: z.boolean().default(false),
+    ageGroup: z.enum(['all', 'pediatric', 'adult', 'geriatric']).default('all'),
+    
+    // 內容資訊
+    readingTime: z.number().optional(),
+    
+    // 標籤
+    tags: z.array(z.string()).default([]),
+    
+    // 狀態和元資料
+    isActive: z.boolean().default(true),
+    lastUpdated: z.string().optional(),
+    
+    // SEO 和元資料
+    seoTitle: multiLangString.optional(),
+    seoDescription: multiLangString.optional()
+  })
+});
+
+/**
+ * 模板配置集合
+ * 用於存儲內容模板的配置資料
+ */
+const templateConfigs = defineCollection({
+  type: 'data',
+  schema: z.object({
+    // 基本資訊
+    title: z.string(),
+    description: z.string().optional(),
+    version: z.string().default('1.0'),
+    lastUpdated: z.string().optional(),
+    
+    // 模板配置（可選，用於 template-config.json）
+    templates: z.record(z.object({
+      name: z.string(),
+      templateFile: z.string(),
+      defaultValues: z.record(z.any()),
+      requiredSections: z.array(z.string()),
+      contentGuidelines: z.object({
+        minWords: z.number(),
+        maxWords: z.number(),
+        targetAudience: z.string(),
+        writingStyle: z.string(),
+        keyElements: z.array(z.string())
+      }),
+      seoDefaults: z.object({
+        titleSuffix: z.string(),
+        descriptionTemplate: z.string(),
+        keywords: z.array(z.string())
+      })
+    })).optional(),
+    
+    // 其他配置（用於其他配置檔案）
+    globalTemplateSettings: z.record(z.any()).optional(),
+    specialtyTemplates: z.record(z.any()).optional(),
+    specialties: z.array(z.any()).optional(),
+    reviewerAssignments: z.record(z.any()).optional(),
+    
+    // 編輯器設定
+    editorDefaults: z.record(z.any()).optional(),
+    writingGuidelines: z.record(z.any()).optional(),
+    qualityChecklist: z.record(z.any()).optional(),
+    helpTexts: z.record(z.string()).optional()
+  })
+});
+
+/**
  * 匯出所有內容集合
  */
 export const collections = {
   calculators,
   education,
   flowcharts,
+  templates,
+  'template-configs': templateConfigs,
   'decision-trees': decisionTrees,
   'medical-specialties': medicalSpecialties,
   'sop-workflow-settings': sopWorkflowSettings
