@@ -4,7 +4,7 @@
  * 提供醫療平台的標準頁面結構
  */
 
-import { ViewTransitions } from 'astro:transitions';
+// import { ViewTransitions } from 'astro:transitions';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import AnalyticsInit from '../components/analytics/AnalyticsInit.astro';
@@ -154,7 +154,7 @@ const medicalStructuredData = medicalContent ? {
     )}
     
     <!-- View Transitions -->
-    <ViewTransitions />
+    {/* <ViewTransitions /> */}
     
     <!-- 醫療免責聲明 -->
     {medicalContent && (
