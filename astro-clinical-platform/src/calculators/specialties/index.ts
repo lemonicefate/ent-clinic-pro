@@ -82,7 +82,7 @@ export const medicalSpecialties: Record<string, MedicalSpecialty> = {
     },
     icon: '👶',
     color: 'purple',
-    calculators: ['pediatrics.amoxicillin-clavulanate-dose'],
+    calculators: ['pediatrics.amoxicillin-clavulanate-dose', 'pediatrics.pediatric-antibiotic-calculator'],
     isActive: true
   },
   

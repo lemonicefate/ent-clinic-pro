@@ -108,6 +108,38 @@ const staticCalculators = [
     namespace: 'pediatrics'
   },
   {
+    pluginId: 'pediatrics.pediatric-antibiotic-calculator',
+    urlPath: '/tools/pediatric-antibiotic-calculator',
+    metadata: {
+      id: 'pediatric-antibiotic-calculator',
+      namespace: 'pediatrics',
+      version: '1.0.0',
+      name: {
+        'zh-TW': '兒童抗生素劑量計算器',
+        'en': 'Pediatric Antibiotic Dose Calculator',
+        'ja': '小児抗生物質用量計算機'
+      },
+      description: {
+        'zh-TW': '專業的兒童抗生素劑量計算工具，支援多種抗生素和抗病毒藥物的劑量計算',
+        'en': 'Professional pediatric antibiotic dose calculation tool supporting multiple antibiotics and antiviral medications',
+        'ja': '複数の抗生物質と抗ウイルス薬の用量計算をサポートする専門的な小児抗生物質用量計算ツール'
+      },
+      author: 'Astro Clinical Platform',
+      tags: ['pediatrics', 'antibiotics', 'antivirals', 'dose-calculation', 'infection']
+    },
+    config: {
+      category: 'pediatrics',
+      medical: {
+        specialty: ['Pediatrics', 'Family Medicine', 'Internal Medicine', 'Infectious Disease'],
+        evidenceLevel: 'A'
+      },
+      metadata: {
+        difficulty: 'intermediate'
+      }
+    },
+    namespace: 'pediatrics'
+  },
+  {
     pluginId: 'cardiology.cha2ds2-vasc',
     urlPath: '/tools/cha2ds2-vasc',
     metadata: {

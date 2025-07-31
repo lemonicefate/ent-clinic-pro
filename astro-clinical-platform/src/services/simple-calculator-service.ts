@@ -481,6 +481,156 @@ const calculatorImplementations = {
       };
     }
   },
+  'pediatrics.pediatric-antibiotic-calculator': {
+    config: {
+      id: 'pediatric-antibiotic-calculator',
+      name: '兒童抗生素劑量計算器',
+      description: '專業的兒童抗生素劑量計算工具，支援多種抗生素和抗病毒藥物的劑量計算',
+      fields: [
+        {
+          id: 'weight',
+          type: 'number' as const,
+          label: '兒童體重',
+          unit: 'kg',
+          min: 1,
+          max: 100,
+          required: true,
+          placeholder: '例如：15'
+        },
+        {
+          id: 'age',
+          type: 'number' as const,
+          label: '兒童年齡',
+          unit: '歲',
+          min: 0,
+          max: 18,
+          required: false,
+          placeholder: '部分藥物計算所需'
+        },
+        {
+          id: 'form',
+          type: 'radio' as const,
+          label: '藥物劑型',
+          required: true,
+          defaultValue: 'powder',
+          options: [
+            { value: 'powder', label: '藥粉' },
+            { value: 'pill', label: '藥錠/膠囊' }
+          ]
+        },
+        {
+          id: 'days',
+          type: 'select' as const,
+          label: '治療天數',
+          defaultValue: '3',
+          required: true,
+          options: [
+            { value: '1', label: '1 天' },
+            { value: '2', label: '2 天' },
+            { value: '3', label: '3 天' }
+          ]
+        },
+        {
+          id: 'frequency',
+          type: 'select' as const,
+          label: '用藥頻次',
+          defaultValue: '3',
+          required: true,
+          options: [
+            { value: '1', label: '1 次 (QD)' },
+            { value: '2', label: '2 次 (BID)' },
+            { value: '3', label: '3 次 (TID)' },
+            { value: '4', label: '4 次 (QID)' }
+          ]
+        }
+      ]
+    },
+    calculate: (inputs: any) => {
+      const weight = parseFloat(inputs.weight);
+      const age = inputs.age ? parseInt(inputs.age) : null;
+      const days = parseInt(inputs.days);
+      const frequency = parseInt(inputs.frequency || '3');
+      const form = inputs.form || 'powder';
+
+      // Calculate sample drugs (simplified version)
+      const drugs = [];
+
+      // Cefixime calculation
+      const cefiximeDaily = weight * 8; // 8 mg/kg/day
+      const cefiximeTotal = Math.ceil((cefiximeDaily * days) / 100); // 100mg units
+      drugs.push({
+        name: 'Cefixime (100mg)',
+        category: 'bacterial',
+        dose: `${cefiximeDaily.toFixed(1)} mg/day`,
+        total: `${cefiximeTotal} 顆`,
+        note: '常用劑量為 8 mg/kg/day'
+      });
+
+      // Azithromycin calculation
+      let azithromycinDaily = weight * 10; // 10 mg/kg/day
+      if (azithromycinDaily > 500) azithromycinDaily = 500;
+      const azithromycinTotal = Math.ceil((azithromycinDaily * days) / 250); // 250mg units
+      drugs.push({
+        name: 'Azithromycin (250mg)',
+        category: 'bacterial',
+        dose: `${azithromycinDaily.toFixed(1)} mg/day`,
+        total: `${azithromycinTotal} 錠`,
+        note: '最大劑量限制: 500 mg/day'
+      });
+
+      // Acyclovir calculation (antiviral)
+      let acyclovirSingle = weight * 20; // 20 mg/kg/dose
+      if (acyclovirSingle > 800) acyclovirSingle = 800;
+      const acyclovirDaily = acyclovirSingle * 4; // QID
+      const acyclovirTotal = Math.ceil((acyclovirSingle * 4 * days) / 800); // 800mg units
+      drugs.push({
+        name: 'Acyclovir (800mg)',
+        category: 'viral',
+        dose: `${acyclovirDaily.toFixed(0)} mg/day`,
+        total: `${acyclovirTotal} 顆`,
+        note: '水痘劑量為 20 mg/kg/dose (QID)'
+      });
+
+      // Age restrictions
+      if (age !== null && age < 8) {
+        drugs.push({
+          name: 'Minocycline (50mg)',
+          category: 'bacterial',
+          dose: '不建議使用',
+          total: '年齡限制',
+          note: '不建議用於 8 歲以下兒童',
+          warning: true
+        });
+      } else {
+        const minocyclineDaily = Math.min(weight * 4, 400); // 4 mg/kg/day, max 400mg
+        const minocyclineTotal = Math.ceil((minocyclineDaily * days) / 50); // 50mg units
+        drugs.push({
+          name: 'Minocycline (50mg)',
+          category: 'bacterial',
+          dose: `${minocyclineDaily.toFixed(1)} mg/day`,
+          total: `${minocyclineTotal} 顆`,
+          note: '常用劑量 4 mg/kg/day'
+        });
+      }
+
+      const bacterialDrugs = drugs.filter(d => d.category === 'bacterial');
+      const viralDrugs = drugs.filter(d => d.category === 'viral');
+
+      return {
+        totalDrugs: drugs.length,
+        bacterialCount: bacterialDrugs.length,
+        viralCount: viralDrugs.length,
+        drugs,
+        bacterialDrugs,
+        viralDrugs,
+        weight,
+        age: age || 'N/A',
+        days,
+        frequency,
+        form: form === 'powder' ? '藥粉' : '藥錠/膠囊'
+      };
+    }
+  },
   'cardiology.lipid-management': {
     config: {
       id: 'lipid-management',
