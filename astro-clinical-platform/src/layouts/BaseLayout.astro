@@ -144,6 +144,9 @@ const medicalStructuredData = medicalContent ? {
     <!-- DNS 預取 -->
     <link rel="dns-prefetch" href="//plausible.io" />
     
+    <!-- Netlify Identity Widget -->
+    <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
     <!-- 結構化資料 -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     {medicalStructuredData && (
