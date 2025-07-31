@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
 
-import { fn } from 'storybook/test';
+import { fn } from '@storybook/test';
 
 import { Header } from './Header';
 

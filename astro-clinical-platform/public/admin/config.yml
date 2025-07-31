@@ -10,8 +10,8 @@ backend:
 # local_backend: true
 
 # 媒體檔案設定
-media_folder: "public/images/uploads"
-public_folder: "/images/uploads"
+media_folder: 'public/images/uploads'
+public_folder: '/images/uploads'
 media_folder_relative: true
 
 # 網站設定
@@ -31,307 +31,317 @@ search: true
 # 集合定義
 collections:
   # 衛教文章集合
-  - name: "education"
-    label: "衛教文章"
-    label_singular: "衛教文章"
-    folder: "src/content/education"
+  - name: 'education'
+    label: '衛教文章'
+    label_singular: '衛教文章'
+    folder: 'src/content/education'
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    extension: "md"
-    format: "frontmatter"
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    extension: 'md'
+    format: 'frontmatter'
     editor:
       preview: true
     fields:
       # 基本資訊
-      - label: "標題"
-        name: "title"
-        widget: "object"
+      - label: '標題'
+        name: 'title'
+        widget: 'object'
         fields:
-          - { label: "繁體中文", name: "zh_TW", widget: "string", required: true }
-          - { label: "English", name: "en", widget: "string", required: true }
-          - { label: "日本語", name: "ja", widget: "string", required: false }
-      
-      - label: "摘要"
-        name: "excerpt"
-        widget: "object"
+          - {
+              label: '繁體中文',
+              name: 'zh_TW',
+              widget: 'string',
+              required: true,
+            }
+          - { label: 'English', name: 'en', widget: 'string', required: true }
+          - { label: '日本語', name: 'ja', widget: 'string', required: false }
+
+      - label: '摘要'
+        name: 'excerpt'
+        widget: 'object'
         required: false
         fields:
-          - { label: "繁體中文", name: "zh_TW", widget: "text" }
-          - { label: "English", name: "en", widget: "text" }
-          - { label: "日本語", name: "ja", widget: "text" }
-      
-      - label: "分類"
-        name: "category"
-        widget: "select"
+          - { label: '繁體中文', name: 'zh_TW', widget: 'text' }
+          - { label: 'English', name: 'en', widget: 'text' }
+          - { label: '日本語', name: 'ja', widget: 'text' }
+
+      - label: '分類'
+        name: 'category'
+        widget: 'select'
         options:
-          - { label: "疾病", value: "disease" }
-          - { label: "藥物", value: "medication" }
-          - { label: "程序", value: "procedure" }
-          - { label: "預防", value: "prevention" }
-          - { label: "生活方式", value: "lifestyle" }
-          - { label: "症狀", value: "symptoms" }
-          - { label: "診斷", value: "diagnosis" }
-          - { label: "治療", value: "treatment" }
-      
+          - { label: '疾病', value: 'disease' }
+          - { label: '藥物', value: 'medication' }
+          - { label: '程序', value: 'procedure' }
+          - { label: '預防', value: 'prevention' }
+          - { label: '生活方式', value: 'lifestyle' }
+          - { label: '症狀', value: 'symptoms' }
+          - { label: '診斷', value: 'diagnosis' }
+          - { label: '治療', value: 'treatment' }
+
       # SOP 工作流程欄位
-      - label: "文章狀態"
-        name: "status"
-        widget: "select"
-        default: "draft"
+      - label: '文章狀態'
+        name: 'status'
+        widget: 'select'
+        default: 'draft'
         options:
-          - { label: "草稿", value: "draft" }
-          - { label: "審核中", value: "in-review" }
-          - { label: "需要修改", value: "needs-revision" }
-          - { label: "品質檢查", value: "quality-check" }
-          - { label: "準備發布", value: "ready-to-publish" }
-          - { label: "已發布", value: "published" }
-      
-      - label: "版本"
-        name: "version"
-        widget: "string"
-        default: "1.0"
-        pattern: ['^\\d+\\.\\d+$', "版本格式應為 x.y (例如: 1.0, 2.1)"]
-      
-      - label: "指定審核者"
-        name: "reviewers"
-        widget: "select"
+          - { label: '草稿', value: 'draft' }
+          - { label: '審核中', value: 'in-review' }
+          - { label: '需要修改', value: 'needs-revision' }
+          - { label: '品質檢查', value: 'quality-check' }
+          - { label: '準備發布', value: 'ready-to-publish' }
+          - { label: '已發布', value: 'published' }
+
+      - label: '版本'
+        name: 'version'
+        widget: 'string'
+        default: '1.0'
+        pattern: ['^\\d+\\.\\d+$', '版本格式應為 x.y (例如: 1.0, 2.1)']
+
+      - label: '指定審核者'
+        name: 'reviewers'
+        widget: 'select'
         multiple: true
         required: false
         options:
           # 心臟科審核者
-          - { label: "陳心臟醫師 (心臟科專家)", value: "dr-chen-cardiology" }
-          - { label: "王心血管醫師 (心臟科專家)", value: "dr-wang-cardiology" }
+          - { label: '陳心臟醫師 (心臟科專家)', value: 'dr-chen-cardiology' }
+          - { label: '王心血管醫師 (心臟科專家)', value: 'dr-wang-cardiology' }
           # 神經科審核者
-          - { label: "劉神經醫師 (神經科專家)", value: "dr-liu-neurology" }
-          - { label: "張腦神經醫師 (神經科專家)", value: "dr-zhang-neurology" }
+          - { label: '劉神經醫師 (神經科專家)', value: 'dr-liu-neurology' }
+          - { label: '張腦神經醫師 (神經科專家)', value: 'dr-zhang-neurology' }
           # 小兒科審核者
-          - { label: "吳小兒科醫師 (小兒科專家)", value: "dr-wu-pediatrics" }
-          - { label: "張兒童醫師 (小兒科專家)", value: "dr-chang-pediatrics" }
+          - { label: '吳小兒科醫師 (小兒科專家)', value: 'dr-wu-pediatrics' }
+          - { label: '張兒童醫師 (小兒科專家)', value: 'dr-chang-pediatrics' }
           # 急診醫學科審核者
-          - { label: "陳急診醫師 (急診專家)", value: "dr-chen-emergency" }
-          - { label: "王急診醫師 (急診專家)", value: "dr-wang-emergency" }
+          - { label: '陳急診醫師 (急診專家)', value: 'dr-chen-emergency' }
+          - { label: '王急診醫師 (急診專家)', value: 'dr-wang-emergency' }
           # 通用審核者
-          - { label: "總編輯", value: "chief-editor" }
-          - { label: "品質管理員", value: "quality-manager" }
-      
+          - { label: '總編輯', value: 'chief-editor' }
+          - { label: '品質管理員', value: 'quality-manager' }
+
       # 內容分類
-      - label: "標籤"
-        name: "tags"
-        widget: "list"
+      - label: '標籤'
+        name: 'tags'
+        widget: 'list'
         required: false
         min: 1
         max: 10
-        field: 
-          label: "標籤"
-          widget: "string"
-        hint: "請輸入1-10個相關標籤，有助於文章分類和搜尋"
-      
-      - label: "醫療專科"
-        name: "medicalSpecialties"
-        widget: "select"
+        field:
+          label: '標籤'
+          widget: 'string'
+        hint: '請輸入1-10個相關標籤，有助於文章分類和搜尋'
+
+      - label: '醫療專科'
+        name: 'medicalSpecialties'
+        widget: 'select'
         multiple: true
         required: true
         min: 1
         max: 3
-        hint: "請選擇1-3個最相關的醫療專科"
+        hint: '請選擇1-3個最相關的醫療專科'
         options:
-          - { label: "🫀 心臟科", value: "cardiology" }
-          - { label: "🧠 神經科", value: "neurology" }
-          - { label: "🦴 骨科", value: "orthopedics" }
-          - { label: "👶 小兒科", value: "pediatrics" }
-          - { label: "🚨 急診醫學科", value: "emergency" }
-          - { label: "🩺 一般醫學科", value: "general" }
-          - { label: "🔪 外科", value: "surgery" }
-          - { label: "⚖️ 內分泌科", value: "endocrinology" }
-          - { label: "🫘 腎臟科", value: "nephrology" }
-          - { label: "🫁 胸腔科", value: "pulmonology" }
-      
-      - label: "難度等級"
-        name: "difficulty"
-        widget: "select"
-        default: "basic"
+          - { label: '🫀 心臟科', value: 'cardiology' }
+          - { label: '🧠 神經科', value: 'neurology' }
+          - { label: '🦴 骨科', value: 'orthopedics' }
+          - { label: '👶 小兒科', value: 'pediatrics' }
+          - { label: '🚨 急診醫學科', value: 'emergency' }
+          - { label: '🩺 一般醫學科', value: 'general' }
+          - { label: '🔪 外科', value: 'surgery' }
+          - { label: '⚖️ 內分泌科', value: 'endocrinology' }
+          - { label: '🫘 腎臟科', value: 'nephrology' }
+          - { label: '🫁 胸腔科', value: 'pulmonology' }
+
+      - label: '難度等級'
+        name: 'difficulty'
+        widget: 'select'
+        default: 'basic'
         required: true
         options:
-          - { label: "🟢 基礎 - 一般民眾可理解", value: "basic" }
-          - { label: "🟡 中級 - 需要基本醫學知識", value: "intermediate" }
-          - { label: "🔴 進階 - 醫療專業人員", value: "advanced" }
-      
+          - { label: '🟢 基礎 - 一般民眾可理解', value: 'basic' }
+          - { label: '🟡 中級 - 需要基本醫學知識', value: 'intermediate' }
+          - { label: '🔴 進階 - 醫療專業人員', value: 'advanced' }
+
       # 目標受眾
-      - label: "病患友善"
-        name: "patientFriendly"
-        widget: "boolean"
+      - label: '病患友善'
+        name: 'patientFriendly'
+        widget: 'boolean'
         default: true
-      
-      - label: "年齡群組"
-        name: "ageGroup"
-        widget: "select"
-        default: "all"
+
+      - label: '年齡群組'
+        name: 'ageGroup'
+        widget: 'select'
+        default: 'all'
         options:
-          - { label: "所有年齡", value: "all" }
-          - { label: "兒童", value: "pediatric" }
-          - { label: "成人", value: "adult" }
-          - { label: "老年", value: "geriatric" }
-      
+          - { label: '所有年齡', value: 'all' }
+          - { label: '兒童', value: 'pediatric' }
+          - { label: '成人', value: 'adult' }
+          - { label: '老年', value: 'geriatric' }
+
       # 內容資訊
-      - label: "閱讀時間（分鐘）"
-        name: "readingTime"
-        widget: "number"
+      - label: '閱讀時間（分鐘）'
+        name: 'readingTime'
+        widget: 'number'
         required: false
         min: 1
         max: 60
         step: 1
         default: 5
-      
-      - label: "最後更新"
-        name: "lastUpdated"
-        widget: "datetime"
-        default: ""
-        date_format: "YYYY-MM-DD"
-        time_format: "HH:mm"
-      
+
+      - label: '最後更新'
+        name: 'lastUpdated'
+        widget: 'datetime'
+        default: ''
+        date_format: 'YYYY-MM-DD'
+        time_format: 'HH:mm'
+
       # 作者和審核
-      - label: "作者"
-        name: "author"
-        widget: "object"
+      - label: '作者'
+        name: 'author'
+        widget: 'object'
         required: false
         fields:
-          - { label: "繁體中文", name: "zh_TW", widget: "string" }
-          - { label: "English", name: "en", widget: "string" }
-          - { label: "日本語", name: "ja", widget: "string" }
-      
+          - { label: '繁體中文', name: 'zh_TW', widget: 'string' }
+          - { label: 'English', name: 'en', widget: 'string' }
+          - { label: '日本語', name: 'ja', widget: 'string' }
+
       # 媒體資源
-      - label: "特色圖片"
-        name: "featuredImage"
-        widget: "object"
+      - label: '特色圖片'
+        name: 'featuredImage'
+        widget: 'object'
         required: false
         fields:
-          - { label: "圖片", name: "src", widget: "image" }
-          - label: "替代文字"
-            name: "alt"
-            widget: "object"
+          - { label: '圖片', name: 'src', widget: 'image' }
+          - label: '替代文字'
+            name: 'alt'
+            widget: 'object'
             fields:
-              - { label: "繁體中文", name: "zh_TW", widget: "string" }
-              - { label: "English", name: "en", widget: "string" }
-              - { label: "日本語", name: "ja", widget: "string" }
-      
+              - { label: '繁體中文', name: 'zh_TW', widget: 'string' }
+              - { label: 'English', name: 'en', widget: 'string' }
+              - { label: '日本語', name: 'ja', widget: 'string' }
+
       # 醫療資訊
-      - label: "證據等級"
-        name: "evidenceLevel"
-        widget: "select"
+      - label: '證據等級'
+        name: 'evidenceLevel'
+        widget: 'select'
         required: false
         options:
-          - { label: "A 級 - 高品質隨機對照試驗", value: "A" }
-          - { label: "B 級 - 中等品質研究", value: "B" }
-          - { label: "C 級 - 觀察性研究", value: "C" }
-          - { label: "D 級 - 專家意見", value: "D" }
-      
-      - label: "參考文獻"
-        name: "references"
-        widget: "list"
+          - { label: 'A 級 - 高品質隨機對照試驗', value: 'A' }
+          - { label: 'B 級 - 中等品質研究', value: 'B' }
+          - { label: 'C 級 - 觀察性研究', value: 'C' }
+          - { label: 'D 級 - 專家意見', value: 'D' }
+
+      - label: '參考文獻'
+        name: 'references'
+        widget: 'list'
         required: false
         max: 10
         fields:
-          - label: "標題"
-            name: "title"
-            widget: "string"
+          - label: '標題'
+            name: 'title'
+            widget: 'string'
             required: true
-          - label: "作者"
-            name: "authors"
-            widget: "list"
+          - label: '作者'
+            name: 'authors'
+            widget: 'list'
             required: true
             max: 5
-            field: 
-              label: "作者姓名"
-              widget: "string"
-          - label: "期刊名稱"
-            name: "journal"
-            widget: "string"
+            field:
+              label: '作者姓名'
+              widget: 'string'
+          - label: '期刊名稱'
+            name: 'journal'
+            widget: 'string'
             required: false
-          - label: "發表年份"
-            name: "year"
-            widget: "number"
+          - label: '發表年份'
+            name: 'year'
+            widget: 'number'
             required: false
             min: 1990
             max: 2030
-          - label: "網址"
-            name: "url"
-            widget: "string"
+          - label: '網址'
+            name: 'url'
+            widget: 'string'
             required: false
-          - label: "DOI"
-            name: "doi"
-            widget: "string"
+          - label: 'DOI'
+            name: 'doi'
+            widget: 'string'
             required: false
-      
+
       # 狀態和統計
-      - label: "啟用"
-        name: "isActive"
-        widget: "boolean"
+      - label: '啟用'
+        name: 'isActive'
+        widget: 'boolean'
         default: true
-      
-      - label: "特色內容"
-        name: "isFeatured"
-        widget: "boolean"
+
+      - label: '特色內容'
+        name: 'isFeatured'
+        widget: 'boolean'
         default: false
-      
+
       # SEO 和元資料
-      - label: "SEO 標題"
-        name: "seoTitle"
-        widget: "object"
+      - label: 'SEO 標題'
+        name: 'seoTitle'
+        widget: 'object'
         required: false
         fields:
-          - { label: "繁體中文", name: "zh_TW", widget: "string" }
-          - { label: "English", name: "en", widget: "string" }
-          - { label: "日本語", name: "ja", widget: "string" }
-      
-      - label: "SEO 描述"
-        name: "seoDescription"
-        widget: "object"
+          - { label: '繁體中文', name: 'zh_TW', widget: 'string' }
+          - { label: 'English', name: 'en', widget: 'string' }
+          - { label: '日本語', name: 'ja', widget: 'string' }
+
+      - label: 'SEO 描述'
+        name: 'seoDescription'
+        widget: 'object'
         required: false
         fields:
-          - { label: "繁體中文", name: "zh_TW", widget: "text" }
-          - { label: "English", name: "en", widget: "text" }
-          - { label: "日本語", name: "ja", widget: "text" }
-      
-      - label: "關鍵字"
-        name: "keywords"
-        widget: "list"
+          - { label: '繁體中文', name: 'zh_TW', widget: 'text' }
+          - { label: 'English', name: 'en', widget: 'text' }
+          - { label: '日本語', name: 'ja', widget: 'text' }
+
+      - label: '關鍵字'
+        name: 'keywords'
+        widget: 'list'
         required: false
-        field: { label: "關鍵字", widget: "string" }
-      
+        field: { label: '關鍵字', widget: 'string' }
+
       # 內容本體
-      - label: "內容"
-        name: "body"
-        widget: "markdown"
+      - label: '內容'
+        name: 'body'
+        widget: 'markdown'
         required: true
-        hint: "請撰寫詳細的衛教內容"
+        hint: '請撰寫詳細的衛教內容'
 
   # 醫療專科集合（簡化版）
-  - name: "medical-specialties"
-    label: "醫療專科"
-    folder: "src/content/medical-specialties"
+  - name: 'medical-specialties'
+    label: '醫療專科'
+    folder: 'src/content/medical-specialties'
     create: true
-    slug: "{{slug}}"
-    extension: "json"
-    format: "json"
+    slug: '{{slug}}'
+    extension: 'json'
+    format: 'json'
     fields:
-      - { label: "ID", name: "id", widget: "string" }
-      - label: "名稱"
-        name: "name"
-        widget: "object"
+      - { label: 'ID', name: 'id', widget: 'string' }
+      - label: '名稱'
+        name: 'name'
+        widget: 'object'
         fields:
-          - { label: "繁體中文", name: "zh_TW", widget: "string", required: true }
-          - { label: "English", name: "en", widget: "string", required: true }
-      - { label: "網址代碼", name: "slug", widget: "string" }
-      - label: "描述"
-        name: "description"
-        widget: "object"
+          - {
+              label: '繁體中文',
+              name: 'zh_TW',
+              widget: 'string',
+              required: true,
+            }
+          - { label: 'English', name: 'en', widget: 'string', required: true }
+      - { label: '網址代碼', name: 'slug', widget: 'string' }
+      - label: '描述'
+        name: 'description'
+        widget: 'object'
         required: false
         fields:
-          - { label: "繁體中文", name: "zh_TW", widget: "text" }
-          - { label: "English", name: "en", widget: "text" }
-      - { label: "顏色", name: "color", widget: "color", required: false }
-      - { label: "圖示", name: "icon", widget: "string", required: false }
-      - { label: "啟用", name: "isActive", widget: "boolean", default: true }
+          - { label: '繁體中文', name: 'zh_TW', widget: 'text' }
+          - { label: 'English', name: 'en', widget: 'text' }
+      - { label: '顏色', name: 'color', widget: 'color', required: false }
+      - { label: '圖示', name: 'icon', widget: 'string', required: false }
+      - { label: '啟用', name: 'isActive', widget: 'boolean', default: true }
 
 # 編輯器設定
 editor:
@@ -342,19 +352,19 @@ sortable_fields: ['title', 'lastUpdated', 'status']
 
 # 檢視過濾器
 view_filters:
-  - label: "草稿"
+  - label: '草稿'
     field: status
     pattern: 'draft'
-  - label: "審核中"
+  - label: '審核中'
     field: status
     pattern: 'in-review'
-  - label: "已發布"
+  - label: '已發布'
     field: status
     pattern: 'published'
 
 # 檢視群組
 view_groups:
-  - label: "狀態"
+  - label: '狀態'
     field: status
-  - label: "專科"
+  - label: '專科'
     field: medicalSpecialties
