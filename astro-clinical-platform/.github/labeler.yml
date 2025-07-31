@@ -1,0 +1,134 @@
+# 🏥 醫療衛教平台自動標籤配置
+# 根據 PR 變更的檔案自動添加相應標籤
+
+# 內容相關標籤
+content:
+  - 'src/content/education/**/*.md'
+
+medical-content:
+  - 'src/content/education/**/*.md'
+
+# 專科分類標籤
+cardiology:
+  - 'src/content/education/**/*cardiology*'
+  - 'src/content/education/**/*heart*'
+  - 'src/content/education/**/*cardiac*'
+  - 'src/content/medical-specialties/cardiology.json'
+
+neurology:
+  - 'src/content/education/**/*neurology*'
+  - 'src/content/education/**/*brain*'
+  - 'src/content/education/**/*stroke*'
+  - 'src/content/education/**/*neurological*'
+  - 'src/content/medical-specialties/neurology.json'
+
+pediatrics:
+  - 'src/content/education/**/*pediatrics*'
+  - 'src/content/education/**/*child*'
+  - 'src/content/education/**/*infant*'
+  - 'src/content/education/**/*baby*'
+  - 'src/content/medical-specialties/pediatrics.json'
+
+emergency:
+  - 'src/content/education/**/*emergency*'
+  - 'src/content/education/**/*urgent*'
+  - 'src/content/education/**/*first-aid*'
+  - 'src/content/education/**/*cpr*'
+  - 'src/content/medical-specialties/emergency.json'
+
+orthopedics:
+  - 'src/content/education/**/*orthopedics*'
+  - 'src/content/education/**/*bone*'
+  - 'src/content/education/**/*joint*'
+  - 'src/content/education/**/*fracture*'
+  - 'src/content/medical-specialties/orthopedics.json'
+
+# 內容類型標籤
+medication:
+  - 'src/content/education/**/*medication*'
+  - 'src/content/education/**/*drug*'
+  - 'src/content/education/**/*prescription*'
+  - 'src/content/education/**/*dosage*'
+
+surgery:
+  - 'src/content/education/**/*surgery*'
+  - 'src/content/education/**/*operation*'
+  - 'src/content/education/**/*procedure*'
+
+prevention:
+  - 'src/content/education/**/*prevention*'
+  - 'src/content/education/**/*preventive*'
+  - 'src/content/education/**/*screening*'
+
+nutrition:
+  - 'src/content/education/**/*nutrition*'
+  - 'src/content/education/**/*diet*'
+  - 'src/content/education/**/*food*'
+
+rehabilitation:
+  - 'src/content/education/**/*rehabilitation*'
+  - 'src/content/education/**/*physical-therapy*'
+  - 'src/content/education/**/*exercise*'
+
+# 系統配置標籤
+cms-config:
+  - 'public/admin/**'
+  - 'public/admin/config.yml'
+
+content-schema:
+  - 'src/content/config.ts'
+
+templates:
+  - 'src/content/templates/**'
+
+medical-specialties:
+  - 'src/content/medical-specialties/**'
+
+# 品質檢查相關
+quality-tools:
+  - 'scripts/medical-terminology-checker.js'
+  - 'scripts/accessibility-validator.js'
+  - 'scripts/readability-analyzer.js'
+  - 'scripts/reference-format-checker.js'
+  - 'scripts/quality-check-runner.js'
+
+# GitHub 工作流程
+github-actions:
+  - '.github/workflows/**'
+  - '.github/PULL_REQUEST_TEMPLATE/**'
+
+documentation:
+  - '*.md'
+  - 'docs/**'
+  - 'QUALITY_CHECKS.md'
+  - 'CMS_SETUP.md'
+  - 'CMS_EDITING_GUIDE.md'
+
+# 多語言內容
+zh-tw:
+  - 'src/content/**/**/zh-tw/**'
+
+en:
+  - 'src/content/**/**/en/**'
+
+zh-cn:
+  - 'src/content/**/**/zh-cn/**'
+
+# 特殊關注標籤
+high-risk:
+  - 'src/content/education/**/*emergency*'
+  - 'src/content/education/**/*critical*'
+  - 'src/content/education/**/*urgent*'
+  - 'src/content/education/**/*medication*'
+  - 'src/content/education/**/*drug*'
+
+needs-medical-review:
+  - 'src/content/education/**/*treatment*'
+  - 'src/content/education/**/*diagnosis*'
+  - 'src/content/education/**/*medication*'
+  - 'src/content/education/**/*surgery*'
+
+needs-legal-review:
+  - 'src/content/education/**/*liability*'
+  - 'src/content/education/**/*disclaimer*'
+  - 'src/content/education/**/*legal*'

@@ -1,0 +1,221 @@
+{
+  "id": "orthopedics",
+  "name": {
+    "zh_TW": "骨科",
+    "en": "Orthopedics",
+    "ja": "整形外科"
+  },
+  "slug": "orthopedics",
+  "description": {
+    "zh_TW": "專門診斷和治療肌肉骨骼系統疾病的醫學專科，包括骨骼、關節、肌肉、韌帶、肌腱等結構的外傷、疾病和畸形。",
+    "en": "Medical specialty focused on diagnosing and treating musculoskeletal system disorders, including injuries, diseases, and deformities of bones, joints, muscles, ligaments, and tendons.",
+    "ja": "骨、関節、筋肉、靭帯、腱などの筋骨格系の外傷、疾患、変形を診断・治療する医学専門分野。"
+  },
+  "workflowConfig": {
+    "reviewerRoles": ["orthopedic-surgeon", "medical-editor", "content-reviewer"],
+    "requiredApprovals": 2,
+    "reviewTimeLimit": 7,
+    "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review"],
+    "autoAssignmentRules": {
+      "enabled": true,
+      "balanceWorkload": true,
+      "avoidConflicts": true,
+      "preferExpertise": true,
+      "maxConcurrentReviews": 3
+    },
+    "reviewerPool": [
+      {
+        "id": "dr-huang-orthopedics",
+        "name": "黃骨科醫師",
+        "role": "orthopedic-surgeon",
+        "specializations": ["spine-surgery", "joint-replacement", "trauma"],
+        "maxConcurrentReviews": 3,
+        "averageReviewTime": 5.2,
+        "isActive": true
+      },
+      {
+        "id": "dr-lin-orthopedics",
+        "name": "林骨科醫師",
+        "role": "orthopedic-surgeon",
+        "specializations": ["sports-medicine", "arthroscopy", "pediatric-orthopedics"],
+        "maxConcurrentReviews": 2,
+        "averageReviewTime": 6.8,
+        "isActive": true
+      },
+      {
+        "id": "editor-medical-ortho",
+        "name": "骨科醫學編輯",
+        "role": "medical-editor",
+        "specializations": ["orthopedics-content", "medical-writing"],
+        "maxConcurrentReviews": 4,
+        "averageReviewTime": 3.5,
+        "isActive": true
+      }
+    ],
+    "escalationRules": {
+      "timeoutDays": 9,
+      "escalateTo": "department-head",
+      "notificationSchedule": [3, 6, 9]
+    }
+  },
+  "contentTemplate": {
+    "requiredSections": [
+      {
+        "section": "理學檢查",
+        "description": {
+          "zh_TW": "詳述骨科理學檢查的方法和發現",
+          "en": "Detail orthopedic physical examination methods and findings",
+          "ja": "整形外科理学検査の方法と所見を詳述"
+        },
+        "order": 1
+      },
+      {
+        "section": "影像學檢查",
+        "description": {
+          "zh_TW": "說明X光、MRI、CT等影像學檢查",
+          "en": "Explain X-ray, MRI, CT and other imaging studies",
+          "ja": "X線、MRI、CTなどの画像検査を説明"
+        },
+        "order": 2
+      },
+      {
+        "section": "治療選項",
+        "description": {
+          "zh_TW": "描述保守治療和手術治療選項",
+          "en": "Describe conservative and surgical treatment options",
+          "ja": "保存的治療と外科的治療の選択肢を説明"
+        },
+        "order": 3
+      },
+      {
+        "section": "復健計畫",
+        "description": {
+          "zh_TW": "提供物理治療和復健指導",
+          "en": "Provide physical therapy and rehabilitation guidance",
+          "ja": "理学療法とリハビリテーション指導を提供"
+        },
+        "order": 4
+      }
+    ],
+    "customFields": [
+      {
+        "name": "骨折分類",
+        "type": "select",
+        "label": {
+          "zh_TW": "骨折分類系統",
+          "en": "Fracture Classification System",
+          "ja": "骨折分類システム"
+        },
+        "required": false,
+        "options": [
+          {
+            "value": "ao",
+            "label": {
+              "zh_TW": "AO分類",
+              "en": "AO Classification",
+              "ja": "AO分類"
+            }
+          },
+          {
+            "value": "garden",
+            "label": {
+              "zh_TW": "Garden分類",
+              "en": "Garden Classification",
+              "ja": "Garden分類"
+            }
+          },
+          {
+            "value": "salter-harris",
+            "label": {
+              "zh_TW": "Salter-Harris分類",
+              "en": "Salter-Harris Classification",
+              "ja": "Salter-Harris分類"
+            }
+          }
+        ]
+      },
+      {
+        "name": "關節功能評估",
+        "type": "select",
+        "label": {
+          "zh_TW": "關節功能評估量表",
+          "en": "Joint Function Assessment Scale",
+          "ja": "関節機能評価スケール"
+        },
+        "required": false,
+        "options": [
+          {
+            "value": "rom",
+            "label": {
+              "zh_TW": "關節活動度 (ROM)",
+              "en": "Range of Motion (ROM)",
+              "ja": "関節可動域 (ROM)"
+            }
+          },
+          {
+            "value": "womac",
+            "label": {
+              "zh_TW": "WOMAC骨關節炎指數",
+              "en": "WOMAC Osteoarthritis Index",
+              "ja": "WOMAC変形性関節症指数"
+            }
+          }
+        ]
+      }
+    ],
+    "defaultTags": [
+      "骨科",
+      "肌肉骨骼系統",
+      "骨折",
+      "關節疾病"
+    ],
+    "suggestedKeywords": [
+      "骨折",
+      "關節炎",
+      "脊椎疾病",
+      "運動傷害",
+      "人工關節",
+      "X光檢查",
+      "物理治療",
+      "骨質疏鬆"
+    ]
+  },
+  "color": "#e67e22",
+  "icon": "bone",
+  "coverImage": "/images/specialties/orthopedics-cover.jpg",
+  "sortOrder": 3,
+  "isActive": true,
+  "isFeatured": true,
+  "calculatorCount": 5,
+  "educationCount": 22,
+  "flowchartCount": 6,
+  "sopStats": {
+    "totalArticles": 22,
+    "publishedArticles": 19,
+    "inReviewArticles": 2,
+    "averageReviewTime": 6.1,
+    "approvalRate": 0.86
+  },
+  "seoTitle": {
+    "zh_TW": "骨科 - 肌肉骨骼系統疾病診斷與治療 | 醫療平台",
+    "en": "Orthopedics - Musculoskeletal System Disorders Diagnosis & Treatment | Medical Platform",
+    "ja": "整形外科 - 筋骨格系疾患の診断と治療 | 医療プラットフォーム"
+  },
+  "seoDescription": {
+    "zh_TW": "提供專業的骨科醫療資訊，包括骨折、關節炎、脊椎疾病、運動傷害等肌肉骨骼系統疾病的診斷、治療和復健指導。由骨科專家審核。",
+    "en": "Professional orthopedic medical information including diagnosis, treatment and rehabilitation guidance for musculoskeletal disorders such as fractures, arthritis, spinal diseases, and sports injuries. Reviewed by orthopedic specialists.",
+    "ja": "骨折、関節炎、脊椎疾患、スポーツ外傷などの筋骨格系疾患の診断、治療、リハビリテーション指導を含む専門的な整形外科医療情報。整形外科専門医による審査。"
+  },
+  "keywords": [
+    "骨科",
+    "肌肉骨骼系統",
+    "骨折",
+    "關節炎",
+    "脊椎疾病",
+    "運動傷害",
+    "人工關節",
+    "物理治療",
+    "骨質疏鬆",
+    "復健"
+  ]
+}

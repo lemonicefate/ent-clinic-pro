@@ -1,49 +1,109 @@
-/// <reference types="vitest/config" />
-import { defineConfig } from 'vitest/config';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-const dirname =
-  typeof __dirname !== 'undefined'
-    ? __dirname
-    : path.dirname(fileURLToPath(import.meta.url));
+import { defineConfig } from 'vitest/config'
+import { resolve } from 'path'
 
-// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   test: {
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: ['./src/test-setup.ts'],
+    // Test environment configuration
+    environment: 'node',
+    
+    // Test file patterns
+    include: [
+      'src/**/*.{test,spec}.{js,ts}',
+      'tests/**/*.{test,spec}.{js,ts}',
+      'scripts/**/*.{test,spec}.{js,ts}'
+    ],
+    
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.astro/**',
+      '**/coverage/**'
+    ],
+    
+    // Global setup and teardown
+    globalSetup: ['./tests/setup/global-setup.ts'],
+    setupFiles: ['./tests/setup/test-setup.ts'],
+    
+    // Test execution configuration
+    testTimeout: 10000,
+    hookTimeout: 10000,
+    maxConcurrency: 5,
+    
+    // Coverage configuration
+    coverage: {
+      provider: 'v8',
+      enabled: false, // Enable with --coverage flag
+      reporter: ['text', 'json', 'html'],
+      reportsDirectory: './coverage',
+      exclude: [
+        'coverage/**',
+        'dist/**',
+        '**/node_modules/**',
+        '**/.astro/**',
+        'tests/**',
+        '**/*.config.*',
+        '**/*.d.ts'
+      ],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 70,
+        statements: 80
+      }
+    },
+    
+    // Reporter configuration
+    reporter: process.env.CI ? ['junit', 'github-actions'] : ['verbose'],
+    outputFile: {
+      junit: './test-results/junit.xml'
+    },
+    
+    // Mock configuration
+    clearMocks: true,
+    restoreMocks: true,
+    
+    // Sequence configuration for deterministic tests
+    sequence: {
+      shuffle: false,
+      concurrent: false,
+      hooks: 'stack'
+    },
+    
+    // Project configurations for different test types
     projects: [
       {
-        extends: true,
-        plugins: [
-          // The plugin will run tests for the stories defined in your Storybook config
-          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-          storybookTest({
-            configDir: path.join(dirname, '.storybook'),
-          }),
+        name: 'unit',
+        testMatch: [
+          'src/**/*.{test,spec}.{js,ts}',
+          'tests/unit/**/*.{test,spec}.{js,ts}'
         ],
-        test: {
-          name: 'storybook',
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: 'playwright',
-            instances: [
-              {
-                browser: 'chromium',
-              },
-            ],
-          },
-          setupFiles: ['.storybook/vitest.setup.ts'],
-        },
+        environment: 'node'
       },
-    ],
+      {
+        name: 'integration',
+        testMatch: [
+          'tests/integration/**/*.{test,spec}.{js,ts}'
+        ],
+        environment: 'node',
+        testTimeout: 30000
+      },
+      {
+        name: 'e2e',
+        testMatch: [
+          'tests/e2e/**/*.{test,spec}.{js,ts}'
+        ],
+        environment: 'node',
+        testTimeout: 60000
+      }
+    ]
   },
+  
+  // Resolve configuration for imports
   resolve: {
     alias: {
-      '@': '/src',
-    },
-  },
-});
+      '@': resolve(__dirname, './src'),
+      '@tests': resolve(__dirname, './tests'),
+      '@scripts': resolve(__dirname, './scripts')
+    }
+  }
+})

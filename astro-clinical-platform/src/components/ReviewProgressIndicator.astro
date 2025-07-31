@@ -1,0 +1,362 @@
+---
+/**
+ * 審核進度指示器組件
+ * 顯示文章審核流程的進度和狀態
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增審核進度指示器功能
+ * 
+ * 需求對應：
+ * - 需求 6.1: 版本控制和追蹤系統 ✓
+ * - 需求 6.2: 審核進度指示器 ✓
+ */
+
+import { formatDate } from '../utils/i18n';
+import type { SupportedLocale, ArticleStatus, ReviewDecision } from '../env.d';
+
+interface ReviewHistoryEntry {
+  reviewer: string;
+  reviewDate: string;
+  decision: ReviewDecision;
+  comments?: string;
+  checklist?: {
+    medicalAccuracy: boolean;
+    contentStructure: boolean;
+    languageClarity: boolean;
+    referencesValid: boolean;
+    seoOptimized: boolean;
+    accessibilityCompliant: boolean;
+  };
+}
+
+interface Props {
+  status: ArticleStatus;
+  reviewHistory: ReviewHistoryEntry[];
+  currentReviewers?: string[];
+  requiredApprovals?: number;
+  reviewTimeLimit?: number;
+  submittedForReview?: string;
+  locale?: SupportedLocale;
+  showDetails?: boolean;
+}
+
+const {
+  status,
+  reviewHistory = [],
+  currentReviewers = [],
+  requiredApprovals = 2,
+  reviewTimeLimit = 7,
+  submittedForReview,
+  locale = 'zh-TW',
+  showDetails = true
+} = Astro.props;
+
+// 計算審核統計
+const approvedReviews = reviewHistory.filter(r => r.decision === 'approved');
+const rejectedReviews = reviewHistory.filter(r => r.decision === 'rejected');
+const revisionRequests = reviewHistory.filter(r => r.decision === 'needs-revision');
+
+const approvalCount = approvedReviews.length;
+const approvalProgress = Math.min((approvalCount / requiredApprovals) * 100, 100);
+
+// 計算審核時間
+const submittedDate = submittedForReview ? new Date(submittedForReview) : null;
+const now = new Date();
+const daysSinceSubmission = submittedDate 
+  ? Math.floor((now.getTime() - submittedDate.getTime()) / (1000 * 60 * 60 * 24))
+  : 0;
+
+const daysRemaining = reviewTimeLimit - daysSinceSubmission;
+const isOverdue = daysRemaining < 0;
+const isUrgent = daysRemaining <= 2 && daysRemaining >= 0;
+
+// 審核狀態配置
+const getReviewStatus = () => {
+  if (status !== 'in-review') {
+    return {
+      label: '非審核狀態',
+      color: 'text-gray-600',
+      bgColor: 'bg-gray-50',
+      borderColor: 'border-gray-200',
+      icon: '⏸️'
+    };
+  }
+  
+  if (approvalCount >= requiredApprovals) {
+    return {
+      label: '審核完成',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200',
+      icon: '✅'
+    };
+  }
+  
+  if (isOverdue) {
+    return {
+      label: '審核逾期',
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
+      borderColor: 'border-red-200',
+      icon: '⚠️'
+    };
+  }
+  
+  if (isUrgent) {
+    return {
+      label: '審核緊急',
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+      borderColor: 'border-orange-200',
+      icon: '🔥'
+    };
+  }
+  
+  return {
+    label: '審核進行中',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-50',
+    borderColor: 'border-blue-200',
+    icon: '👀'
+  };
+};
+
+const reviewStatus = getReviewStatus();
+
+// 獲取審核者狀態
+const getReviewerStatus = (reviewerId: string) => {
+  const review = reviewHistory.find(r => r.reviewer === reviewerId);
+  if (!review) return { status: 'pending', label: '待審核', color: 'text-gray-500' };
+  
+  switch (review.decision) {
+    case 'approved':
+      return { status: 'approved', label: '已通過', color: 'text-green-600' };
+    case 'rejected':
+      return { status: 'rejected', label: '已拒絕', color: 'text-red-600' };
+    case 'needs-revision':
+      return { status: 'revision', label: '需修改', color: 'text-yellow-600' };
+    default:
+      return { status: 'pending', label: '待審核', color: 'text-gray-500' };
+  }
+};
+
+// 計算檢查清單完成度
+const getChecklistCompletion = (checklist?: ReviewHistoryEntry['checklist']) => {
+  if (!checklist) return 0;
+  const items = Object.values(checklist);
+  const completed = items.filter(Boolean).length;
+  return Math.round((completed / items.length) * 100);
+};
+---
+
+<div class={`rounded-lg border p-6 ${reviewStatus.bgColor} ${reviewStatus.borderColor}`}>
+  <!-- 審核狀態標頭 -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center space-x-3">
+      <span class="text-xl">{reviewStatus.icon}</span>
+      <div>
+        <h3 class={`text-lg font-semibold ${reviewStatus.color}`}>
+          {reviewStatus.label}
+        </h3>
+        <p class="text-sm text-gray-600">
+          {approvalCount}/{requiredApprovals} 審核通過
+        </p>
+      </div>
+    </div>
+    
+    {submittedDate && (
+      <div class="text-right">
+        <div class="text-sm text-gray-500">提交時間</div>
+        <div class="font-medium">{formatDate(submittedForReview!, locale, 'short')}</div>
+        <div class={`text-xs ${isOverdue ? 'text-red-600' : isUrgent ? 'text-orange-600' : 'text-gray-500'}`}>
+          {daysSinceSubmission} 天前
+        </div>
+      </div>
+    )}
+  </div>
+
+  <!-- 進度條 -->
+  <div class="mb-6">
+    <div class="flex justify-between text-sm text-gray-600 mb-2">
+      <span>審核進度</span>
+      <span>{Math.round(approvalProgress)}%</span>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-3">
+      <div 
+        class={`h-3 rounded-full transition-all duration-500 ${
+          approvalCount >= requiredApprovals ? 'bg-green-500' :
+          isOverdue ? 'bg-red-500' :
+          isUrgent ? 'bg-orange-500' : 'bg-blue-500'
+        }`}
+        style={`width: ${approvalProgress}%`}
+      ></div>
+    </div>
+  </div>
+
+  <!-- 時間資訊 -->
+  {status === 'in-review' && (
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="text-center">
+        <div class={`text-2xl font-bold ${isOverdue ? 'text-red-600' : isUrgent ? 'text-orange-600' : 'text-blue-600'}`}>
+          {Math.abs(daysRemaining)}
+        </div>
+        <div class="text-sm text-gray-600">
+          {isOverdue ? '逾期天數' : '剩餘天數'}
+        </div>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl font-bold text-gray-900">
+          {daysSinceSubmission}
+        </div>
+        <div class="text-sm text-gray-600">已等待天數</div>
+      </div>
+    </div>
+  )}
+
+  <!-- 審核者狀態 -->
+  {currentReviewers.length > 0 && (
+    <div class="mb-6">
+      <h4 class="text-sm font-medium text-gray-700 mb-3">審核者狀態</h4>
+      <div class="space-y-2">
+        {currentReviewers.map(reviewerId => {
+          const reviewerStatus = getReviewerStatus(reviewerId);
+          const review = reviewHistory.find(r => r.reviewer === reviewerId);
+          
+          return (
+            <div key={reviewerId} class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded border border-white border-opacity-30">
+              <div class="flex items-center space-x-3">
+                <div class={`w-3 h-3 rounded-full ${
+                  reviewerStatus.status === 'approved' ? 'bg-green-500' :
+                  reviewerStatus.status === 'rejected' ? 'bg-red-500' :
+                  reviewerStatus.status === 'revision' ? 'bg-yellow-500' :
+                  'bg-gray-300'
+                }`}></div>
+                <span class="font-medium text-gray-900">{reviewerId}</span>
+                <span class={`text-sm ${reviewerStatus.color}`}>
+                  {reviewerStatus.label}
+                </span>
+              </div>
+              
+              {review && (
+                <div class="text-right">
+                  <div class="text-xs text-gray-500">
+                    {formatDate(review.reviewDate, locale, 'short')}
+                  </div>
+                  {review.checklist && (
+                    <div class="text-xs text-gray-400">
+                      檢查清單: {getChecklistCompletion(review.checklist)}%
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  )}
+
+  <!-- 審核歷史摘要 -->
+  {showDetails && reviewHistory.length > 0 && (
+    <div>
+      <h4 class="text-sm font-medium text-gray-700 mb-3">最近審核</h4>
+      <div class="space-y-3">
+        {reviewHistory.slice(0, 3).map((review, index) => (
+          <div key={index} class="p-3 bg-white bg-opacity-50 rounded border border-white border-opacity-30">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <span class="font-medium text-gray-900">{review.reviewer}</span>
+                <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  review.decision === 'approved' ? 'bg-green-100 text-green-800' :
+                  review.decision === 'rejected' ? 'bg-red-100 text-red-800' :
+                  'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {review.decision === 'approved' ? '通過' :
+                   review.decision === 'rejected' ? '拒絕' : '需修改'}
+                </span>
+              </div>
+              <span class="text-xs text-gray-500">
+                {formatDate(review.reviewDate, locale, 'short')}
+              </span>
+            </div>
+            
+            {review.comments && (
+              <p class="text-sm text-gray-600 mb-2 line-clamp-2">
+                {review.comments}
+              </p>
+            )}
+            
+            {review.checklist && (
+              <div class="flex items-center space-x-4 text-xs">
+                <span class="text-gray-500">檢查項目:</span>
+                <div class="flex space-x-2">
+                  {Object.entries(review.checklist).map(([key, value]) => (
+                    <span key={key} class={`inline-flex items-center ${value ? 'text-green-600' : 'text-red-600'}`}>
+                      {value ? '✓' : '✗'}
+                    </span>
+                  ))}
+                </div>
+                <span class="text-gray-400">
+                  {getChecklistCompletion(review.checklist)}% 完成
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- 統計摘要 -->
+  {reviewHistory.length > 0 && (
+    <div class="mt-6 pt-4 border-t border-white border-opacity-30">
+      <div class="grid grid-cols-3 gap-4 text-center text-sm">
+        <div>
+          <div class="font-semibold text-green-600">{approvedReviews.length}</div>
+          <div class="text-gray-600">通過</div>
+        </div>
+        <div>
+          <div class="font-semibold text-yellow-600">{revisionRequests.length}</div>
+          <div class="text-gray-600">需修改</div>
+        </div>
+        <div>
+          <div class="font-semibold text-red-600">{rejectedReviews.length}</div>
+          <div class="text-gray-600">拒絕</div>
+        </div>
+      </div>
+    </div>
+  )}
+
+  <!-- 行動建議 -->
+  {status === 'in-review' && (
+    <div class="mt-4 p-3 bg-white bg-opacity-50 rounded border border-white border-opacity-30">
+      <div class="flex items-start space-x-2">
+        <svg class="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <p class="text-xs font-medium text-gray-700">建議行動</p>
+          <p class="text-xs text-gray-600 mt-1">
+            {approvalCount >= requiredApprovals 
+              ? '已達到所需審核數量，可以進入下一階段'
+              : isOverdue 
+                ? '審核已逾期，建議聯繫審核者或重新分配'
+                : isUrgent
+                  ? '審核即將到期，建議提醒審核者'
+                  : `還需要 ${requiredApprovals - approvalCount} 個審核通過`
+            }
+          </p>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

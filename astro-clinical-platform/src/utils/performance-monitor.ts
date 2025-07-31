@@ -1,472 +1,557 @@
 /**
- * 效能監控工具
- * 監控 Core Web Vitals 和其他效能指標
+ * Performance Monitoring and Analytics System
+ * 
+ * This module provides comprehensive performance monitoring capabilities including:
+ * - Page load time tracking
+ * - User behavior analysis
+ * - Content interaction metrics
+ * - SEO performance tracking
  */
 
-// Core Web Vitals 指標類型
-export interface CoreWebVitals {
-  FCP?: number; // First Contentful Paint
-  LCP?: number; // Largest Contentful Paint
-  FID?: number; // First Input Delay
-  CLS?: number; // Cumulative Layout Shift
-  TTFB?: number; // Time to First Byte
-  INP?: number; // Interaction to Next Paint
-}
-
-// 效能指標
-export interface PerformanceMetrics extends CoreWebVitals {
-  // 載入時間
-  domContentLoaded?: number;
-  windowLoad?: number;
-  
-  // 資源載入
-  resourceCount?: number;
-  totalResourceSize?: number;
-  
-  // 記憶體使用
-  usedJSHeapSize?: number;
-  totalJSHeapSize?: number;
-  
-  // 網路資訊
-  connectionType?: string;
-  effectiveType?: string;
-  downlink?: number;
-  rtt?: number;
-  
-  // 自定義指標
-  medicalContentLoadTime?: number;
-  calculatorRenderTime?: number;
-  searchResponseTime?: number;
-}
-
-// 效能事件
-export interface PerformanceEvent {
-  name: string;
+// Web Vitals metrics interface
+interface WebVitalsMetric {
+  name: 'CLS' | 'FID' | 'FCP' | 'LCP' | 'TTFB' | 'INP';
   value: number;
+  delta: number;
+  id: string;
   rating: 'good' | 'needs-improvement' | 'poor';
-  timestamp: number;
-  url: string;
-  userAgent: string;
 }
 
-/**
- * 效能監控器類別
- */
-export class PerformanceMonitor {
-  private metrics: PerformanceMetrics = {};
-  private observers: PerformanceObserver[] = [];
-  private callbacks: Array<(event: PerformanceEvent) => void> = [];
+// Performance data interface
+interface PerformanceData {
+  url: string;
+  timestamp: number;
+  loadTime: number;
+  domContentLoaded: number;
+  firstPaint: number;
+  firstContentfulPaint: number;
+  largestContentfulPaint?: number;
+  cumulativeLayoutShift?: number;
+  firstInputDelay?: number;
+  interactionToNextPaint?: number;
+  timeToFirstByte: number;
+  resourceCount: number;
+  transferSize: number;
+  userAgent: string;
+  connectionType?: string;
+  deviceMemory?: number;
+}
 
-  constructor() {
-    this.initializeObservers();
-    this.measureInitialMetrics();
-  }
+// User behavior data interface
+interface UserBehaviorData {
+  sessionId: string;
+  userId?: string;
+  url: string;
+  timestamp: number;
+  event: 'page_view' | 'scroll' | 'click' | 'form_interaction' | 'search' | 'download' | 'exit';
+  data: Record<string, any>;
+  duration?: number;
+  scrollDepth?: number;
+  clickTarget?: string;
+  searchQuery?: string;
+}
 
-  /**
-   * 初始化效能觀察器
-   */
-  private initializeObservers(): void {
-    // 觀察 LCP
-    if ('PerformanceObserver' in window) {
-      try {
-        const lcpObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1] as any;
-          
-          if (lastEntry) {
-            this.metrics.LCP = lastEntry.startTime;
-            this.reportMetric('LCP', lastEntry.startTime);
-          }
-        });
-        
-        lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-        this.observers.push(lcpObserver);
-      } catch (error) {
-        console.warn('LCP observer not supported:', error);
-      }
+// Content interaction metrics interface
+interface ContentInteractionData {
+  contentId: string;
+  contentType: 'article' | 'calculator' | 'specialty_page' | 'search_results';
+  specialty?: string;
+  url: string;
+  timestamp: number;
+  interactions: {
+    views: number;
+    timeOnPage: number;
+    scrollDepth: number;
+    clicks: number;
+    shares: number;
+    downloads: number;
+    searches: number;
+  };
+  userSegment?: string;
+  referrer?: string;
+}
 
-      // 觀察 FID
-      try {
-        const fidObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry: any) => {
-            this.metrics.FID = entry.processingStart - entry.startTime;
-            this.reportMetric('FID', this.metrics.FID);
-          });
-        });
-        
-        fidObserver.observe({ entryTypes: ['first-input'] });
-        this.observers.push(fidObserver);
-      } catch (error) {
-        console.warn('FID observer not supported:', error);
-      }
+// SEO performance data interface
+interface SEOPerformanceData {
+  url: string;
+  timestamp: number;
+  title: string;
+  metaDescription?: string;
+  h1Count: number;
+  h2Count: number;
+  imageCount: number;
+  imagesWithoutAlt: number;
+  internalLinks: number;
+  externalLinks: number;
+  wordCount: number;
+  readabilityScore?: number;
+  loadTime: number;
+  mobileUsability: boolean;
+  structuredData: boolean;
+  canonicalUrl?: string;
+}
 
-      // 觀察 CLS
-      try {
-        let clsValue = 0;
-        const clsObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry: any) => {
-            if (!entry.hadRecentInput) {
-              clsValue += entry.value;
-            }
-          });
-          
-          this.metrics.CLS = clsValue;
-          this.reportMetric('CLS', clsValue);
-        });
-        
-        clsObserver.observe({ entryTypes: ['layout-shift'] });
-        this.observers.push(clsObserver);
-      } catch (error) {
-        console.warn('CLS observer not supported:', error);
-      }
+class PerformanceMonitor {
+  private sessionId: string;
+  private userId?: string;
+  private startTime: number;
+  private isEnabled: boolean;
+  private apiEndpoint: string;
+  private batchSize: number = 10;
+  private batchTimeout: number = 5000;
+  private pendingData: any[] = [];
+  private batchTimer?: number;
 
-      // 觀察資源載入
-      try {
-        const resourceObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          this.analyzeResourcePerformance(entries);
-        });
-        
-        resourceObserver.observe({ entryTypes: ['resource'] });
-        this.observers.push(resourceObserver);
-      } catch (error) {
-        console.warn('Resource observer not supported:', error);
-      }
+  constructor(config: {
+    apiEndpoint?: string;
+    userId?: string;
+    isEnabled?: boolean;
+  } = {}) {
+    this.sessionId = this.generateSessionId();
+    this.userId = config.userId;
+    this.startTime = Date.now();
+    this.isEnabled = config.isEnabled ?? true;
+    this.apiEndpoint = config.apiEndpoint ?? '/api/analytics';
+
+    if (this.isEnabled && typeof window !== 'undefined') {
+      this.initializeMonitoring();
     }
   }
 
-  /**
-   * 測量初始指標
-   */
-  private measureInitialMetrics(): void {
-    // 測量 FCP
-    if ('performance' in window && 'getEntriesByType' in performance) {
-      const paintEntries = performance.getEntriesByType('paint');
-      const fcpEntry = paintEntries.find(entry => entry.name === 'first-contentful-paint');
-      
-      if (fcpEntry) {
-        this.metrics.FCP = fcpEntry.startTime;
-        this.reportMetric('FCP', fcpEntry.startTime);
-      }
-    }
+  private generateSessionId(): string {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
 
-    // 測量 TTFB
-    if ('performance' in window && 'timing' in performance) {
-      const timing = performance.timing;
-      this.metrics.TTFB = timing.responseStart - timing.requestStart;
-      this.reportMetric('TTFB', this.metrics.TTFB);
-    }
+  private initializeMonitoring(): void {
+    // Initialize Web Vitals monitoring
+    this.initWebVitals();
+    
+    // Initialize performance monitoring
+    this.initPerformanceMonitoring();
+    
+    // Initialize user behavior tracking
+    this.initUserBehaviorTracking();
+    
+    // Initialize content interaction tracking
+    this.initContentInteractionTracking();
+    
+    // Initialize SEO performance monitoring
+    this.initSEOMonitoring();
 
-    // 測量 DOM 載入時間
-    document.addEventListener('DOMContentLoaded', () => {
-      this.metrics.domContentLoaded = performance.now();
+    // Send data before page unload
+    window.addEventListener('beforeunload', () => {
+      this.flushPendingData();
     });
+
+    // Send data periodically
+    setInterval(() => {
+      this.flushPendingData();
+    }, 30000); // Every 30 seconds
+  }
+
+  private async initWebVitals(): Promise<void> {
+    try {
+      // Dynamic import of web-vitals library
+      const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import('web-vitals');
+      
+      const sendToAnalytics = (metric: WebVitalsMetric) => {
+        this.trackWebVital(metric);
+      };
+
+      getCLS(sendToAnalytics);
+      getFID(sendToAnalytics);
+      getFCP(sendToAnalytics);
+      getLCP(sendToAnalytics);
+      getTTFB(sendToAnalytics);
+
+      // Try to get INP if available (newer metric)
+      try {
+        const { getINP } = await import('web-vitals');
+        getINP(sendToAnalytics);
+      } catch (e) {
+        // INP not available in older versions
+      }
+    } catch (error) {
+      console.warn('Web Vitals library not available:', error);
+      // Fallback to basic performance monitoring
+      this.initBasicPerformanceMonitoring();
+    }
+  }
+
+  private initBasicPerformanceMonitoring(): void {
+    if (!window.performance) return;
 
     window.addEventListener('load', () => {
-      this.metrics.windowLoad = performance.now();
-      this.measureMemoryUsage();
-      this.measureNetworkInformation();
+      setTimeout(() => {
+        const perfData = this.collectPerformanceData();
+        this.addToBatch('performance', perfData);
+      }, 0);
     });
   }
 
-  /**
-   * 分析資源效能
-   */
-  private analyzeResourcePerformance(entries: PerformanceEntry[]): void {
-    let totalSize = 0;
-    let resourceCount = 0;
-
-    entries.forEach((entry: any) => {
-      if (entry.transferSize) {
-        totalSize += entry.transferSize;
-        resourceCount++;
-      }
-
-      // 檢查慢速資源
-      const loadTime = entry.responseEnd - entry.startTime;
-      if (loadTime > 1000) { // 超過 1 秒
-        console.warn(`Slow resource detected: ${entry.name} (${loadTime.toFixed(2)}ms)`);
-      }
-    });
-
-    this.metrics.resourceCount = resourceCount;
-    this.metrics.totalResourceSize = totalSize;
-  }
-
-  /**
-   * 測量記憶體使用量
-   */
-  private measureMemoryUsage(): void {
-    if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      this.metrics.usedJSHeapSize = memory.usedJSHeapSize;
-      this.metrics.totalJSHeapSize = memory.totalJSHeapSize;
-    }
-  }
-
-  /**
-   * 測量網路資訊
-   */
-  private measureNetworkInformation(): void {
-    if ('connection' in navigator) {
-      const connection = (navigator as any).connection;
-      this.metrics.connectionType = connection.type;
-      this.metrics.effectiveType = connection.effectiveType;
-      this.metrics.downlink = connection.downlink;
-      this.metrics.rtt = connection.rtt;
-    }
-  }
-
-  /**
-   * 報告指標
-   */
-  private reportMetric(name: string, value: number): void {
-    const rating = this.getRating(name, value);
-    const event: PerformanceEvent = {
-      name,
-      value,
-      rating,
-      timestamp: Date.now(),
-      url: window.location.href,
-      userAgent: navigator.userAgent
-    };
-
-    // 執行回調
-    this.callbacks.forEach(callback => callback(event));
-
-    // 記錄到控制台（開發模式）
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Performance metric: ${name} = ${value.toFixed(2)}ms (${rating})`);
-    }
-  }
-
-  /**
-   * 獲取指標評級
-   */
-  private getRating(name: string, value: number): 'good' | 'needs-improvement' | 'poor' {
-    const thresholds = {
-      FCP: { good: 1800, poor: 3000 },
-      LCP: { good: 2500, poor: 4000 },
-      FID: { good: 100, poor: 300 },
-      CLS: { good: 0.1, poor: 0.25 },
-      TTFB: { good: 800, poor: 1800 }
-    };
-
-    const threshold = thresholds[name as keyof typeof thresholds];
-    if (!threshold) return 'good';
-
-    if (value <= threshold.good) return 'good';
-    if (value <= threshold.poor) return 'needs-improvement';
-    return 'poor';
-  }
-
-  /**
-   * 測量醫療內容載入時間
-   */
-  measureMedicalContentLoad(startTime: number): void {
-    const loadTime = performance.now() - startTime;
-    this.metrics.medicalContentLoadTime = loadTime;
-    this.reportMetric('medicalContentLoad', loadTime);
-  }
-
-  /**
-   * 測量計算機渲染時間
-   */
-  measureCalculatorRender(startTime: number): void {
-    const renderTime = performance.now() - startTime;
-    this.metrics.calculatorRenderTime = renderTime;
-    this.reportMetric('calculatorRender', renderTime);
-  }
-
-  /**
-   * 測量搜尋回應時間
-   */
-  measureSearchResponse(startTime: number): void {
-    const responseTime = performance.now() - startTime;
-    this.metrics.searchResponseTime = responseTime;
-    this.reportMetric('searchResponse', responseTime);
-  }
-
-  /**
-   * 添加效能事件監聽器
-   */
-  addEventListener(callback: (event: PerformanceEvent) => void): void {
-    this.callbacks.push(callback);
-  }
-
-  /**
-   * 移除效能事件監聽器
-   */
-  removeEventListener(callback: (event: PerformanceEvent) => void): void {
-    const index = this.callbacks.indexOf(callback);
-    if (index > -1) {
-      this.callbacks.splice(index, 1);
-    }
-  }
-
-  /**
-   * 獲取當前指標
-   */
-  getMetrics(): PerformanceMetrics {
-    return { ...this.metrics };
-  }
-
-  /**
-   * 生成效能報告
-   */
-  generateReport(): {
-    summary: string;
-    metrics: PerformanceMetrics;
-    recommendations: string[];
-  } {
-    const recommendations: string[] = [];
-    
-    // 分析 LCP
-    if (this.metrics.LCP && this.metrics.LCP > 2500) {
-      recommendations.push('優化 Largest Contentful Paint：考慮優化圖片、減少 CSS 阻塞、使用 CDN');
-    }
-
-    // 分析 FID
-    if (this.metrics.FID && this.metrics.FID > 100) {
-      recommendations.push('優化 First Input Delay：減少 JavaScript 執行時間、使用 Web Workers');
-    }
-
-    // 分析 CLS
-    if (this.metrics.CLS && this.metrics.CLS > 0.1) {
-      recommendations.push('優化 Cumulative Layout Shift：為圖片設定尺寸、避免動態插入內容');
-    }
-
-    // 分析資源載入
-    if (this.metrics.totalResourceSize && this.metrics.totalResourceSize > 2000000) { // 2MB
-      recommendations.push('優化資源大小：壓縮圖片、啟用 Gzip、移除未使用的 CSS/JS');
-    }
-
-    // 分析記憶體使用
-    if (this.metrics.usedJSHeapSize && this.metrics.totalJSHeapSize) {
-      const memoryUsage = this.metrics.usedJSHeapSize / this.metrics.totalJSHeapSize;
-      if (memoryUsage > 0.8) {
-        recommendations.push('優化記憶體使用：檢查記憶體洩漏、優化 JavaScript 程式碼');
-      }
-    }
-
-    const summary = this.generateSummary();
-
-    return {
-      summary,
-      metrics: this.metrics,
-      recommendations
-    };
-  }
-
-  /**
-   * 生成效能摘要
-   */
-  private generateSummary(): string {
-    const goodMetrics = [];
-    const poorMetrics = [];
-
-    Object.entries(this.metrics).forEach(([key, value]) => {
-      if (typeof value === 'number') {
-        const rating = this.getRating(key, value);
-        if (rating === 'good') {
-          goodMetrics.push(key);
-        } else if (rating === 'poor') {
-          poorMetrics.push(key);
-        }
-      }
-    });
-
-    if (poorMetrics.length === 0) {
-      return '效能表現良好，所有核心指標都在建議範圍內。';
-    } else {
-      return `需要改善的指標：${poorMetrics.join(', ')}。良好的指標：${goodMetrics.join(', ')}。`;
-    }
-  }
-
-  /**
-   * 發送效能資料到分析服務
-   */
-  async sendToAnalytics(endpoint: string): Promise<void> {
-    try {
-      const report = this.generateReport();
-      
-      await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ...report,
-          timestamp: Date.now(),
-          url: window.location.href,
-          userAgent: navigator.userAgent
-        })
+  private initPerformanceMonitoring(): void {
+    // Monitor navigation timing
+    if (window.performance && window.performance.navigation) {
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const perfData = this.collectPerformanceData();
+          this.addToBatch('performance', perfData);
+        }, 0);
       });
-    } catch (error) {
-      console.error('Failed to send performance data:', error);
+    }
+
+    // Monitor resource loading
+    if (window.performance && window.performance.getEntriesByType) {
+      window.addEventListener('load', () => {
+        const resources = window.performance.getEntriesByType('resource');
+        const resourceData = resources.map(resource => ({
+          name: resource.name,
+          type: (resource as any).initiatorType,
+          duration: resource.duration,
+          transferSize: (resource as any).transferSize || 0,
+          timestamp: Date.now()
+        }));
+        this.addToBatch('resources', resourceData);
+      });
     }
   }
 
-  /**
-   * 清理觀察器
-   */
-  cleanup(): void {
-    this.observers.forEach(observer => observer.disconnect());
-    this.observers = [];
-    this.callbacks = [];
+  private initUserBehaviorTracking(): void {
+    // Track page views
+    this.trackPageView();
+
+    // Track scroll behavior
+    let scrollDepth = 0;
+    let scrollTimer: number;
+    
+    window.addEventListener('scroll', () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        const currentScrollDepth = Math.round(
+          (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+        );
+        
+        if (currentScrollDepth > scrollDepth) {
+          scrollDepth = currentScrollDepth;
+          this.trackUserBehavior('scroll', { scrollDepth: currentScrollDepth });
+        }
+      }, 100);
+    });
+
+    // Track clicks
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      const clickData = {
+        tagName: target.tagName,
+        className: target.className,
+        id: target.id,
+        text: target.textContent?.substring(0, 100),
+        href: (target as HTMLAnchorElement).href,
+        x: event.clientX,
+        y: event.clientY
+      };
+      this.trackUserBehavior('click', clickData);
+    });
+
+    // Track form interactions
+    document.addEventListener('focusin', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') {
+        this.trackUserBehavior('form_interaction', {
+          formId: target.closest('form')?.id,
+          fieldName: (target as HTMLInputElement).name,
+          fieldType: (target as HTMLInputElement).type
+        });
+      }
+    });
+
+    // Track search interactions
+    document.addEventListener('submit', (event) => {
+      const form = event.target as HTMLFormElement;
+      const searchInput = form.querySelector('input[type="search"], input[name*="search"], input[name*="query"]') as HTMLInputElement;
+      
+      if (searchInput && searchInput.value) {
+        this.trackUserBehavior('search', {
+          query: searchInput.value,
+          formId: form.id
+        });
+      }
+    });
   }
 
-  /**
-   * 檢查瀏覽器支援
-   */
-  static checkSupport(): {
-    performanceObserver: boolean;
-    performanceTiming: boolean;
-    performanceMemory: boolean;
-    networkInformation: boolean;
-  } {
+  private initContentInteractionTracking(): void {
+    // Track content views
+    const contentElements = document.querySelectorAll('[data-content-id]');
+    
+    contentElements.forEach(element => {
+      const contentId = element.getAttribute('data-content-id');
+      const contentType = element.getAttribute('data-content-type') || 'article';
+      const specialty = element.getAttribute('data-specialty');
+      
+      if (contentId) {
+        // Track when content comes into view
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.trackContentInteraction(contentId, contentType as any, {
+                event: 'view',
+                specialty,
+                timestamp: Date.now()
+              });
+            }
+          });
+        }, { threshold: 0.5 });
+        
+        observer.observe(element);
+      }
+    });
+
+    // Track time on page for content
+    let pageStartTime = Date.now();
+    window.addEventListener('beforeunload', () => {
+      const timeOnPage = Date.now() - pageStartTime;
+      const contentId = document.querySelector('[data-content-id]')?.getAttribute('data-content-id');
+      
+      if (contentId) {
+        this.trackContentInteraction(contentId, 'article', {
+          event: 'time_on_page',
+          duration: timeOnPage
+        });
+      }
+    });
+  }
+
+  private initSEOMonitoring(): void {
+    // Collect SEO data on page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const seoData = this.collectSEOData();
+        this.addToBatch('seo', seoData);
+      }, 1000);
+    });
+  }
+
+  private collectPerformanceData(): PerformanceData {
+    const navigation = window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    const connection = (navigator as any).connection;
+    
     return {
-      performanceObserver: 'PerformanceObserver' in window,
-      performanceTiming: 'performance' in window && 'timing' in performance,
-      performanceMemory: 'performance' in window && 'memory' in performance,
-      networkInformation: 'connection' in navigator
+      url: window.location.href,
+      timestamp: Date.now(),
+      loadTime: navigation.loadEventEnd - navigation.loadEventStart,
+      domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+      firstPaint: this.getFirstPaint(),
+      firstContentfulPaint: this.getFirstContentfulPaint(),
+      timeToFirstByte: navigation.responseStart - navigation.requestStart,
+      resourceCount: window.performance.getEntriesByType('resource').length,
+      transferSize: navigation.transferSize || 0,
+      userAgent: navigator.userAgent,
+      connectionType: connection?.effectiveType,
+      deviceMemory: (navigator as any).deviceMemory
     };
   }
-}
 
-// 預設效能監控器實例
-export const performanceMonitor = new PerformanceMonitor();
+  private getFirstPaint(): number {
+    const paintEntries = window.performance.getEntriesByType('paint');
+    const fpEntry = paintEntries.find(entry => entry.name === 'first-paint');
+    return fpEntry ? fpEntry.startTime : 0;
+  }
 
-// 便利函數
-export const measureMedicalContentLoad = (startTime: number) => 
-  performanceMonitor.measureMedicalContentLoad(startTime);
+  private getFirstContentfulPaint(): number {
+    const paintEntries = window.performance.getEntriesByType('paint');
+    const fcpEntry = paintEntries.find(entry => entry.name === 'first-contentful-paint');
+    return fcpEntry ? fcpEntry.startTime : 0;
+  }
 
-export const measureCalculatorRender = (startTime: number) => 
-  performanceMonitor.measureCalculatorRender(startTime);
+  private collectSEOData(): SEOPerformanceData {
+    const title = document.title;
+    const metaDescription = document.querySelector('meta[name="description"]')?.getAttribute('content');
+    const h1Elements = document.querySelectorAll('h1');
+    const h2Elements = document.querySelectorAll('h2');
+    const images = document.querySelectorAll('img');
+    const imagesWithoutAlt = document.querySelectorAll('img:not([alt])');
+    const internalLinks = document.querySelectorAll('a[href^="/"], a[href^="' + window.location.origin + '"]');
+    const externalLinks = document.querySelectorAll('a[href^="http"]:not([href^="' + window.location.origin + '"])');
+    const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute('href');
+    const structuredData = document.querySelectorAll('script[type="application/ld+json"]').length > 0;
+    
+    // Calculate word count
+    const textContent = document.body.textContent || '';
+    const wordCount = textContent.trim().split(/\s+/).length;
+    
+    // Check mobile usability (basic check)
+    const viewport = document.querySelector('meta[name="viewport"]');
+    const mobileUsability = !!viewport && viewport.getAttribute('content')?.includes('width=device-width');
 
-export const measureSearchResponse = (startTime: number) => 
-  performanceMonitor.measureSearchResponse(startTime);
+    return {
+      url: window.location.href,
+      timestamp: Date.now(),
+      title,
+      metaDescription,
+      h1Count: h1Elements.length,
+      h2Count: h2Elements.length,
+      imageCount: images.length,
+      imagesWithoutAlt: imagesWithoutAlt.length,
+      internalLinks: internalLinks.length,
+      externalLinks: externalLinks.length,
+      wordCount,
+      loadTime: window.performance.timing.loadEventEnd - window.performance.timing.navigationStart,
+      mobileUsability,
+      structuredData,
+      canonicalUrl: canonical
+    };
+  }
 
-export const getPerformanceMetrics = () => 
-  performanceMonitor.getMetrics();
+  // Public methods for tracking
+  public trackWebVital(metric: WebVitalsMetric): void {
+    this.addToBatch('web_vitals', {
+      sessionId: this.sessionId,
+      userId: this.userId,
+      url: window.location.href,
+      timestamp: Date.now(),
+      ...metric
+    });
+  }
 
-export const generatePerformanceReport = () => 
-  performanceMonitor.generateReport();
+  public trackPageView(): void {
+    this.trackUserBehavior('page_view', {
+      referrer: document.referrer,
+      title: document.title,
+      url: window.location.href
+    });
+  }
 
-// 自動初始化（如果在瀏覽器環境中）
-if (typeof window !== 'undefined') {
-  // 頁面卸載時清理
-  window.addEventListener('beforeunload', () => {
-    performanceMonitor.cleanup();
-  });
+  public trackUserBehavior(event: UserBehaviorData['event'], data: Record<string, any>): void {
+    const behaviorData: UserBehaviorData = {
+      sessionId: this.sessionId,
+      userId: this.userId,
+      url: window.location.href,
+      timestamp: Date.now(),
+      event,
+      data
+    };
 
-  // 頁面可見性變化時報告
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      const report = performanceMonitor.generateReport();
-      console.log('Performance report on page hide:', report);
+    this.addToBatch('user_behavior', behaviorData);
+  }
+
+  public trackContentInteraction(
+    contentId: string, 
+    contentType: ContentInteractionData['contentType'], 
+    data: Record<string, any>
+  ): void {
+    const interactionData: Partial<ContentInteractionData> = {
+      contentId,
+      contentType,
+      url: window.location.href,
+      timestamp: Date.now(),
+      userSegment: this.getUserSegment(),
+      referrer: document.referrer,
+      ...data
+    };
+
+    this.addToBatch('content_interaction', interactionData);
+  }
+
+  public trackCustomEvent(eventName: string, data: Record<string, any>): void {
+    this.addToBatch('custom_event', {
+      sessionId: this.sessionId,
+      userId: this.userId,
+      eventName,
+      url: window.location.href,
+      timestamp: Date.now(),
+      ...data
+    });
+  }
+
+  private getUserSegment(): string {
+    // Simple user segmentation based on behavior
+    const isReturningUser = localStorage.getItem('returning_user') === 'true';
+    const sessionCount = parseInt(localStorage.getItem('session_count') || '0');
+    
+    if (!isReturningUser) {
+      localStorage.setItem('returning_user', 'true');
+      localStorage.setItem('session_count', '1');
+      return 'new_user';
+    } else {
+      localStorage.setItem('session_count', (sessionCount + 1).toString());
+      if (sessionCount < 5) {
+        return 'returning_user';
+      } else {
+        return 'loyal_user';
+      }
     }
-  });
+  }
+
+  private addToBatch(type: string, data: any): void {
+    if (!this.isEnabled) return;
+
+    this.pendingData.push({ type, data, timestamp: Date.now() });
+
+    if (this.pendingData.length >= this.batchSize) {
+      this.flushPendingData();
+    } else if (!this.batchTimer) {
+      this.batchTimer = window.setTimeout(() => {
+        this.flushPendingData();
+      }, this.batchTimeout);
+    }
+  }
+
+  private async flushPendingData(): Promise<void> {
+    if (this.pendingData.length === 0) return;
+
+    const dataToSend = [...this.pendingData];
+    this.pendingData = [];
+
+    if (this.batchTimer) {
+      clearTimeout(this.batchTimer);
+      this.batchTimer = undefined;
+    }
+
+    try {
+      // Use sendBeacon if available for better reliability
+      if (navigator.sendBeacon) {
+        const blob = new Blob([JSON.stringify(dataToSend)], { type: 'application/json' });
+        navigator.sendBeacon(this.apiEndpoint, blob);
+      } else {
+        // Fallback to fetch
+        await fetch(this.apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToSend),
+          keepalive: true
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to send analytics data:', error);
+      // Re-add data to pending queue for retry
+      this.pendingData.unshift(...dataToSend);
+    }
+  }
+
+  // Utility methods
+  public getSessionId(): string {
+    return this.sessionId;
+  }
+
+  public setUserId(userId: string): void {
+    this.userId = userId;
+  }
+
+  public enable(): void {
+    this.isEnabled = true;
+  }
+
+  public disable(): void {
+    this.isEnabled = false;
+    this.flushPendingData();
+  }
 }
+
+// Export singleton instance
+export const performanceMonitor = new PerformanceMonitor({
+  isEnabled: typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
+});
+
+export default PerformanceMonitor;

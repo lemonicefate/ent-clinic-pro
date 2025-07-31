@@ -34,7 +34,7 @@ ENT Clinic Pro 是一個專為耳鼻喉科醫療專業人員設計的綜合平�
 
 ```bash
 # 克隆專案
-git clone https://github.com/your-username/ent-clinic-pro.git
+git clone https://github.com/lemonicefate/ent-clinic-pro.git
 cd ent-clinic-pro/astro-clinical-platform
 
 # 安裝依賴
@@ -61,6 +61,27 @@ npm test
 # 運行 Storybook
 npm run storybook
 ```
+
+## 🌐 線上版本
+
+- **生產環境**: https://ent-clinic-pro.pages.dev
+- **狀態**: ✅ 運行中
+- **部署平台**: Cloudflare Pages
+- **最後更新**: 2025-01-30
+
+### 部署資訊
+
+本專案使用 **靜態網站生成 (SSG)** 架構，部署在 Cloudflare Pages：
+
+- **建置時間**: ~24 秒
+- **總頁面數**: 51 頁
+- **多語言支援**: zh-TW, en, ja
+- **自動部署**: 推送到 master 分支自動觸發
+
+詳細部署資訊請參考：
+- [部署指南](./DEPLOYMENT.md) - 完整部署流程和配置
+- [故障排除](./TROUBLESHOOTING.md) - 常見問題解決方案
+- [部署檢查清單](./DEPLOYMENT_CHECKLIST.md) - 部署前後檢查項目
 
 ## 🏗️ 專案架構
 

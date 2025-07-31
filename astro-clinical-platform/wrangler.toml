@@ -1,0 +1,48 @@
+name = "astro-clinical-platform"
+pages_build_output_dir = "./dist"
+compatibility_date = "2024-01-30"
+compatibility_flags = ["nodejs_compat"]
+
+# 生產環境配置
+[env.production]
+name = "astro-clinical-platform"
+
+# 預覽環境配置
+[env.preview]
+name = "astro-clinical-platform-preview"
+
+# KV 命名空間配置（用於快取和分析）
+[[kv_namespaces]]
+binding = "ANALYTICS_KV"
+id = "your-analytics-kv-namespace-id"
+preview_id = "your-analytics-kv-preview-id"
+
+[[kv_namespaces]]
+binding = "CONTENT_CACHE"
+id = "your-content-cache-namespace-id"
+preview_id = "your-content-cache-preview-id"
+
+# 環境變數
+[vars]
+ENVIRONMENT = "production"
+SITE_URL = "https://ent-clinic-pro.pages.dev"
+CMS_BACKEND = "github"
+GITHUB_REPO = "your-org/astro-clinical-platform"
+
+# 預覽環境變數
+[env.preview.vars]
+ENVIRONMENT = "preview"
+SITE_URL = "https://preview.ent-clinic-pro.pages.dev"
+
+# 生產環境變數
+[env.production.vars]
+ENVIRONMENT = "production"
+SITE_URL = "https://ent-clinic-pro.pages.dev"
+
+# 限制配置
+[limits]
+cpu_ms = 50
+
+# 智能放置配置
+[placement]
+mode = "smart"

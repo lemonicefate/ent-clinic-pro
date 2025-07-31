@@ -1,15 +1,200 @@
 {
   "id": "cardiology",
   "name": {
-    "zh-TW": "心臟科",
+    "zh_TW": "心臟科",
     "en": "Cardiology",
     "ja": "循環器科"
   },
   "slug": "cardiology",
   "description": {
-    "zh-TW": "心臟科專精於心血管疾病的診斷、治療和預防，包括冠心病、心律不整、心衰竭、高血壓和先天性心臟病等。我們的目標是透過先進的診斷技術和個人化治療方案，幫助患者維持心血管健康。",
-    "en": "Cardiology specializes in the diagnosis, treatment, and prevention of cardiovascular diseases, including coronary artery disease, arrhythmias, heart failure, hypertension, and congenital heart disease. Our goal is to help patients maintain cardiovascular health through advanced diagnostic techniques and personalized treatment plans.",
-    "ja": "循環器科は、冠動脈疾患、不整脈、心不全、高血圧、先天性心疾患などの心血管疾患の診断、治療、予防を専門としています。先進的な診断技術と個別化治療計画を通じて、患者の心血管健康の維持を目標としています。"
+    "zh_TW": "專門診斷和治療心臟及血管疾病的醫學專科，包括冠心病、心律不整、心臟衰竭等疾病的預防、診斷和治療。",
+    "en": "Medical specialty focused on diagnosing and treating heart and vascular diseases, including coronary artery disease, arrhythmias, heart failure prevention, diagnosis and treatment.",
+    "ja": "心臓および血管疾患の診断と治療を専門とする医学分野で、冠動脈疾患、不整脈、心不全などの予防、診断、治療を含みます。"
+  },
+  "workflowConfig": {
+    "reviewerRoles": ["cardiologist", "medical-editor", "content-reviewer"],
+    "requiredApprovals": 2,
+    "reviewTimeLimit": 7,
+    "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review"],
+    "autoAssignmentRules": {
+      "enabled": true,
+      "balanceWorkload": true,
+      "avoidConflicts": true,
+      "preferExpertise": true,
+      "maxConcurrentReviews": 3
+    },
+    "reviewerPool": [
+      {
+        "id": "dr-chen-cardiology",
+        "name": "陳心臟醫師",
+        "role": "cardiologist",
+        "specializations": ["interventional-cardiology", "heart-failure", "arrhythmia"],
+        "maxConcurrentReviews": 3,
+        "averageReviewTime": 4.2,
+        "isActive": true
+      },
+      {
+        "id": "dr-wang-cardiology",
+        "name": "王心血管醫師",
+        "role": "cardiologist", 
+        "specializations": ["preventive-cardiology", "lipid-disorders", "hypertension"],
+        "maxConcurrentReviews": 2,
+        "averageReviewTime": 5.8,
+        "isActive": true
+      },
+      {
+        "id": "editor-medical-cardio",
+        "name": "心臟科醫學編輯",
+        "role": "medical-editor",
+        "specializations": ["cardiology-content", "medical-writing"],
+        "maxConcurrentReviews": 5,
+        "averageReviewTime": 3.1,
+        "isActive": true
+      }
+    ],
+    "escalationRules": {
+      "timeoutDays": 10,
+      "escalateTo": "department-head",
+      "notificationSchedule": [3, 7, 10]
+    }
+  },
+  "contentTemplate": {
+    "requiredSections": [
+      {
+        "section": "症狀識別",
+        "description": {
+          "zh_TW": "描述心臟疾病的常見症狀和識別方法",
+          "en": "Describe common symptoms and identification methods for heart diseases",
+          "ja": "心疾患の一般的な症状と識別方法を説明"
+        },
+        "order": 1
+      },
+      {
+        "section": "診斷方法",
+        "description": {
+          "zh_TW": "說明相關的診斷工具和檢查方法",
+          "en": "Explain relevant diagnostic tools and examination methods",
+          "ja": "関連する診断ツールと検査方法を説明"
+        },
+        "order": 2
+      },
+      {
+        "section": "治療策略",
+        "description": {
+          "zh_TW": "詳述治療選項和治療計畫",
+          "en": "Detail treatment options and treatment plans",
+          "ja": "治療選択肢と治療計画を詳述"
+        },
+        "order": 3
+      },
+      {
+        "section": "預防措施",
+        "description": {
+          "zh_TW": "提供預防心臟疾病的建議和生活方式改變",
+          "en": "Provide recommendations for preventing heart disease and lifestyle changes",
+          "ja": "心疾患予防の推奨事項とライフスタイルの変更を提供"
+        },
+        "order": 4
+      }
+    ],
+    "customFields": [
+      {
+        "name": "心律分類",
+        "type": "select",
+        "label": {
+          "zh_TW": "心律分類",
+          "en": "Heart Rhythm Classification",
+          "ja": "心拍リズム分類"
+        },
+        "required": true,
+        "options": [
+          {
+            "value": "normal",
+            "label": {
+              "zh_TW": "正常",
+              "en": "Normal",
+              "ja": "正常"
+            }
+          },
+          {
+            "value": "arrhythmia",
+            "label": {
+              "zh_TW": "心律不整",
+              "en": "Arrhythmia",
+              "ja": "不整脈"
+            }
+          },
+          {
+            "value": "atrial-fibrillation",
+            "label": {
+              "zh_TW": "心房顫動",
+              "en": "Atrial Fibrillation",
+              "ja": "心房細動"
+            }
+          },
+          {
+            "value": "ventricular-fibrillation",
+            "label": {
+              "zh_TW": "心室顫動",
+              "en": "Ventricular Fibrillation",
+              "ja": "心室細動"
+            }
+          }
+        ]
+      },
+      {
+        "name": "風險評估",
+        "type": "select",
+        "label": {
+          "zh_TW": "心血管風險評估",
+          "en": "Cardiovascular Risk Assessment",
+          "ja": "心血管リスク評価"
+        },
+        "required": false,
+        "options": [
+          {
+            "value": "low",
+            "label": {
+              "zh_TW": "低風險",
+              "en": "Low Risk",
+              "ja": "低リスク"
+            }
+          },
+          {
+            "value": "moderate",
+            "label": {
+              "zh_TW": "中等風險",
+              "en": "Moderate Risk",
+              "ja": "中等度リスク"
+            }
+          },
+          {
+            "value": "high",
+            "label": {
+              "zh_TW": "高風險",
+              "en": "High Risk",
+              "ja": "高リスク"
+            }
+          }
+        ]
+      }
+    ],
+    "defaultTags": [
+      "心臟科",
+      "心血管疾病",
+      "心臟健康",
+      "預防醫學"
+    ],
+    "suggestedKeywords": [
+      "心臟病",
+      "冠心病",
+      "心律不整",
+      "心臟衰竭",
+      "高血壓",
+      "心電圖",
+      "心導管",
+      "心臟超音波"
+    ]
   },
   "color": "#e74c3c",
   "icon": "heart",
@@ -17,18 +202,36 @@
   "sortOrder": 1,
   "isActive": true,
   "isFeatured": true,
-  "calculatorCount": 15,
-  "educationCount": 28,
-  "flowchartCount": 12,
+  "calculatorCount": 8,
+  "educationCount": 15,
+  "flowchartCount": 5,
+  "sopStats": {
+    "totalArticles": 15,
+    "publishedArticles": 12,
+    "inReviewArticles": 2,
+    "averageReviewTime": 5.2,
+    "approvalRate": 0.85
+  },
   "seoTitle": {
-    "zh-TW": "心臟科醫療工具與衛教資源 - 心血管疾病診療指引",
-    "en": "Cardiology Medical Tools and Educational Resources - Cardiovascular Disease Management",
-    "ja": "循環器科医療ツールと教育リソース - 心血管疾患管理"
+    "zh_TW": "心臟科 - 心血管疾病診斷與治療 | 醫療平台",
+    "en": "Cardiology - Cardiovascular Disease Diagnosis & Treatment | Medical Platform",
+    "ja": "循環器科 - 心血管疾患の診断と治療 | 医療プラットフォーム"
   },
   "seoDescription": {
-    "zh-TW": "提供完整的心臟科醫療計算工具、病患衛教資料和臨床決策流程圖。包含心房顫動、冠心病、心衰竭等常見心血管疾病的診斷治療指引，協助醫療專業人員提供優質照護。",
-    "en": "Comprehensive cardiology medical calculation tools, patient education materials, and clinical decision flowcharts. Includes diagnostic and treatment guidelines for common cardiovascular diseases such as atrial fibrillation, coronary artery disease, and heart failure to help healthcare professionals provide quality care.",
-    "ja": "包括的な循環器科医療計算ツール、患者教育資料、臨床決定フローチャートを提供。心房細動、冠動脈疾患、心不全などの一般的な心血管疾患の診断治療ガイドラインを含み、医療専門家が質の高いケアを提供するのを支援します。"
+    "zh_TW": "提供專業的心臟科醫療資訊，包括心血管疾病的症狀識別、診斷方法、治療策略和預防措施。由專業心臟科醫師審核，確保內容準確可靠。",
+    "en": "Professional cardiology medical information including cardiovascular disease symptom identification, diagnostic methods, treatment strategies and prevention measures. Reviewed by professional cardiologists to ensure accurate and reliable content.",
+    "ja": "心血管疾患の症状識別、診断方法、治療戦略、予防策を含む専門的な循環器科医療情報。専門の循環器科医師による審査により、正確で信頼性の高い内容を保証。"
   },
-  "keywords": ["心臟科", "心血管疾病", "心律不整", "冠心病", "心衰竭", "cardiology", "cardiovascular disease", "arrhythmia", "coronary artery disease", "heart failure", "循環器科", "心血管疾患", "不整脈"]
+  "keywords": [
+    "心臟科",
+    "心血管疾病",
+    "冠心病",
+    "心律不整",
+    "心臟衰竭",
+    "高血壓",
+    "心電圖",
+    "心導管檢查",
+    "心臟超音波",
+    "預防醫學"
+  ]
 }

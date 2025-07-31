@@ -1,0 +1,115 @@
+# 🏥 醫療衛教平台程式碼擁有者設定
+# 此檔案定義了不同檔案和目錄的審核者
+# 當 PR 涉及這些檔案時，會自動指派相應的審核者
+
+# 全域預設審核者
+* @tech-team @content-manager
+
+# 醫療內容審核
+# 所有衛教內容都需要醫療專業審核
+src/content/education/ @medical-advisors @content-team
+
+# 專科特定內容審核
+src/content/education/*cardiology* @cardiology-reviewer @medical-advisors
+src/content/education/*neurology* @neurology-reviewer @medical-advisors  
+src/content/education/*pediatrics* @pediatrics-reviewer @medical-advisors
+src/content/education/*emergency* @emergency-reviewer @medical-advisors
+src/content/education/*orthopedics* @orthopedics-reviewer @medical-advisors
+
+# 醫療專科配置檔案
+src/content/medical-specialties/ @medical-advisors @content-manager @tech-team
+
+# 內容模板和配置
+src/content/templates/ @content-team @medical-advisors
+src/content/config.ts @tech-team @content-manager
+
+# CMS 配置和管理介面
+public/admin/ @tech-team @content-manager
+public/admin/config.yml @tech-team @content-manager @medical-advisors
+
+# 品質檢查工具
+scripts/medical-terminology-checker.js @medical-advisors @tech-team
+scripts/accessibility-validator.js @accessibility-expert @tech-team
+scripts/readability-analyzer.js @content-team @tech-team
+scripts/reference-format-checker.js @medical-advisors @content-team @tech-team
+scripts/quality-check-runner.js @tech-team @content-manager
+
+# GitHub 工作流程和自動化
+.github/ @tech-team @devops-team
+.github/workflows/ @tech-team @devops-team
+.github/PULL_REQUEST_TEMPLATE/ @content-manager @tech-team
+
+# 系統配置檔案
+astro.config.mjs @tech-team
+package.json @tech-team
+tsconfig.json @tech-team
+.markdownlint.json @content-team @tech-team
+
+# 文件和指南
+*.md @content-team
+README.md @tech-team @content-manager
+QUALITY_CHECKS.md @tech-team @medical-advisors @content-team
+CMS_SETUP.md @tech-team @content-manager
+CMS_EDITING_GUIDE.md @content-team @medical-advisors
+
+# 多語言內容
+src/content/education/**/zh-tw/ @content-team @medical-advisors
+src/content/education/**/en/ @content-team @medical-advisors @translator-en
+src/content/education/**/zh-cn/ @content-team @medical-advisors @translator-cn
+
+# 圖片和媒體檔案
+public/images/ @content-team @design-team
+src/assets/ @design-team @tech-team
+
+# 樣式和設計
+src/styles/ @design-team @tech-team
+src/components/ @tech-team @design-team
+
+# 安全性相關檔案
+.env.example @tech-team @security-team
+.gitignore @tech-team
+
+# 部署和基礎設施
+cloudflare.json @devops-team @tech-team
+netlify.toml @devops-team @tech-team
+
+# 特殊審核要求
+# 涉及藥物資訊的內容需要藥師審核
+src/content/education/**/*medication* @pharmacist-reviewer @medical-advisors
+src/content/education/**/*drug* @pharmacist-reviewer @medical-advisors
+src/content/education/**/*prescription* @pharmacist-reviewer @medical-advisors
+
+# 涉及手術或侵入性治療的內容需要專科醫師審核
+src/content/education/**/*surgery* @surgeon-reviewer @medical-advisors
+src/content/education/**/*operation* @surgeon-reviewer @medical-advisors
+src/content/education/**/*procedure* @medical-advisors
+
+# 涉及兒童健康的內容需要小兒科醫師審核
+src/content/education/**/*child* @pediatrics-reviewer @medical-advisors
+src/content/education/**/*infant* @pediatrics-reviewer @medical-advisors
+src/content/education/**/*baby* @pediatrics-reviewer @medical-advisors
+
+# 涉及心理健康的內容需要精神科醫師或心理師審核
+src/content/education/**/*mental* @psychiatrist-reviewer @psychologist-reviewer @medical-advisors
+src/content/education/**/*depression* @psychiatrist-reviewer @medical-advisors
+src/content/education/**/*anxiety* @psychiatrist-reviewer @medical-advisors
+
+# 緊急醫療內容需要急診科醫師審核
+src/content/education/**/*emergency* @emergency-reviewer @medical-advisors
+src/content/education/**/*first-aid* @emergency-reviewer @medical-advisors
+src/content/education/**/*cpr* @emergency-reviewer @medical-advisors
+
+# 營養相關內容需要營養師審核
+src/content/education/**/*nutrition* @nutritionist-reviewer @medical-advisors
+src/content/education/**/*diet* @nutritionist-reviewer @medical-advisors
+src/content/education/**/*food* @nutritionist-reviewer @medical-advisors
+
+# 復健相關內容需要物理治療師審核
+src/content/education/**/*rehabilitation* @physiotherapist-reviewer @medical-advisors
+src/content/education/**/*physical-therapy* @physiotherapist-reviewer @medical-advisors
+src/content/education/**/*exercise* @physiotherapist-reviewer @medical-advisors
+
+# 護理相關內容需要護理師審核
+src/content/education/**/*nursing* @nurse-reviewer @medical-advisors
+src/content/education/**/*care* @nurse-reviewer @medical-advisors
+src/content/education/**/*wound* @nurse-reviewer @medical-advisors

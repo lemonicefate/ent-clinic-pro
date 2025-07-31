@@ -7,8 +7,10 @@ backend:
   name: github
   repo: lemonicefate/ent-clinic-pro
   branch: master
-  # Cloudflare Pages 會自動處理 GitHub OAuth
-  # 不需要額外的認證端點設定
+  # --- 👇 GitHub OAuth 認證設定 👇 ---
+  auth_type: pkce
+  base_url: https://your-project-name.glitch.me # ⚠️【必要】請替換成您的 Glitch 伺服器網址
+  app_id: YOUR_GITHUB_OAUTH_CLIENT_ID # ⚠️【必要】請替換成您的 GitHub OAuth App Client ID
 
 # 本地開發設定（開發時可啟用）
 # local_backend: true

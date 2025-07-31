@@ -1,0 +1,263 @@
+---
+/**
+ * 內容新鮮度指示器組件
+ * 顯示內容的新鮮度和更新提醒
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增內容新鮮度和更新提醒功能
+ * 
+ * 需求對應：
+ * - 需求 6.1: 版本控制和追蹤系統 ✓
+ * - 需求 6.2: 內容新鮮度和更新提醒 ✓
+ */
+
+import { formatDate } from '../utils/i18n';
+import type { SupportedLocale } from '../env.d';
+
+interface Props {
+  lastUpdated: string;
+  nextReviewDate?: string;
+  publishedAt?: string;
+  category?: string;
+  medicalSpecialties?: string[];
+  locale?: SupportedLocale;
+  showInline?: boolean;
+}
+
+const {
+  lastUpdated,
+  nextReviewDate,
+  publishedAt,
+  category,
+  medicalSpecialties = [],
+  locale = 'zh-TW',
+  showInline = false
+} = Astro.props;
+
+// 計算內容年齡（天數）
+const now = new Date();
+const lastUpdateDate = new Date(lastUpdated);
+const publishDate = publishedAt ? new Date(publishedAt) : lastUpdateDate;
+const nextReviewDateObj = nextReviewDate ? new Date(nextReviewDate) : null;
+
+const daysSinceUpdate = Math.floor((now.getTime() - lastUpdateDate.getTime()) / (1000 * 60 * 60 * 24));
+const daysSincePublish = Math.floor((now.getTime() - publishDate.getTime()) / (1000 * 60 * 60 * 24));
+const daysUntilReview = nextReviewDateObj ? Math.floor((nextReviewDateObj.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null;
+
+// 根據醫療內容類型設定新鮮度標準
+const getFreshnessStandards = (category: string, specialties: string[]) => {
+  // 高風險專科需要更頻繁更新
+  const highRiskSpecialties = ['emergency', 'cardiology', 'neurology'];
+  const isHighRisk = specialties.some(s => highRiskSpecialties.includes(s));
+  
+  // 根據內容類型設定標準
+  const standards = {
+    'disease': { fresh: isHighRisk ? 90 : 180, stale: isHighRisk ? 180 : 365, critical: isHighRisk ? 365 : 730 },
+    'medication': { fresh: 60, stale: 120, critical: 365 },
+    'procedure': { fresh: isHighRisk ? 120 : 180, stale: isHighRisk ? 240 : 365, critical: isHighRisk ? 365 : 730 },
+    'treatment': { fresh: isHighRisk ? 90 : 120, stale: isHighRisk ? 180 : 240, critical: isHighRisk ? 365 : 540 },
+    'prevention': { fresh: 180, stale: 365, critical: 730 },
+    'lifestyle': { fresh: 365, stale: 730, critical: 1095 },
+    'symptoms': { fresh: 180, stale: 365, critical: 730 },
+    'diagnosis': { fresh: isHighRisk ? 120 : 180, stale: isHighRisk ? 240 : 365, critical: isHighRisk ? 365 : 730 }
+  };
+  
+  return standards[category] || standards['disease'];
+};
+
+const standards = getFreshnessStandards(category || 'disease', medicalSpecialties);
+
+// 判斷新鮮度等級
+const getFreshnessLevel = (days: number) => {
+  if (days <= standards.fresh) return 'fresh';
+  if (days <= standards.stale) return 'aging';
+  if (days <= standards.critical) return 'stale';
+  return 'critical';
+};
+
+const freshnessLevel = getFreshnessLevel(daysSinceUpdate);
+
+// 新鮮度配置
+const freshnessConfig = {
+  fresh: {
+    label: '內容新鮮',
+    color: 'text-green-600',
+    bgColor: 'bg-green-50',
+    borderColor: 'border-green-200',
+    icon: '🟢',
+    description: '內容是最新的'
+  },
+  aging: {
+    label: '內容老化',
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-50',
+    borderColor: 'border-yellow-200',
+    icon: '🟡',
+    description: '建議檢查更新'
+  },
+  stale: {
+    label: '內容過時',
+    color: 'text-orange-600',
+    bgColor: 'bg-orange-50',
+    borderColor: 'border-orange-200',
+    icon: '🟠',
+    description: '需要更新內容'
+  },
+  critical: {
+    label: '急需更新',
+    color: 'text-red-600',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-200',
+    icon: '🔴',
+    description: '內容可能已過時'
+  }
+};
+
+const currentFreshness = freshnessConfig[freshnessLevel];
+
+// 計算更新建議
+const getUpdateSuggestion = () => {
+  if (freshnessLevel === 'fresh') return null;
+  
+  const suggestions = {
+    aging: '建議在未來 30 天內檢查內容是否需要更新',
+    stale: '建議盡快檢查並更新內容，確保資訊準確性',
+    critical: '內容可能包含過時資訊，請立即檢查並更新'
+  };
+  
+  return suggestions[freshnessLevel];
+};
+
+const updateSuggestion = getUpdateSuggestion();
+
+// 檢查是否需要顯示審核提醒
+const showReviewReminder = daysUntilReview !== null && daysUntilReview <= 30;
+const isOverdue = daysUntilReview !== null && daysUntilReview < 0;
+---
+
+{showInline ? (
+  <!-- 內聯顯示模式 -->
+  <div class={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm ${currentFreshness.bgColor} ${currentFreshness.borderColor} border`}>
+    <span class="text-xs">{currentFreshness.icon}</span>
+    <span class={`font-medium ${currentFreshness.color}`}>
+      {currentFreshness.label}
+    </span>
+    <span class="text-xs text-gray-500">
+      {daysSinceUpdate} 天前更新
+    </span>
+  </div>
+) : (
+  <!-- 完整顯示模式 -->
+  <div class={`rounded-lg border p-4 ${currentFreshness.bgColor} ${currentFreshness.borderColor}`}>
+    <!-- 新鮮度標頭 -->
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center space-x-2">
+        <span class="text-lg">{currentFreshness.icon}</span>
+        <span class={`font-semibold ${currentFreshness.color}`}>
+          {currentFreshness.label}
+        </span>
+      </div>
+      <span class="text-xs text-gray-500">
+        {daysSinceUpdate} 天前更新
+      </span>
+    </div>
+    
+    <!-- 新鮮度描述 -->
+    <p class="text-sm text-gray-600 mb-3">
+      {currentFreshness.description}
+    </p>
+    
+    <!-- 時間軸資訊 -->
+    <div class="space-y-2 text-sm">
+      <div class="flex justify-between">
+        <span class="text-gray-500">最後更新:</span>
+        <span class="font-medium">{formatDate(lastUpdated, locale)}</span>
+      </div>
+      
+      {publishedAt && (
+        <div class="flex justify-between">
+          <span class="text-gray-500">發布時間:</span>
+          <span>{formatDate(publishedAt, locale)}</span>
+        </div>
+      )}
+      
+      {nextReviewDate && (
+        <div class="flex justify-between">
+          <span class="text-gray-500">下次審核:</span>
+          <span class={isOverdue ? 'text-red-600 font-medium' : daysUntilReview && daysUntilReview <= 7 ? 'text-orange-600 font-medium' : ''}>
+            {formatDate(nextReviewDate, locale)}
+            {daysUntilReview !== null && (
+              <span class="ml-1 text-xs">
+                ({daysUntilReview > 0 ? `${daysUntilReview} 天後` : `逾期 ${Math.abs(daysUntilReview)} 天`})
+              </span>
+            )}
+          </span>
+        </div>
+      )}
+    </div>
+    
+    <!-- 更新建議 -->
+    {updateSuggestion && (
+      <div class="mt-3 p-3 bg-white bg-opacity-50 rounded border border-white border-opacity-30">
+        <div class="flex items-start space-x-2">
+          <svg class="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-xs text-gray-600">
+            {updateSuggestion}
+          </p>
+        </div>
+      </div>
+    )}
+    
+    <!-- 審核提醒 -->
+    {showReviewReminder && (
+      <div class={`mt-3 p-3 rounded border ${isOverdue ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
+        <div class="flex items-start space-x-2">
+          <svg class={`h-4 w-4 mt-0.5 flex-shrink-0 ${isOverdue ? 'text-red-500' : 'text-yellow-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <div>
+            <p class={`text-xs font-medium ${isOverdue ? 'text-red-700' : 'text-yellow-700'}`}>
+              {isOverdue ? '審核已逾期' : '即將到期審核'}
+            </p>
+            <p class="text-xs text-gray-600 mt-1">
+              {isOverdue 
+                ? `審核已逾期 ${Math.abs(daysUntilReview)} 天，請立即安排審核`
+                : `還有 ${daysUntilReview} 天需要進行定期審核`
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+    
+    <!-- 新鮮度標準說明（僅開發環境） -->
+    {import.meta.env.DEV && (
+      <details class="mt-3">
+        <summary class="text-xs cursor-pointer text-gray-500 hover:text-gray-700 select-none">
+          新鮮度標準 ▼
+        </summary>
+        <div class="mt-2 text-xs text-gray-500 space-y-1">
+          <div>🟢 新鮮: ≤ {standards.fresh} 天</div>
+          <div>🟡 老化: ≤ {standards.stale} 天</div>
+          <div>🟠 過時: ≤ {standards.critical} 天</div>
+          <div>🔴 急需: > {standards.critical} 天</div>
+          <div class="text-xs text-gray-400 mt-2">
+            標準根據內容類型 ({category}) 和專科 ({medicalSpecialties.join(', ')}) 調整
+          </div>
+        </div>
+      </details>
+    )}
+  </div>
+)}
+
+<style>
+  details[open] summary {
+    margin-bottom: 0.5rem;
+  }
+  
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

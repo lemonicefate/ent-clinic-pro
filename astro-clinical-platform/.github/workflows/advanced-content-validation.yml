@@ -1,0 +1,844 @@
+name: 進階內容驗證
+
+on:
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'src/content/education/**'
+      - 'src/content/medical-specialties/**'
+      - 'src/content/templates/**'
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'src/content/education/**'
+      - 'src/content/medical-specialties/**'
+
+jobs:
+  # Frontmatter 格式驗證
+  frontmatter-validation:
+    runs-on: ubuntu-latest
+    name: Frontmatter 格式驗證
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      
+    - name: 設定 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 安裝依賴
+      run: npm ci
+      
+    - name: 驗證 Frontmatter 結構
+      run: |
+        echo "驗證 Frontmatter 結構..."
+        
+        # 建立驗證腳本
+        cat > validate-frontmatter.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        const yaml = require('js-yaml');
+        
+        const requiredFields = {
+          title: 'string',
+          description: 'string',
+          specialty: 'string',
+          status: ['draft', 'in-review', 'published'],
+          publishDate: 'date',
+          tags: 'array',
+          author: 'string',
+          reviewers: 'array'
+        };
+        
+        const specialtyValues = [
+          'cardiology', 'neurology', 'pediatrics', 
+          'emergency', 'orthopedics', 'general'
+        ];
+        
+        function validateFrontmatter(filePath) {
+          const content = fs.readFileSync(filePath, 'utf8');
+          const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+          
+          if (!frontmatterMatch) {
+            throw new Error(`缺少 frontmatter: ${filePath}`);
+          }
+          
+          let frontmatter;
+          try {
+            frontmatter = yaml.load(frontmatterMatch[1]);
+          } catch (error) {
+            throw new Error(`Frontmatter YAML 格式錯誤 ${filePath}: ${error.message}`);
+          }
+          
+          // 檢查必要欄位
+          for (const [field, type] of Object.entries(requiredFields)) {
+            if (!frontmatter.hasOwnProperty(field)) {
+              throw new Error(`缺少必要欄位 '${field}' in ${filePath}`);
+            }
+            
+            const value = frontmatter[field];
+            
+            if (Array.isArray(type)) {
+              // 枚舉值檢查
+              if (!type.includes(value)) {
+                throw new Error(`欄位 '${field}' 值 '${value}' 不在允許範圍 [${type.join(', ')}] in ${filePath}`);
+              }
+            } else if (type === 'array') {
+              if (!Array.isArray(value)) {
+                throw new Error(`欄位 '${field}' 必須是陣列 in ${filePath}`);
+              }
+            } else if (type === 'string') {
+              if (typeof value !== 'string' || value.trim() === '') {
+                throw new Error(`欄位 '${field}' 必須是非空字串 in ${filePath}`);
+              }
+            } else if (type === 'date') {
+              if (!(value instanceof Date) && isNaN(Date.parse(value))) {
+                throw new Error(`欄位 '${field}' 必須是有效日期 in ${filePath}`);
+              }
+            }
+          }
+          
+          // 檢查專科值
+          if (!specialtyValues.includes(frontmatter.specialty)) {
+            throw new Error(`專科 '${frontmatter.specialty}' 不在允許範圍 [${specialtyValues.join(', ')}] in ${filePath}`);
+          }
+          
+          // 檢查描述長度
+          if (frontmatter.description.length < 50 || frontmatter.description.length > 160) {
+            console.warn(`⚠️ 描述長度建議在 50-160 字元之間: ${filePath} (目前: ${frontmatter.description.length})`);
+          }
+          
+          // 檢查標籤
+          if (frontmatter.tags.length === 0) {
+            console.warn(`⚠️ 建議至少添加一個標籤: ${filePath}`);
+          }
+          
+          console.log(`✅ ${filePath} frontmatter 驗證通過`);
+        }
+        
+        // 掃描所有教育內容檔案
+        const educationDir = 'src/content/education';
+        if (fs.existsSync(educationDir)) {
+          const files = fs.readdirSync(educationDir, { recursive: true })
+            .filter(file => file.endsWith('.md'))
+            .map(file => path.join(educationDir, file));
+          
+          let errors = 0;
+          for (const file of files) {
+            try {
+              validateFrontmatter(file);
+            } catch (error) {
+              console.error(`❌ ${error.message}`);
+              errors++;
+            }
+          }
+          
+          if (errors > 0) {
+            console.error(`\n總計 ${errors} 個 frontmatter 錯誤`);
+            process.exit(1);
+          }
+          
+          console.log(`\n✅ 所有 ${files.length} 個檔案的 frontmatter 驗證通過`);
+        }
+        EOF
+        
+        node validate-frontmatter.js
+
+  # Markdown 語法和連結驗證
+  markdown-validation:
+    runs-on: ubuntu-latest
+    name: Markdown 語法和連結驗證
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      
+    - name: 設定 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 安裝 markdownlint
+      run: npm install -g markdownlint-cli2
+      
+    - name: 建立 markdownlint 配置
+      run: |
+        cat > .markdownlint.json << 'EOF'
+        {
+          "default": true,
+          "MD013": {
+            "line_length": 120,
+            "heading_line_length": 80,
+            "code_block_line_length": 120
+          },
+          "MD033": {
+            "allowed_elements": ["br", "sub", "sup", "kbd", "mark"]
+          },
+          "MD041": false,
+          "MD025": {
+            "front_matter_title": "^\\s*title\\s*[:=]"
+          },
+          "MD024": {
+            "siblings_only": true
+          },
+          "MD026": {
+            "punctuation": ".,;:!?"
+          },
+          "MD029": {
+            "style": "ordered"
+          },
+          "MD036": false,
+          "MD046": {
+            "style": "fenced"
+          }
+        }
+        EOF
+        
+    - name: 執行 Markdown 語法檢查
+      run: |
+        echo "執行 Markdown 語法檢查..."
+        markdownlint-cli2 "src/content/education/**/*.md" || exit 1
+        
+    - name: 檢查內部連結
+      run: |
+        echo "檢查內部連結..."
+        
+        cat > check-links.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        
+        function checkInternalLinks() {
+          const educationDir = 'src/content/education';
+          const files = fs.readdirSync(educationDir, { recursive: true })
+            .filter(file => file.endsWith('.md'))
+            .map(file => path.join(educationDir, file));
+          
+          const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+          const internalLinkPattern = /^\/|^\.\.?\//;
+          let errors = 0;
+          
+          for (const file of files) {
+            const content = fs.readFileSync(file, 'utf8');
+            let match;
+            
+            while ((match = linkPattern.exec(content)) !== null) {
+              const [fullMatch, text, url] = match;
+              
+              // 檢查內部連結
+              if (internalLinkPattern.test(url)) {
+                // 簡單檢查：確保不是明顯的錯誤格式
+                if (url.includes('..') && !url.startsWith('../')) {
+                  console.error(`❌ 可疑的內部連結格式: ${url} in ${file}`);
+                  errors++;
+                }
+                
+                // 檢查連結文字
+                if (text.trim() === '') {
+                  console.error(`❌ 連結文字為空: ${fullMatch} in ${file}`);
+                  errors++;
+                }
+              }
+              
+              // 檢查外部連結格式
+              if (url.startsWith('http')) {
+                if (!url.startsWith('https://') && !url.startsWith('http://')) {
+                  console.error(`❌ 無效的 URL 格式: ${url} in ${file}`);
+                  errors++;
+                }
+              }
+            }
+          }
+          
+          if (errors > 0) {
+            console.error(`\n總計 ${errors} 個連結錯誤`);
+            process.exit(1);
+          }
+          
+          console.log('✅ 所有連結檢查通過');
+        }
+        
+        checkInternalLinks();
+        EOF
+        
+        node check-links.js
+
+  # SEO 和無障礙性檢查
+  seo-accessibility-validation:
+    runs-on: ubuntu-latest
+    name: SEO 和無障礙性檢查
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      
+    - name: 設定 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: SEO 元資料檢查
+      run: |
+        echo "檢查 SEO 元資料..."
+        
+        cat > check-seo.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        const yaml = require('js-yaml');
+        
+        function checkSEO() {
+          const educationDir = 'src/content/education';
+          const files = fs.readdirSync(educationDir, { recursive: true })
+            .filter(file => file.endsWith('.md'))
+            .map(file => path.join(educationDir, file));
+          
+          let warnings = 0;
+          let errors = 0;
+          
+          for (const file of files) {
+            const content = fs.readFileSync(file, 'utf8');
+            const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+            
+            if (!frontmatterMatch) continue;
+            
+            const frontmatter = yaml.load(frontmatterMatch[1]);
+            const bodyContent = content.replace(/^---\n[\s\S]*?\n---\n/, '');
+            
+            // 檢查標題長度
+            if (frontmatter.title) {
+              if (frontmatter.title.length > 60) {
+                console.warn(`⚠️ 標題過長 (${frontmatter.title.length} 字元，建議 < 60): ${file}`);
+                warnings++;
+              }
+              if (frontmatter.title.length < 10) {
+                console.warn(`⚠️ 標題過短 (${frontmatter.title.length} 字元，建議 > 10): ${file}`);
+                warnings++;
+              }
+            }
+            
+            // 檢查描述
+            if (frontmatter.description) {
+              if (frontmatter.description.length > 160) {
+                console.warn(`⚠️ 描述過長 (${frontmatter.description.length} 字元，建議 < 160): ${file}`);
+                warnings++;
+              }
+              if (frontmatter.description.length < 50) {
+                console.warn(`⚠️ 描述過短 (${frontmatter.description.length} 字元，建議 > 50): ${file}`);
+                warnings++;
+              }
+            }
+            
+            // 檢查標籤
+            if (!frontmatter.tags || frontmatter.tags.length === 0) {
+              console.warn(`⚠️ 缺少標籤: ${file}`);
+              warnings++;
+            } else if (frontmatter.tags.length > 10) {
+              console.warn(`⚠️ 標籤過多 (${frontmatter.tags.length}，建議 < 10): ${file}`);
+              warnings++;
+            }
+            
+            // 檢查內容結構
+            const headingPattern = /^#{1,6}\s+(.+)$/gm;
+            const headings = [];
+            let match;
+            
+            while ((match = headingPattern.exec(bodyContent)) !== null) {
+              const level = match[0].indexOf(' ');
+              headings.push({ level, text: match[1] });
+            }
+            
+            if (headings.length === 0) {
+              console.error(`❌ 內容缺少標題結構: ${file}`);
+              errors++;
+            }
+            
+            // 檢查內容長度
+            const wordCount = bodyContent.split(/\s+/).length;
+            if (wordCount < 200) {
+              console.warn(`⚠️ 內容過短 (${wordCount} 字，建議 > 200): ${file}`);
+              warnings++;
+            }
+            
+            console.log(`✅ ${file} SEO 檢查完成`);
+          }
+          
+          console.log(`\n📊 SEO 檢查結果: ${errors} 錯誤, ${warnings} 警告`);
+          
+          if (errors > 0) {
+            process.exit(1);
+          }
+        }
+        
+        checkSEO();
+        EOF
+        
+        node check-seo.js
+        
+    - name: 無障礙性檢查
+      run: |
+        echo "檢查無障礙性..."
+        
+        cat > check-accessibility.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        
+        function checkAccessibility() {
+          const educationDir = 'src/content/education';
+          const files = fs.readdirSync(educationDir, { recursive: true })
+            .filter(file => file.endsWith('.md'))
+            .map(file => path.join(educationDir, file));
+          
+          let errors = 0;
+          let warnings = 0;
+          
+          for (const file of files) {
+            const content = fs.readFileSync(file, 'utf8');
+            
+            // 檢查圖片 alt 文字
+            const imagePattern = /!\[([^\]]*)\]\([^)]+\)/g;
+            let match;
+            
+            while ((match = imagePattern.exec(content)) !== null) {
+              const altText = match[1];
+              
+              if (!altText || altText.trim() === '') {
+                console.error(`❌ 圖片缺少 alt 文字: ${match[0]} in ${file}`);
+                errors++;
+              } else if (altText.length < 5) {
+                console.warn(`⚠️ Alt 文字過短: "${altText}" in ${file}`);
+                warnings++;
+              } else if (altText.length > 125) {
+                console.warn(`⚠️ Alt 文字過長 (${altText.length} 字元): "${altText}" in ${file}`);
+                warnings++;
+              }
+            }
+            
+            // 檢查標題層級結構
+            const headingPattern = /^(#{1,6})\s+(.+)$/gm;
+            const headings = [];
+            
+            while ((match = headingPattern.exec(content)) !== null) {
+              headings.push({
+                level: match[1].length,
+                text: match[2],
+                line: content.substring(0, match.index).split('\n').length
+              });
+            }
+            
+            // 檢查標題層級跳躍
+            for (let i = 1; i < headings.length; i++) {
+              const prevLevel = headings[i - 1].level;
+              const currentLevel = headings[i].level;
+              
+              if (currentLevel > prevLevel + 1) {
+                console.warn(`⚠️ 標題層級跳躍 (H${prevLevel} -> H${currentLevel}) 第 ${headings[i].line} 行: ${file}`);
+                warnings++;
+              }
+            }
+            
+            // 檢查連結文字
+            const linkPattern = /\[([^\]]+)\]\([^)]+\)/g;
+            
+            while ((match = linkPattern.exec(content)) !== null) {
+              const linkText = match[1];
+              
+              if (linkText.toLowerCase().includes('點擊') || 
+                  linkText.toLowerCase().includes('click') ||
+                  linkText.toLowerCase().includes('這裡')) {
+                console.warn(`⚠️ 連結文字不夠描述性: "${linkText}" in ${file}`);
+                warnings++;
+              }
+            }
+            
+            console.log(`✅ ${file} 無障礙性檢查完成`);
+          }
+          
+          console.log(`\n📊 無障礙性檢查結果: ${errors} 錯誤, ${warnings} 警告`);
+          
+          if (errors > 0) {
+            process.exit(1);
+          }
+        }
+        
+        checkAccessibility();
+        EOF
+        
+        node check-accessibility.js
+
+  # 醫療內容特定檢查
+  medical-content-validation:
+    runs-on: ubuntu-latest
+    name: 醫療內容特定檢查
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      
+    - name: 設定 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 醫療術語和格式檢查
+      run: |
+        echo "檢查醫療術語和格式..."
+        
+        cat > check-medical-content.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        const yaml = require('js-yaml');
+        
+        // 醫療術語詞典
+        const medicalTerms = {
+          // 常見醫療縮寫
+          'ECG': 'electrocardiogram',
+          'MRI': 'magnetic resonance imaging',
+          'CT': 'computed tomography',
+          'ICU': 'intensive care unit',
+          'ER': 'emergency room',
+          'BP': 'blood pressure',
+          'HR': 'heart rate',
+          'IV': 'intravenous',
+          'PO': 'per os (by mouth)',
+          'PRN': 'pro re nata (as needed)'
+        };
+        
+        // 需要檢查的醫療章節
+        const requiredSections = {
+          cardiology: ['症狀', '診斷', '治療', '預防'],
+          neurology: ['症狀', '診斷', '治療', '預後'],
+          pediatrics: ['症狀', '診斷', '治療', '照護'],
+          emergency: ['症狀', '處理', '轉診', '預防'],
+          orthopedics: ['症狀', '診斷', '治療', '復健']
+        };
+        
+        // 危險詞彙 - 需要特別注意的醫療建議
+        const dangerousTerms = [
+          '一定會', '絕對', '永遠不會', '完全治癒',
+          '立即停藥', '自行調整劑量', '不需要看醫生'
+        ];
+        
+        function checkMedicalContent() {
+          const educationDir = 'src/content/education';
+          const files = fs.readdirSync(educationDir, { recursive: true })
+            .filter(file => file.endsWith('.md'))
+            .map(file => path.join(educationDir, file));
+          
+          let errors = 0;
+          let warnings = 0;
+          
+          for (const file of files) {
+            const content = fs.readFileSync(file, 'utf8');
+            const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+            
+            if (!frontmatterMatch) continue;
+            
+            const frontmatter = yaml.load(frontmatterMatch[1]);
+            const bodyContent = content.replace(/^---\n[\s\S]*?\n---\n/, '');
+            const specialty = frontmatter.specialty;
+            
+            // 檢查必要章節
+            if (requiredSections[specialty]) {
+              const requiredSecs = requiredSections[specialty];
+              const headingPattern = /^#{2,6}\s+(.+)$/gm;
+              const headings = [];
+              let match;
+              
+              while ((match = headingPattern.exec(bodyContent)) !== null) {
+                headings.push(match[1]);
+              }
+              
+              for (const requiredSec of requiredSecs) {
+                const hasSection = headings.some(heading => 
+                  heading.includes(requiredSec) || 
+                  heading.toLowerCase().includes(requiredSec.toLowerCase())
+                );
+                
+                if (!hasSection) {
+                  console.warn(`⚠️ 建議包含「${requiredSec}」相關章節: ${file}`);
+                  warnings++;
+                }
+              }
+            }
+            
+            // 檢查危險詞彙
+            for (const term of dangerousTerms) {
+              if (bodyContent.includes(term)) {
+                console.error(`❌ 發現可能危險的醫療建議詞彙「${term}」: ${file}`);
+                errors++;
+              }
+            }
+            
+            // 檢查醫療免責聲明
+            const disclaimerKeywords = ['醫師', '專業', '建議', '診斷', '治療'];
+            const hasDisclaimer = disclaimerKeywords.some(keyword => 
+              bodyContent.toLowerCase().includes(keyword)
+            );
+            
+            if (!hasDisclaimer) {
+              console.warn(`⚠️ 建議包含醫療免責聲明或專業建議提醒: ${file}`);
+              warnings++;
+            }
+            
+            // 檢查藥物劑量格式
+            const dosagePattern = /\d+\s*(mg|g|ml|mcg|μg|IU|units?)\b/gi;
+            const dosageMatches = bodyContent.match(dosagePattern);
+            
+            if (dosageMatches) {
+              console.warn(`⚠️ 發現藥物劑量資訊，請確保準確性: ${dosageMatches.join(', ')} in ${file}`);
+              warnings++;
+            }
+            
+            // 檢查參考文獻
+            const referencePattern = /\[(\d+)\]|\(.*\d{4}.*\)/g;
+            const hasReferences = referencePattern.test(bodyContent);
+            
+            if (!hasReferences && bodyContent.length > 1000) {
+              console.warn(`⚠️ 長篇醫療內容建議包含參考文獻: ${file}`);
+              warnings++;
+            }
+            
+            console.log(`✅ ${file} 醫療內容檢查完成`);
+          }
+          
+          console.log(`\n📊 醫療內容檢查結果: ${errors} 錯誤, ${warnings} 警告`);
+          
+          if (errors > 0) {
+            process.exit(1);
+          }
+        }
+        
+        checkMedicalContent();
+        EOF
+        
+        node check-medical-content.js
+
+  # 內容結構和可讀性分析
+  content-structure-analysis:
+    runs-on: ubuntu-latest
+    name: 內容結構和可讀性分析
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      
+    - name: 設定 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 內容結構分析
+      run: |
+        echo "分析內容結構和可讀性..."
+        
+        cat > analyze-content.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        const yaml = require('js-yaml');
+        
+        function analyzeContent() {
+          const educationDir = 'src/content/education';
+          const files = fs.readdirSync(educationDir, { recursive: true })
+            .filter(file => file.endsWith('.md'))
+            .map(file => path.join(educationDir, file));
+          
+          let warnings = 0;
+          const stats = {
+            totalFiles: files.length,
+            avgWordCount: 0,
+            avgReadingTime: 0,
+            structureIssues: 0
+          };
+          
+          let totalWords = 0;
+          
+          for (const file of files) {
+            const content = fs.readFileSync(file, 'utf8');
+            const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+            
+            if (!frontmatterMatch) continue;
+            
+            const bodyContent = content.replace(/^---\n[\s\S]*?\n---\n/, '');
+            
+            // 字數統計
+            const words = bodyContent.split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+            totalWords += wordCount;
+            
+            // 閱讀時間估算 (每分鐘 200 字)
+            const readingTime = Math.ceil(wordCount / 200);
+            
+            // 段落分析
+            const paragraphs = bodyContent.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+            const avgParagraphLength = paragraphs.reduce((sum, p) => sum + p.split(/\s+/).length, 0) / paragraphs.length;
+            
+            // 句子長度分析
+            const sentences = bodyContent.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const avgSentenceLength = sentences.reduce((sum, s) => sum + s.split(/\s+/).length, 0) / sentences.length;
+            
+            // 標題結構分析
+            const headingPattern = /^(#{1,6})\s+(.+)$/gm;
+            const headings = [];
+            let match;
+            
+            while ((match = headingPattern.exec(bodyContent)) !== null) {
+              headings.push({
+                level: match[1].length,
+                text: match[2]
+              });
+            }
+            
+            // 檢查內容品質指標
+            if (wordCount < 300) {
+              console.warn(`⚠️ 內容較短 (${wordCount} 字): ${file}`);
+              warnings++;
+            } else if (wordCount > 3000) {
+              console.warn(`⚠️ 內容較長 (${wordCount} 字，建議分割): ${file}`);
+              warnings++;
+            }
+            
+            if (avgParagraphLength > 100) {
+              console.warn(`⚠️ 段落平均長度過長 (${Math.round(avgParagraphLength)} 字/段): ${file}`);
+              warnings++;
+            }
+            
+            if (avgSentenceLength > 25) {
+              console.warn(`⚠️ 句子平均長度過長 (${Math.round(avgSentenceLength)} 字/句): ${file}`);
+              warnings++;
+            }
+            
+            if (headings.length === 0) {
+              console.warn(`⚠️ 缺少標題結構: ${file}`);
+              warnings++;
+              stats.structureIssues++;
+            } else if (headings.length === 1) {
+              console.warn(`⚠️ 標題結構過於簡單: ${file}`);
+              warnings++;
+            }
+            
+            // 檢查列表使用
+            const listPattern = /^[\s]*[-*+]\s+|^[\s]*\d+\.\s+/gm;
+            const listItems = bodyContent.match(listPattern);
+            const hasLists = listItems && listItems.length > 0;
+            
+            if (!hasLists && wordCount > 500) {
+              console.warn(`⚠️ 長內容建議使用列表提高可讀性: ${file}`);
+              warnings++;
+            }
+            
+            console.log(`📊 ${file}:`);
+            console.log(`   字數: ${wordCount}, 閱讀時間: ${readingTime} 分鐘`);
+            console.log(`   段落: ${paragraphs.length}, 平均長度: ${Math.round(avgParagraphLength)} 字`);
+            console.log(`   句子平均長度: ${Math.round(avgSentenceLength)} 字`);
+            console.log(`   標題: ${headings.length} 個`);
+          }
+          
+          stats.avgWordCount = Math.round(totalWords / files.length);
+          stats.avgReadingTime = Math.ceil(stats.avgWordCount / 200);
+          
+          console.log(`\n📈 整體統計:`);
+          console.log(`   檔案總數: ${stats.totalFiles}`);
+          console.log(`   平均字數: ${stats.avgWordCount}`);
+          console.log(`   平均閱讀時間: ${stats.avgReadingTime} 分鐘`);
+          console.log(`   結構問題: ${stats.structureIssues} 個檔案`);
+          console.log(`   總警告: ${warnings} 個`);
+          
+          // 設定警告閾值
+          if (warnings > files.length * 0.5) {
+            console.warn(`\n⚠️ 警告數量較多，建議檢查內容品質`);
+          }
+        }
+        
+        analyzeContent();
+        EOF
+        
+        node analyze-content.js
+
+  # 生成驗證報告
+  generate-validation-report:
+    runs-on: ubuntu-latest
+    name: 生成驗證報告
+    needs: [frontmatter-validation, markdown-validation, seo-accessibility-validation, medical-content-validation, content-structure-analysis]
+    if: always()
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      
+    - name: 生成驗證報告
+      run: |
+        echo "生成進階內容驗證報告..."
+        
+        cat > validation-report.md << 'EOF'
+        # 進階內容驗證報告
+        
+        **生成時間**: $(date)
+        **提交**: ${{ github.sha }}
+        **分支**: ${{ github.ref_name }}
+        
+        ## 驗證結果摘要
+        
+        | 檢查項目 | 狀態 |
+        |---------|------|
+        | Frontmatter 格式驗證 | ${{ needs.frontmatter-validation.result == 'success' && '✅ 通過' || '❌ 失敗' }} |
+        | Markdown 語法和連結驗證 | ${{ needs.markdown-validation.result == 'success' && '✅ 通過' || '❌ 失敗' }} |
+        | SEO 和無障礙性檢查 | ${{ needs.seo-accessibility-validation.result == 'success' && '✅ 通過' || '❌ 失敗' }} |
+        | 醫療內容特定檢查 | ${{ needs.medical-content-validation.result == 'success' && '✅ 通過' || '❌ 失敗' }} |
+        | 內容結構和可讀性分析 | ${{ needs.content-structure-analysis.result == 'success' && '✅ 通過' || '❌ 失敗' }} |
+        
+        ## 詳細說明
+        
+        ### Frontmatter 格式驗證
+        - 檢查所有必要欄位是否存在
+        - 驗證欄位格式和值的有效性
+        - 確保專科分類正確
+        - 驗證日期格式
+        
+        ### Markdown 語法和連結驗證
+        - 使用 markdownlint 檢查語法規範
+        - 驗證內部連結格式
+        - 檢查外部連結有效性
+        - 確保連結文字描述性
+        
+        ### SEO 和無障礙性檢查
+        - 標題和描述長度優化
+        - 圖片 alt 文字檢查
+        - 標題層級結構驗證
+        - 連結可訪問性檢查
+        
+        ### 醫療內容特定檢查
+        - 必要醫療章節檢查
+        - 危險醫療建議詞彙掃描
+        - 藥物劑量格式驗證
+        - 醫療免責聲明檢查
+        
+        ### 內容結構和可讀性分析
+        - 字數和閱讀時間統計
+        - 段落和句子長度分析
+        - 標題結構評估
+        - 列表使用建議
+        
+        ## 建議改善事項
+        
+        如有檢查失敗，請參考上述各項檢查的具體錯誤訊息進行修正。
+        
+        ---
+        
+        *此報告由 GitHub Actions 自動生成*
+        EOF
+        
+        echo "驗證報告已生成"
+        
+    - name: 上傳驗證報告
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: validation-report
+        path: validation-report.md
+        retention-days: 30

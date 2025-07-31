@@ -397,6 +397,72 @@ export function formatLocalizedDate(
 }
 
 /**
+ * 簡化的日期格式化函數
+ */
+export function formatDate(
+  date: Date | string,
+  locale: SupportedLocale = defaultLocale,
+  format: 'short' | 'medium' | 'long' = 'medium'
+): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  if (isNaN(dateObj.getTime())) {
+    return '無效日期';
+  }
+  
+  const localeMap = {
+    'zh-TW': 'zh-TW',
+    'en': 'en-US',
+    'ja': 'ja-JP'
+  };
+  
+  const formatOptions: Record<string, Intl.DateTimeFormatOptions> = {
+    short: {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    },
+    medium: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    },
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+  };
+  
+  return dateObj.toLocaleDateString(localeMap[locale], formatOptions[format]);
+}
+
+/**
+ * 計算閱讀時間（基於字數）
+ */
+export function calculateReadingTime(content: string, wordsPerMinute: number = 200): number {
+  // 移除 HTML 標籤和 Markdown 語法
+  const cleanContent = content
+    .replace(/<[^>]*>/g, '') // 移除 HTML 標籤
+    .replace(/[#*`_~\[\]()]/g, '') // 移除 Markdown 語法
+    .replace(/\s+/g, ' ') // 合併空白字符
+    .trim();
+  
+  // 計算中文字符和英文單詞
+  const chineseChars = (cleanContent.match(/[\u4e00-\u9fff]/g) || []).length;
+  const englishWords = cleanContent
+    .replace(/[\u4e00-\u9fff]/g, '') // 移除中文字符
+    .split(/\s+/)
+    .filter(word => word.length > 0).length;
+  
+  // 中文字符按每分鐘 300 字計算，英文單詞按每分鐘 200 字計算
+  const totalWords = chineseChars * (300 / 200) + englishWords;
+  const readingTime = Math.ceil(totalWords / wordsPerMinute);
+  
+  return Math.max(1, readingTime); // 至少 1 分鐘
+}
+
+/**
  * 獲取語言方向（LTR/RTL）
  */
 export function getTextDirection(locale: SupportedLocale): 'ltr' | 'rtl' {

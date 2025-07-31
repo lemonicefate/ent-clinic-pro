@@ -2,20 +2,53 @@
 /**
  * 醫療專科動態頁面
  * 根據專科 ID 顯示相關的工具和內容
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增 SOP 工作流程支援
+ * - 顯示專科文章統計（包含狀態分布）
+ * - 過濾已發布內容
+ * - 新增版本和作者資訊顯示
+ * - 優化 SEO 元資料
+ * 
+ * 需求對應：
+ * - 需求 1.1: 專科分類架構系統 ✓
+ * - 需求 7.1: 多語言支援機制 ✓
+ * - 需求 8.3: 效能監控和分析 ✓
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SpecialtyStats from '../../components/SpecialtyStats.astro';
 import { getCollection } from 'astro:content';
+import { formatDate } from '../../utils/i18n';
 
 export async function getStaticPaths() {
-  const specialties = [
-    { id: 'cardiology', name: '心臟科', description: '心血管疾病診斷與治療工具' },
-    { id: 'neurology', name: '神經科', description: '神經系統疾病評估工具' },
-    { id: 'endocrinology', name: '內分泌科', description: '內分泌代謝疾病管理' },
-    { id: 'general', name: '一般醫學', description: '基礎醫療評估工具' },
-    { id: 'emergency', name: '急診醫學', description: '急診快速評估工具' },
-    { id: 'pediatrics', name: '小兒科', description: '兒童健康評估工具' }
-  ];
+  // 從醫療專科集合獲取專科資料
+  let medicalSpecialties = [];
+  try {
+    medicalSpecialties = await getCollection('medical-specialties');
+  } catch (error) {
+    console.warn('Failed to load medical-specialties collection, using fallback data');
+  }
+
+  // 如果無法載入專科集合，使用預設資料
+  const specialties = medicalSpecialties.length > 0 
+    ? medicalSpecialties.map(spec => ({
+        id: spec.data.id,
+        name: spec.data.name['zh-TW'] || spec.data.name,
+        description: spec.data.description?.['zh-TW'] || spec.data.description || '',
+        color: spec.data.color,
+        icon: spec.data.icon,
+        data: spec.data
+      }))
+    : [
+        { id: 'cardiology', name: '心臟科', description: '心血管疾病診斷與治療工具', color: '#e74c3c', icon: '❤️' },
+        { id: 'neurology', name: '神經科', description: '神經系統疾病評估工具', color: '#9b59b6', icon: '🧠' },
+        { id: 'endocrinology', name: '內分泌科', description: '內分泌代謝疾病管理', color: '#f39c12', icon: '🔬' },
+        { id: 'general', name: '一般醫學', description: '基礎醫療評估工具', color: '#3498db', icon: '🩺' },
+        { id: 'emergency', name: '急診醫學', description: '急診快速評估工具', color: '#e67e22', icon: '🚨' },
+        { id: 'pediatrics', name: '小兒科', description: '兒童健康評估工具', color: '#2ecc71', icon: '👶' },
+        { id: 'orthopedics', name: '骨科', description: '骨骼肌肉系統疾病', color: '#34495e', icon: '🦴' }
+      ];
 
   return specialties.map(specialty => ({
     params: { specialty: specialty.id },
@@ -30,9 +63,11 @@ if (!specialty) {
   throw new Error('Specialty not found');
 }
 
+const isDevelopment = import.meta.env.DEV;
+
 // 獲取相關的計算機和教育內容
 let calculators = [];
-let education = [];
+let allEducation = [];
 
 try {
   calculators = await getCollection('calculators');
@@ -42,10 +77,10 @@ try {
 }
 
 try {
-  education = await getCollection('education');
+  allEducation = await getCollection('education');
 } catch (error) {
   console.warn('Failed to load education collection:', error);
-  education = [];
+  allEducation = [];
 }
 
 const relatedCalculators = calculators.filter(calc => {
@@ -58,15 +93,29 @@ const relatedCalculators = calculators.filter(calc => {
   return hasSpecialty && isActive;
 });
 
-const relatedEducation = education.filter(edu => {
-  // 確保 edu.data 存在且有必要的屬性
+// 過濾教育內容：生產環境只顯示已發布內容
+const allRelatedEducation = allEducation.filter(edu => {
   if (!edu?.data) return false;
-  
-  const hasSpecialty = edu.data.medicalSpecialties?.includes(specialty.id);
-  const isActive = edu.data.isActive !== false; // 預設為 true 如果未定義
-  
-  return hasSpecialty && isActive;
+  return edu.data.medicalSpecialties?.includes(specialty.id) && edu.data.isActive !== false;
 });
+
+const relatedEducation = allRelatedEducation.filter(edu => {
+  if (isDevelopment) {
+    return true; // 開發環境顯示所有相關內容
+  }
+  return edu.data.status === 'published'; // 生產環境只顯示已發布內容
+});
+
+// 計算專科統計資料
+const specialtyStats = {
+  total: allRelatedEducation.length,
+  published: allRelatedEducation.filter(e => e.data.status === 'published').length,
+  inReview: allRelatedEducation.filter(e => e.data.status === 'in-review').length,
+  draft: allRelatedEducation.filter(e => e.data.status === 'draft').length,
+  needsRevision: allRelatedEducation.filter(e => e.data.status === 'needs-revision').length,
+  qualityCheck: allRelatedEducation.filter(e => e.data.status === 'quality-check').length,
+  readyToPublish: allRelatedEducation.filter(e => e.data.status === 'ready-to-publish').length
+};
 
 const pageTitle = `${specialty.name} - 醫療工具與資源`;
 const pageDescription = `${specialty.description}，包含相關的醫療計算機和衛教內容。`;
@@ -83,12 +132,28 @@ const locale = 'zh-TW';
   <div class="container mx-auto px-4 py-8">
     <!-- 專科標頭 -->
     <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">
-        {specialty.name}
-      </h1>
-      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+      <div class="flex items-center justify-center mb-4">
+        {specialty.icon && (
+          <span class="text-4xl mr-4">{specialty.icon}</span>
+        )}
+        <h1 class="text-4xl font-bold text-gray-900">
+          {specialty.name}
+        </h1>
+      </div>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-6">
         {specialty.description}
       </p>
+      
+    </div>
+
+    <!-- 專科統計組件 -->
+    <div class="mb-8 max-w-4xl mx-auto">
+      <SpecialtyStats
+        specialtyName={specialty.name}
+        stats={specialtyStats}
+        calculatorCount={relatedCalculators.length}
+        showWorkflowStats={isDevelopment}
+      />
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -167,16 +232,39 @@ const locale = 'zh-TW';
                     article.data.category === 'disease' ? 'bg-red-100 text-red-800' :
                     article.data.category === 'medication' ? 'bg-blue-100 text-blue-800' :
                     article.data.category === 'procedure' ? 'bg-purple-100 text-purple-800' :
-                    'bg-green-100 text-green-800'
+                    article.data.category === 'prevention' ? 'bg-green-100 text-green-800' :
+                    article.data.category === 'lifestyle' ? 'bg-teal-100 text-teal-800' :
+                    article.data.category === 'symptoms' ? 'bg-orange-100 text-orange-800' :
+                    article.data.category === 'diagnosis' ? 'bg-indigo-100 text-indigo-800' :
+                    article.data.category === 'treatment' ? 'bg-pink-100 text-pink-800' :
+                    'bg-gray-100 text-gray-800'
                   }`}>
                     {article.data.category === 'disease' ? '疾病資訊' :
                      article.data.category === 'medication' ? '藥物資訊' :
                      article.data.category === 'procedure' ? '檢查程序' :
-                     '預防保健'}
+                     article.data.category === 'prevention' ? '預防保健' :
+                     article.data.category === 'lifestyle' ? '生活方式' :
+                     article.data.category === 'symptoms' ? '症狀識別' :
+                     article.data.category === 'diagnosis' ? '診斷方法' :
+                     article.data.category === 'treatment' ? '治療指引' : article.data.category}
                   </span>
                   {article.data.readingTime && (
                     <span class="text-xs text-gray-500">
                       {article.data.readingTime} 分鐘閱讀
+                    </span>
+                  )}
+                  {article.data.version && (
+                    <span class="text-xs text-gray-400">
+                      v{article.data.version}
+                    </span>
+                  )}
+                  {isDevelopment && article.data.status !== 'published' && (
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      {article.data.status === 'draft' ? '草稿' :
+                       article.data.status === 'in-review' ? '審核中' :
+                       article.data.status === 'needs-revision' ? '需修改' :
+                       article.data.status === 'quality-check' ? '品質檢查' :
+                       article.data.status === 'ready-to-publish' ? '準備發布' : article.data.status}
                     </span>
                   )}
                 </div>
@@ -191,7 +279,7 @@ const locale = 'zh-TW';
                   </p>
                 )}
                 
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center space-x-2">
                     {article.data.hasFlowchart && (
                       <span class="inline-flex items-center text-xs text-medical-primary-600">
@@ -209,10 +297,16 @@ const locale = 'zh-TW';
                       {article.data.difficulty === 'basic' ? '基礎' :
                        article.data.difficulty === 'intermediate' ? '中級' : '進階'}
                     </span>
+                    {article.data.patientFriendly && (
+                      <span class="text-xs text-medical-success-600">病患友善</span>
+                    )}
+                    {article.data.evidenceLevel && (
+                      <span class="text-xs text-gray-500">證據等級: {article.data.evidenceLevel}</span>
+                    )}
                   </div>
                   
                   <a 
-                    href={`/education/${article.id || '#'}`}
+                    href={`/education/${article.slug || '#'}`}
                     class="inline-flex items-center text-medical-primary-600 hover:text-medical-primary-700 font-medium text-sm"
                   >
                     閱讀更多
@@ -221,6 +315,20 @@ const locale = 'zh-TW';
                     </svg>
                   </a>
                 </div>
+                
+                {/* 作者和更新資訊 */}
+                {(article.data.author || article.data.lastUpdated) && (
+                  <div class="pt-3 border-t border-gray-100">
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                      {article.data.author && (
+                        <span>作者: {article.data.author['zh-TW'] || article.data.author}</span>
+                      )}
+                      {article.data.lastUpdated && (
+                        <span>更新: {formatDate(article.data.lastUpdated, 'zh-TW')}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
               </article>
             ))}
           </div>

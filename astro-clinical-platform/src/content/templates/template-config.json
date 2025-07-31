@@ -1,0 +1,270 @@
+{
+  "title": "醫療專科內容模板配置系統",
+  "description": "為每個醫療專科提供標準化的內容模板和編輯器預設值",
+  "version": "1.0",
+  "lastUpdated": "2025-01-30",
+  "templates": {
+    "cardiology": {
+      "name": "心臟科模板",
+      "templateFile": "cardiology-template.md",
+      "defaultValues": {
+        "category": "disease",
+        "difficulty": "basic",
+        "readingTime": 8,
+        "tags": ["心臟科", "心血管疾病", "心臟健康", "預防醫學"],
+        "specialtySpecific": {
+          "heartRhythm": "normal",
+          "cardiovascularRisk": "low"
+        },
+        "evidenceLevel": "B"
+      },
+      "requiredSections": [
+        "症狀識別",
+        "診斷方法", 
+        "治療策略",
+        "預防措施"
+      ],
+      "contentGuidelines": {
+        "minWords": 800,
+        "maxWords": 3000,
+        "targetAudience": "一般民眾",
+        "writingStyle": "清晰易懂，避免過於專業的術語",
+        "keyElements": ["症狀", "診斷", "治療", "預防"]
+      },
+      "seoDefaults": {
+        "titleSuffix": " | 心臟科 | 醫療平台",
+        "descriptionTemplate": "專業心臟科醫療資訊，包含{主題}的症狀識別、診斷方法、治療策略和預防措施。由心臟科專家審核。",
+        "keywords": ["心臟病", "冠心病", "心律不整", "心臟衰竭", "高血壓"]
+      }
+    },
+    "neurology": {
+      "name": "神經科模板",
+      "templateFile": "neurology-template.md",
+      "defaultValues": {
+        "category": "disease",
+        "difficulty": "basic",
+        "readingTime": 10,
+        "tags": ["神經科", "神經系統疾病", "腦部疾病", "神經學檢查"],
+        "specialtySpecific": {
+          "neurologicalAssessment": "gcs"
+        },
+        "evidenceLevel": "B"
+      },
+      "requiredSections": [
+        "神經學檢查",
+        "影像學診斷",
+        "治療方針",
+        "復健計畫"
+      ],
+      "contentGuidelines": {
+        "minWords": 1000,
+        "maxWords": 3500,
+        "targetAudience": "一般民眾和患者家屬",
+        "writingStyle": "專業但易懂，適當解釋醫學術語",
+        "keyElements": ["檢查", "診斷", "治療", "復健"]
+      },
+      "seoDefaults": {
+        "titleSuffix": " | 神經科 | 醫療平台",
+        "descriptionTemplate": "專業神經科醫療資訊，包含{主題}的神經學檢查、影像診斷、治療方針和復健計畫。由神經科專家審核。",
+        "keywords": ["中風", "癲癇", "帕金森氏症", "失智症", "頭痛"]
+      }
+    },
+    "orthopedics": {
+      "name": "骨科模板",
+      "templateFile": "orthopedics-template.md",
+      "defaultValues": {
+        "category": "disease",
+        "difficulty": "basic",
+        "readingTime": 7,
+        "tags": ["骨科", "肌肉骨骼系統", "骨折", "關節疾病"],
+        "specialtySpecific": {
+          "fractureClassification": "ao",
+          "jointFunction": "rom"
+        },
+        "evidenceLevel": "B"
+      },
+      "requiredSections": [
+        "理學檢查",
+        "影像學檢查",
+        "治療選項",
+        "復健計畫"
+      ],
+      "contentGuidelines": {
+        "minWords": 800,
+        "maxWords": 3000,
+        "targetAudience": "一般民眾和患者",
+        "writingStyle": "實用導向，重視復健指導",
+        "keyElements": ["檢查", "影像", "治療", "復健"]
+      },
+      "seoDefaults": {
+        "titleSuffix": " | 骨科 | 醫療平台",
+        "descriptionTemplate": "專業骨科醫療資訊，包含{主題}的理學檢查、影像診斷、治療選項和復健計畫。由骨科專家審核。",
+        "keywords": ["骨折", "關節炎", "脊椎疾病", "運動傷害", "人工關節"]
+      }
+    },
+    "pediatrics": {
+      "name": "小兒科模板",
+      "templateFile": "pediatrics-template.md",
+      "defaultValues": {
+        "category": "prevention",
+        "difficulty": "basic",
+        "readingTime": 6,
+        "ageGroup": "pediatric",
+        "tags": ["小兒科", "兒童健康", "生長發育", "疫苗接種"],
+        "specialtySpecific": {
+          "targetAgeGroup": "infant",
+          "developmentalTool": "denver"
+        },
+        "evidenceLevel": "A"
+      },
+      "requiredSections": [
+        "年齡特異性考量",
+        "生長發育評估",
+        "疫苗接種",
+        "家長衛教"
+      ],
+      "contentGuidelines": {
+        "minWords": 600,
+        "maxWords": 2500,
+        "targetAudience": "家長和照護者",
+        "writingStyle": "親切易懂，避免過於專業的術語",
+        "keyElements": ["年齡考量", "發育評估", "疫苗", "家長指導"]
+      },
+      "seoDefaults": {
+        "titleSuffix": " | 小兒科 | 醫療平台",
+        "descriptionTemplate": "專業小兒科醫療資訊，包含{主題}的年齡考量、發育評估、疫苗接種和家長指導。由小兒科專家審核。",
+        "keywords": ["兒童疾病", "疫苗接種", "生長發育", "新生兒照護", "青少年健康"]
+      }
+    },
+    "emergency": {
+      "name": "急診醫學科模板",
+      "templateFile": "emergency-template.md",
+      "defaultValues": {
+        "category": "procedure",
+        "difficulty": "basic",
+        "readingTime": 5,
+        "tags": ["急診醫學", "緊急醫療", "急救", "檢傷分類"],
+        "specialtySpecific": {
+          "triageLevel": "level3",
+          "vitalSignsTool": "abcde"
+        },
+        "evidenceLevel": "A"
+      },
+      "requiredSections": [
+        "緊急評估",
+        "急救處置",
+        "穩定化治療",
+        "轉診考量"
+      ],
+      "contentGuidelines": {
+        "minWords": 500,
+        "maxWords": 2000,
+        "targetAudience": "一般民眾和急救人員",
+        "writingStyle": "簡潔明確，重視時效性",
+        "keyElements": ["評估", "急救", "穩定", "轉診"]
+      },
+      "seoDefaults": {
+        "titleSuffix": " | 急診醫學科 | 醫療平台",
+        "descriptionTemplate": "專業急診醫學資訊，包含{主題}的緊急評估、急救處置、穩定治療和轉診考量。由急診專家審核。",
+        "keywords": ["急診", "急救", "檢傷分類", "心肺復甦術", "外傷處理"]
+      }
+    }
+  },
+  "editorDefaults": {
+    "toolbar": {
+      "enabled": [
+        "bold",
+        "italic", 
+        "code",
+        "link",
+        "heading-two",
+        "heading-three",
+        "heading-four",
+        "quote",
+        "bulleted-list",
+        "numbered-list",
+        "table"
+      ],
+      "components": [
+        "image",
+        "code-block",
+        "youtube"
+      ]
+    },
+    "shortcuts": {
+      "bold": "Ctrl+B",
+      "italic": "Ctrl+I",
+      "link": "Ctrl+K",
+      "save": "Ctrl+S",
+      "preview": "Ctrl+P"
+    },
+    "autoSave": {
+      "enabled": true,
+      "interval": 30000
+    },
+    "spellCheck": {
+      "enabled": true,
+      "languages": ["zh-TW", "en"]
+    }
+  },
+  "writingGuidelines": {
+    "general": {
+      "tone": "專業但親切",
+      "perspective": "第三人稱",
+      "tense": "現在式",
+      "language": "繁體中文為主，適當使用英文醫學術語"
+    },
+    "structure": {
+      "introduction": "簡要介紹主題和重要性",
+      "body": "按照專科模板的必要章節組織內容",
+      "conclusion": "總結重點和實用建議",
+      "disclaimer": "必須包含醫療免責聲明"
+    },
+    "formatting": {
+      "headings": "使用階層式標題結構",
+      "lists": "適當使用清單整理資訊",
+      "emphasis": "重要資訊使用粗體強調",
+      "links": "提供相關資源連結"
+    },
+    "medical": {
+      "accuracy": "確保醫學資訊準確無誤",
+      "evidence": "引用可靠的醫學文獻",
+      "terminology": "適當解釋專業術語",
+      "safety": "強調安全注意事項"
+    }
+  },
+  "qualityChecklist": {
+    "content": [
+      "標題清晰且包含關鍵字",
+      "摘要簡潔且吸引人",
+      "內容結構完整",
+      "醫學資訊準確",
+      "語言清晰易懂",
+      "包含實用建議"
+    ],
+    "technical": [
+      "所有必填欄位已完成",
+      "圖片包含替代文字",
+      "連結有效且相關",
+      "SEO 元素完整",
+      "參考文獻格式正確",
+      "免責聲明已包含"
+    ],
+    "review": [
+      "專科醫師審核",
+      "醫學編輯審核",
+      "品質檢查通過",
+      "最終管理員批准"
+    ]
+  },
+  "helpTexts": {
+    "title": "標題應該清晰描述文章主題，包含主要關鍵字，建議10-50字元",
+    "excerpt": "摘要幫助讀者快速了解文章重點，建議50-200字元",
+    "category": "選擇最符合文章內容的分類",
+    "difficulty": "根據目標讀者選擇適當的難度等級",
+    "tags": "添加相關標籤有助於文章分類和搜尋",
+    "medicalSpecialties": "選擇1-3個最相關的醫療專科",
+    "evidenceLevel": "根據參考文獻的品質評估證據等級",
+    "references": "引用可靠的醫學文獻，建議使用近5年內的資料"
+  }
+}

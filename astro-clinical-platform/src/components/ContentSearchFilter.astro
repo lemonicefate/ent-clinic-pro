@@ -1,0 +1,431 @@
+---
+/**
+ * 內容搜尋和過濾組件
+ * 提供按專科、狀態、作者的過濾器和全文搜尋功能
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增內容搜尋和過濾功能
+ * 
+ * 需求對應：
+ * - 需求 1.1: 專科分類架構系統 ✓
+ * - 需求 7.1: 多語言支援機制 ✓
+ */
+
+import { getCollection } from 'astro:content';
+import type { SupportedLocale } from '../env.d';
+
+interface Props {
+  locale?: SupportedLocale;
+  showStatusFilter?: boolean;
+  showAdvancedFilters?: boolean;
+  placeholder?: string;
+}
+
+const {
+  locale = 'zh-TW',
+  showStatusFilter = false,
+  showAdvancedFilters = true,
+  placeholder = '搜尋醫療內容...'
+} = Astro.props;
+
+const isDevelopment = import.meta.env.DEV;
+
+// 獲取所有內容用於生成過濾選項
+const allEducation = await getCollection('education');
+const allSpecialties = await getCollection('medical-specialties').catch(() => []);
+
+// 提取所有可用的過濾選項
+const availableSpecialties = [...new Set(
+  allEducation.flatMap(entry => entry.data.medicalSpecialties)
+)].sort();
+
+const availableCategories = [...new Set(
+  allEducation.map(entry => entry.data.category)
+)].sort();
+
+const availableAuthors = [...new Set(
+  allEducation
+    .map(entry => entry.data.author?.[locale] || entry.data.assignedWriter)
+    .filter(Boolean)
+)].sort();
+
+const availableTags = [...new Set(
+  allEducation.flatMap(entry => entry.data.tags || [])
+)].sort();
+
+const availableStatuses = isDevelopment || showStatusFilter ? [
+  'published',
+  'in-review', 
+  'draft',
+  'needs-revision',
+  'quality-check',
+  'ready-to-publish'
+] : ['published'];
+
+// 專科名稱映射
+const specialtyNames = {
+  cardiology: '心臟科',
+  neurology: '神經科',
+  orthopedics: '骨科',
+  emergency: '急診醫學',
+  pediatrics: '小兒科',
+  general: '一般醫學',
+  endocrinology: '內分泌科',
+  nephrology: '腎臟科',
+  pulmonology: '胸腔科',
+  surgery: '外科'
+};
+
+// 分類名稱映射
+const categoryNames = {
+  disease: '疾病資訊',
+  medication: '藥物資訊',
+  procedure: '檢查程序',
+  prevention: '預防保健',
+  lifestyle: '生活方式',
+  symptoms: '症狀識別',
+  diagnosis: '診斷方法',
+  treatment: '治療指引'
+};
+
+// 狀態名稱映射
+const statusNames = {
+  published: '已發布',
+  'in-review': '審核中',
+  draft: '草稿',
+  'needs-revision': '需修改',
+  'quality-check': '品質檢查',
+  'ready-to-publish': '準備發布'
+};
+
+// 難度等級映射
+const difficultyNames = {
+  basic: '基礎',
+  intermediate: '中級',
+  advanced: '進階'
+};
+---
+
+<div class="bg-white rounded-lg border border-gray-200 shadow-sm">
+  <!-- 搜尋標頭 -->
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center space-x-3">
+      <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <h3 class="text-lg font-semibold text-gray-900">搜尋和篩選</h3>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <!-- 主要搜尋框 -->
+    <div class="mb-6">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          id="search-input"
+          class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-medical-primary-500 focus:border-medical-primary-500"
+          placeholder={placeholder}
+          autocomplete="off"
+        />
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <button
+            type="button"
+            id="clear-search"
+            class="text-gray-400 hover:text-gray-600 hidden"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 快速過濾標籤 -->
+    <div class="mb-6">
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          class="filter-tag active"
+          data-filter="all"
+        >
+          全部內容
+        </button>
+        <button
+          type="button"
+          class="filter-tag"
+          data-filter="specialty:cardiology"
+        >
+          心臟科
+        </button>
+        <button
+          type="button"
+          class="filter-tag"
+          data-filter="category:disease"
+        >
+          疾病資訊
+        </button>
+        <button
+          type="button"
+          class="filter-tag"
+          data-filter="difficulty:basic"
+        >
+          基礎內容
+        </button>
+        <button
+          type="button"
+          class="filter-tag"
+          data-filter="patient-friendly:true"
+        >
+          病患友善
+        </button>
+        {(isDevelopment || showStatusFilter) && (
+          <button
+            type="button"
+            class="filter-tag"
+            data-filter="status:published"
+          >
+            已發布
+          </button>
+        )}
+      </div>
+    </div>
+
+    <!-- 進階過濾器 -->
+    {showAdvancedFilters && (
+      <details class="mb-6">
+        <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 select-none flex items-center">
+          <svg class="h-4 w-4 mr-2 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+          進階篩選
+        </summary>
+        
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- 醫療專科過濾 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">醫療專科</label>
+            <select
+              id="specialty-filter"
+              class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-medical-primary-500 focus:border-medical-primary-500"
+            >
+              <option value="">所有專科</option>
+              {availableSpecialties.map(specialty => (
+                <option key={specialty} value={specialty}>
+                  {specialtyNames[specialty] || specialty}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <!-- 內容分類過濾 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">內容分類</label>
+            <select
+              id="category-filter"
+              class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-medical-primary-500 focus:border-medical-primary-500"
+            >
+              <option value="">所有分類</option>
+              {availableCategories.map(category => (
+                <option key={category} value={category}>
+                  {categoryNames[category] || category}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <!-- 難度等級過濾 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">難度等級</label>
+            <select
+              id="difficulty-filter"
+              class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-medical-primary-500 focus:border-medical-primary-500"
+            >
+              <option value="">所有難度</option>
+              <option value="basic">基礎</option>
+              <option value="intermediate">中級</option>
+              <option value="advanced">進階</option>
+            </select>
+          </div>
+
+          <!-- 作者過濾 -->
+          {availableAuthors.length > 0 && (
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">作者</label>
+              <select
+                id="author-filter"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-medical-primary-500 focus:border-medical-primary-500"
+              >
+                <option value="">所有作者</option>
+                {availableAuthors.map(author => (
+                  <option key={author} value={author}>
+                    {author}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <!-- 狀態過濾（僅開發環境或明確啟用） -->
+          {(isDevelopment || showStatusFilter) && (
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                狀態
+                {isDevelopment && (
+                  <span class="ml-1 text-xs text-yellow-600">(開發)</span>
+                )}
+              </label>
+              <select
+                id="status-filter"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-medical-primary-500 focus:border-medical-primary-500"
+              >
+                <option value="">所有狀態</option>
+                {availableStatuses.map(status => (
+                  <option key={status} value={status}>
+                    {statusNames[status] || status}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <!-- 標籤過濾 -->
+          {availableTags.length > 0 && (
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">標籤</label>
+              <select
+                id="tag-filter"
+                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-medical-primary-500 focus:border-medical-primary-500"
+              >
+                <option value="">所有標籤</option>
+                {availableTags.slice(0, 20).map(tag => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+
+        <!-- 特殊過濾選項 -->
+        <div class="mt-4 space-y-2">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              id="patient-friendly-filter"
+              class="rounded border-gray-300 text-medical-primary-600 shadow-sm focus:border-medical-primary-300 focus:ring focus:ring-medical-primary-200 focus:ring-opacity-50"
+            />
+            <span class="ml-2 text-sm text-gray-700">僅顯示病患友善內容</span>
+          </label>
+          
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              id="has-flowchart-filter"
+              class="rounded border-gray-300 text-medical-primary-600 shadow-sm focus:border-medical-primary-300 focus:ring focus:ring-medical-primary-200 focus:ring-opacity-50"
+            />
+            <span class="ml-2 text-sm text-gray-700">包含流程圖</span>
+          </label>
+          
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              id="featured-filter"
+              class="rounded border-gray-300 text-medical-primary-600 shadow-sm focus:border-medical-primary-300 focus:ring focus:ring-medical-primary-200 focus:ring-opacity-50"
+            />
+            <span class="ml-2 text-sm text-gray-700">精選內容</span>
+          </label>
+        </div>
+
+        <!-- 排序選項 -->
+        <div class="mt-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">排序方式</label>
+          <select
+            id="sort-filter"
+            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-medical-primary-500 focus:border-medical-primary-500"
+          >
+            <option value="relevance">相關性</option>
+            <option value="date-desc">最新優先</option>
+            <option value="date-asc">最舊優先</option>
+            <option value="title-asc">標題 A-Z</option>
+            <option value="title-desc">標題 Z-A</option>
+            <option value="reading-time-asc">閱讀時間短到長</option>
+            <option value="reading-time-desc">閱讀時間長到短</option>
+          </select>
+        </div>
+      </details>
+    )}
+
+    <!-- 搜尋結果統計 -->
+    <div class="flex items-center justify-between text-sm text-gray-600 mb-4">
+      <div id="search-stats" class="hidden">
+        找到 <span id="result-count">0</span> 篇文章
+      </div>
+      <button
+        type="button"
+        id="clear-all-filters"
+        class="text-medical-primary-600 hover:text-medical-primary-700 font-medium hidden"
+      >
+        清除所有篩選
+      </button>
+    </div>
+
+    <!-- 活動篩選標籤 -->
+    <div id="active-filters" class="hidden mb-4">
+      <div class="flex flex-wrap gap-2">
+        <!-- 動態生成的活動篩選標籤將在這裡顯示 -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 搜尋結果容器 -->
+<div id="search-results" class="mt-6">
+  <!-- 搜尋結果將通過 JavaScript 動態載入 -->
+</div>
+
+<!-- 無結果狀態 -->
+<div id="no-results" class="hidden mt-6 text-center py-12">
+  <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33" />
+  </svg>
+  <h3 class="mt-2 text-sm font-medium text-gray-900">找不到相關內容</h3>
+  <p class="mt-1 text-sm text-gray-500">請嘗試調整搜尋條件或篩選器</p>
+</div>
+
+<style>
+  .filter-tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border transition-colors;
+    @apply border-gray-300 text-gray-700 bg-white hover:bg-gray-50;
+  }
+  
+  .filter-tag.active {
+    @apply border-medical-primary-300 text-medical-primary-700 bg-medical-primary-50;
+  }
+  
+  details[open] summary svg {
+    @apply rotate-180;
+  }
+  
+  .active-filter-tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-medical-primary-100 text-medical-primary-800 border border-medical-primary-200;
+  }
+  
+  .active-filter-tag button {
+    @apply ml-2 text-medical-primary-600 hover:text-medical-primary-800;
+  }
+</style>
+
+<script>
+  // 搜尋和篩選功能將通過外部 JavaScript 實現
+  // 這裡只是組件的 HTML 結構
+  console.log('ContentSearchFilter component loaded');
+</script>

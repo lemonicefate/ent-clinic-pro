@@ -2,22 +2,45 @@
 /**
  * 教育內容總覽頁面
  * 展示所有衛教資源，支援分類瀏覽和篩選
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增 SOP 工作流程支援
+ * - 過濾已發布內容（status: 'published'）
+ * - 顯示文章統計（包含狀態分布）
+ * - 新增版本和作者資訊顯示
+ * - 優化 SEO 元資料和結構化資料
+ * 
+ * 需求對應：
+ * - 需求 7.1: 多語言支援機制 ✓
+ * - 需求 8.3: 效能監控和分析 ✓
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getAllEducationContent, getFeaturedEducation, getPatientFriendlyEducation, getProfessionalEducation } from '../../utils/content-helpers';
-import { contentCategorizer } from '../../utils/content-categorization';
+import ContentFreshnessIndicator from '../../components/ContentFreshnessIndicator.astro';
+import { getCollection } from 'astro:content';
 import { calculateReadingTime, formatDate, t } from '../../utils/i18n';
 import type { SupportedLocale } from '../../env.d';
 
 const locale: SupportedLocale = 'zh-TW'; // 這裡應該從路由中獲取
 
-const [allEducation, featuredEducation, patientFriendlyEducation, professionalEducation] = await Promise.all([
-  getAllEducationContent(),
-  getFeaturedEducation(),
-  getPatientFriendlyEducation(),
-  getProfessionalEducation()
-]);
+// 獲取所有教育內容並過濾已發布的內容
+const allEducationEntries = await getCollection('education');
+
+// 根據環境決定是否顯示非發布內容
+const isDevelopment = import.meta.env.DEV;
+
+// 過濾內容：生產環境只顯示已發布內容，開發環境顯示所有內容
+const filteredEducation = allEducationEntries.filter(entry => {
+  if (isDevelopment) {
+    return entry.data.isActive !== false; // 開發環境顯示所有啟用的內容
+  }
+  return entry.data.status === 'published' && entry.data.isActive !== false;
+});
+
+// 分類處理
+const featuredEducation = filteredEducation.filter(entry => entry.data.isFeatured);
+const patientFriendlyEducation = filteredEducation.filter(entry => entry.data.patientFriendly);
+const professionalEducation = filteredEducation.filter(entry => entry.data.professionalLevel);
 
 const breadcrumbs = [
   { label: t('nav.home', locale), href: '/' },
@@ -25,24 +48,36 @@ const breadcrumbs = [
 ];
 
 // 按分類分組教育內容
-const educationByCategory = allEducation.reduce((acc, edu) => {
-  if (!acc[edu.category]) {
-    acc[edu.category] = [];
+const educationByCategory = filteredEducation.reduce((acc, entry) => {
+  const category = entry.data.category;
+  if (!acc[category]) {
+    acc[category] = [];
   }
-  acc[edu.category].push(edu);
+  acc[category].push(entry);
   return acc;
-}, {} as Record<string, typeof allEducation>);
+}, {} as Record<string, typeof filteredEducation>);
 
 // 按醫療專科分組
-const educationBySpecialty = allEducation.reduce((acc, edu) => {
-  edu.medicalSpecialties.forEach(specialty => {
+const educationBySpecialty = filteredEducation.reduce((acc, entry) => {
+  entry.data.medicalSpecialties.forEach(specialty => {
     if (!acc[specialty]) {
       acc[specialty] = [];
     }
-    acc[specialty].push(edu);
+    acc[specialty].push(entry);
   });
   return acc;
-}, {} as Record<string, typeof allEducation>);
+}, {} as Record<string, typeof filteredEducation>);
+
+// SOP 統計資料
+const sopStats = {
+  total: allEducationEntries.length,
+  published: allEducationEntries.filter(e => e.data.status === 'published').length,
+  inReview: allEducationEntries.filter(e => e.data.status === 'in-review').length,
+  draft: allEducationEntries.filter(e => e.data.status === 'draft').length,
+  needsRevision: allEducationEntries.filter(e => e.data.status === 'needs-revision').length,
+  qualityCheck: allEducationEntries.filter(e => e.data.status === 'quality-check').length,
+  readyToPublish: allEducationEntries.filter(e => e.data.status === 'ready-to-publish').length
+};
 
 // 分類配置
 const categoryConfig = {
@@ -97,9 +132,14 @@ const getDifficultyBadge = (difficulty: string) => {
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
       <div class="bg-white rounded-lg border border-medical-neutral-200 p-6 text-center">
         <div class="text-3xl font-bold text-medical-primary-600 mb-2">
-          {allEducation.length}
+          {sopStats.published}
         </div>
-        <div class="text-sm text-medical-neutral-600">總文章數</div>
+        <div class="text-sm text-medical-neutral-600">已發布文章</div>
+        {isDevelopment && (
+          <div class="text-xs text-medical-neutral-500 mt-1">
+            總計: {sopStats.total}
+          </div>
+        )}
       </div>
       
       <div class="bg-white rounded-lg border border-medical-neutral-200 p-6 text-center">
@@ -124,6 +164,44 @@ const getDifficultyBadge = (difficulty: string) => {
       </div>
     </div>
 
+    <!-- SOP 工作流程統計（僅開發環境顯示） -->
+    {isDevelopment && (
+      <div class="bg-medical-neutral-50 rounded-lg p-6 mb-12">
+        <h2 class="text-lg font-semibold text-medical-neutral-900 mb-4 flex items-center">
+          <svg class="h-5 w-5 text-medical-primary-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          SOP 工作流程統計 (開發環境)
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">{sopStats.published}</div>
+            <div class="text-xs text-medical-neutral-600">已發布</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">{sopStats.inReview}</div>
+            <div class="text-xs text-medical-neutral-600">審核中</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-gray-600">{sopStats.draft}</div>
+            <div class="text-xs text-medical-neutral-600">草稿</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-yellow-600">{sopStats.needsRevision}</div>
+            <div class="text-xs text-medical-neutral-600">需修改</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-purple-600">{sopStats.qualityCheck}</div>
+            <div class="text-xs text-medical-neutral-600">品質檢查</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-orange-600">{sopStats.readyToPublish}</div>
+            <div class="text-xs text-medical-neutral-600">準備發布</div>
+          </div>
+        </div>
+      </div>
+    )}
+
     <!-- 精選內容 -->
     {featuredEducation.length > 0 && (
       <section class="mb-12">
@@ -135,7 +213,8 @@ const getDifficultyBadge = (difficulty: string) => {
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredEducation.slice(0, 6).map(edu => {
+          {featuredEducation.slice(0, 6).map(entry => {
+            const edu = entry.data;
             const category = categoryConfig[edu.category] || { label: edu.category, icon: '📄', color: 'gray' };
             const difficulty = getDifficultyBadge(edu.difficulty);
             const readingTime = edu.readingTime || 5;
@@ -145,7 +224,7 @@ const getDifficultyBadge = (difficulty: string) => {
                 <div class="p-6">
                   <div class="flex items-start justify-between mb-4">
                     <div class="text-2xl">{category.icon}</div>
-                    <div class="flex space-x-2">
+                    <div class="flex flex-wrap gap-1">
                       <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${difficulty.color}`}>
                         {difficulty.label}
                       </span>
@@ -154,11 +233,20 @@ const getDifficultyBadge = (difficulty: string) => {
                           病患友善
                         </span>
                       )}
+                      {isDevelopment && edu.status !== 'published' && (
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          {edu.status === 'draft' ? '草稿' :
+                           edu.status === 'in-review' ? '審核中' :
+                           edu.status === 'needs-revision' ? '需修改' :
+                           edu.status === 'quality-check' ? '品質檢查' :
+                           edu.status === 'ready-to-publish' ? '準備發布' : edu.status}
+                        </span>
+                      )}
                     </div>
                   </div>
                   
                   <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2 group-hover:text-medical-primary-600 transition-colors">
-                    <a href={`/education/${edu.slug}`}>
+                    <a href={`/education/${entry.slug}`}>
                       {edu.title[locale]}
                     </a>
                   </h3>
@@ -178,14 +266,44 @@ const getDifficultyBadge = (difficulty: string) => {
                         {readingTime} 分鐘
                       </span>
                       <span class="capitalize">{category.label}</span>
+                      {edu.version && (
+                        <span class="text-medical-neutral-400">v{edu.version}</span>
+                      )}
                     </div>
                     <a 
-                      href={`/education/${edu.slug}`}
+                      href={`/education/${entry.slug}`}
                       class="text-medical-primary-600 hover:text-medical-primary-700 font-medium transition-colors"
                     >
                       閱讀 →
                     </a>
                   </div>
+                  
+                  {/* 內容新鮮度指示器 */}
+                  <div class="mt-3 pt-3 border-t border-medical-neutral-100">
+                    <ContentFreshnessIndicator
+                      lastUpdated={edu.lastUpdated}
+                      nextReviewDate={edu.nextReviewDate}
+                      publishedAt={edu.workflowTimestamps?.publishedAt}
+                      category={edu.category}
+                      medicalSpecialties={edu.medicalSpecialties}
+                      locale={locale}
+                      showInline={true}
+                    />
+                  </div>
+                  
+                  {/* 作者和更新資訊 */}
+                  {(edu.author || edu.lastUpdated) && (
+                    <div class="mt-2">
+                      <div class="flex items-center justify-between text-xs text-medical-neutral-400">
+                        {edu.author && (
+                          <span>作者: {edu.author[locale]}</span>
+                        )}
+                        {edu.lastUpdated && (
+                          <span>更新: {formatDate(edu.lastUpdated, locale)}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </article>
             );

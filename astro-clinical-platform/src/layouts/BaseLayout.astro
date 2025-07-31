@@ -219,6 +219,9 @@ const medicalStructuredData = medicalContent ? {
       domain={import.meta.env.PUBLIC_ANALYTICS_DOMAIN}
     />
     
+    <!-- 效能監控初始化 -->
+    <script type="module" src="/src/scripts/performance-init.js"></script>
+    
     <!-- 醫療免責聲明腳本 -->
     {medicalContent && (
       <script is:inline>

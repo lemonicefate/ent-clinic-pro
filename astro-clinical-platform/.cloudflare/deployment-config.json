@@ -1,0 +1,49 @@
+{
+  "project": {
+    "name": "ent-clinic-pro",
+    "description": "醫療臨床平台 - 靜態網站版本",
+    "repository": "https://github.com/lemonicefate/ent-clinic-pro.git",
+    "branch": "master"
+  },
+  "build": {
+    "rootDirectory": "astro-clinical-platform",
+    "buildCommand": "npm run build",
+    "outputDirectory": "/dist",
+    "nodeVersion": "18.x",
+    "buildTimeout": 300
+  },
+  "deployment": {
+    "url": "https://ent-clinic-pro.pages.dev",
+    "customDomains": [],
+    "environmentVariables": {},
+    "headers": {
+      "/*": {
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      }
+    }
+  },
+  "features": {
+    "staticSiteGeneration": true,
+    "multiLanguage": ["zh-TW", "en", "ja"],
+    "medicalTools": ["bmi", "egfr", "cha2ds2-vasc"],
+    "decisionTrees": true,
+    "educationContent": true,
+    "context7Integration": true
+  },
+  "performance": {
+    "totalPages": 51,
+    "buildTime": "~24s",
+    "bundleSize": {
+      "total": "~3.2MB",
+      "gzipped": "~1.1MB"
+    }
+  },
+  "lastDeployment": {
+    "date": "2025-01-30",
+    "commit": "259927b",
+    "status": "success",
+    "deployedBy": "Cloudflare Pages Auto-Deploy"
+  }
+}
