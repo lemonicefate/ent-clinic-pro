@@ -1,10 +1,10 @@
 ---
 title:
-  zh_TW: "心臟科衛教文章標題"
+  zh-TW: "心臟科衛教文章標題"
   en: "Cardiology Education Article Title"
   ja: "循環器科教育記事タイトル"
 excerpt:
-  zh_TW: "簡潔描述本文章的主要內容，幫助讀者快速了解文章重點。建議50-200字元。"
+  zh-TW: "簡潔描述本文章的主要內容，幫助讀者快速了解文章重點。建議50-200字元。"
   en: "Brief description of the main content of this article to help readers quickly understand the key points. Recommended 50-200 characters."
   ja: "この記事の主な内容を簡潔に説明し、読者が要点を素早く理解できるようにします。50-200文字を推奨。"
 category: "cardiology"
@@ -23,7 +23,7 @@ tags:
   - "預防醫學"
 lastUpdated: "2025-01-30"
 author:
-  zh_TW: "心臟科醫師"
+  zh-TW: "心臟科醫師"
   en: "Cardiologist"
   ja: "循環器科医師"
 specialtySpecific:
@@ -34,11 +34,11 @@ references: []
 isActive: true
 isFeatured: false
 seoTitle:
-  zh_TW: ""
+  zh-TW: ""
   en: ""
   ja: ""
 seoDescription:
-  zh_TW: ""
+  zh-TW: ""
   en: ""
   ja: ""
 keywords: []

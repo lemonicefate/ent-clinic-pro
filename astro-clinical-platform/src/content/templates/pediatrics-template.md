@@ -1,10 +1,10 @@
 ---
 title:
-  zh_TW: "小兒科衛教文章標題"
+  zh-TW: "小兒科衛教文章標題"
   en: "Pediatrics Education Article Title"
   ja: "小児科教育記事タイトル"
 excerpt:
-  zh_TW: "簡潔描述本文章的主要內容，幫助讀者快速了解文章重點。建議50-200字元。"
+  zh-TW: "簡潔描述本文章的主要內容，幫助讀者快速了解文章重點。建議50-200字元。"
   en: "Brief description of the main content of this article to help readers quickly understand the key points. Recommended 50-200 characters."
   ja: "この記事の主な内容を簡潔に説明し、読者が要点を素早く理解できるようにします。50-200文字を推奨。"
 category: "pediatrics"
@@ -23,7 +23,7 @@ tags:
   - "疫苗接種"
 lastUpdated: "2025-01-30"
 author:
-  zh_TW: "小兒科醫師"
+  zh-TW: "小兒科醫師"
   en: "Pediatrician"
   ja: "小児科医師"
 specialtySpecific:

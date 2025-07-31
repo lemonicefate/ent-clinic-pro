@@ -1,10 +1,10 @@
 ---
 title:
-  zh_TW: '心房顫動：症狀、診斷與治療指南'
+  zh-TW: '心房顫動：症狀、診斷與治療指南'
   en: 'Atrial Fibrillation: Symptoms, Diagnosis, and Treatment Guide'
   ja: '心房細動：症状、診断、治療ガイド'
 excerpt:
-  zh_TW: '心房顫動是最常見的心律不整，了解其症狀、風險因子和治療選項對患者和家屬都很重要。'
+  zh-TW: '心房顫動是最常見的心律不整，了解其症狀、風險因子和治療選項對患者和家屬都很重要。'
   en: 'Atrial fibrillation is the most common arrhythmia. Understanding its symptoms, risk factors, and treatment options is important for patients and families.'
   ja: '心房細動は最も一般的な不整脈です。症状、リスク要因、治療選択肢を理解することは患者と家族にとって重要です。'
 category: 'disease'
@@ -15,14 +15,14 @@ patientFriendly: true
 professionalLevel: false
 ageGroup: 'adult'
 readingTime: 8
-lastUpdated: 2024-01-15
+lastUpdated: "2024-01-15"
 author:
-  zh_TW: '心臟科醫療團隊'
+  zh-TW: '心臟科醫療團隊'
   en: 'Cardiology Medical Team'
   ja: '循環器科医療チーム'
 reviewedBy: 'Dr. Chen Wei-Ming, Cardiologist'
-lastReviewDate: 2024-01-15
-nextReviewDate: 2024-07-15
+lastReviewDate: "2024-01-15"
+nextReviewDate: "2024-07-15"
 relatedCalculators: ['cha2ds2-vasc', 'has-bled']
 relatedEducation: ['anticoagulation-guide', 'heart-healthy-lifestyle']
 hasFlowchart: true

@@ -1,11 +1,11 @@
 ---
 title:
-  zh_TW: "心房顫動完整指南：症狀、診斷與治療"
+  zh-TW: "心房顫動完整指南：症狀、診斷與治療"
   en: "Complete Guide to Atrial Fibrillation: Symptoms, Diagnosis & Treatment"
   ja: "心房細動完全ガイド：症状、診断、治療"
 
 excerpt:
-  zh_TW: "心房顫動是最常見的心律不整疾病，了解其症狀、診斷方法和治療選項對患者和家屬都很重要。本指南提供完整的醫療資訊和實用建議。"
+  zh-TW: "心房顫動是最常見的心律不整疾病，了解其症狀、診斷方法和治療選項對患者和家屬都很重要。本指南提供完整的醫療資訊和實用建議。"
   en: "Atrial fibrillation is the most common arrhythmia. Understanding its symptoms, diagnostic methods, and treatment options is important for patients and families. This guide provides comprehensive medical information and practical advice."
   ja: "心房細動は最も一般的な不整脈です。その症状、診断方法、治療選択肢を理解することは、患者と家族にとって重要です。このガイドでは包括的な医療情報と実用的なアドバイスを提供します。"
 
@@ -17,21 +17,21 @@ version: "1.2"
 
 versionHistory:
   - version: "1.0"
-    date: 2025-01-15
+    date: "2025-01-15"
     changes:
       - "初版發布"
       - "建立基本內容結構"
     author: "Dr. Chen Wei-Ming"
     status: "published"
   - version: "1.1"
-    date: 2025-01-20
+    date: "2025-01-20"
     changes:
       - "更新治療指引"
       - "新增預防措施章節"
     author: "Dr. Chen Wei-Ming"
     status: "published"
   - version: "1.2"
-    date: 2025-01-30
+    date: "2025-01-30"
     changes:
       - "新增最新研究資料"
       - "更新藥物治療建議"
@@ -44,7 +44,7 @@ reviewers:
 
 reviewHistory:
   - reviewer: "dr-wang-cardiology"
-    reviewDate: 2025-01-28
+    reviewDate: "2025-01-28"
     decision: "approved"
     comments: "內容準確，符合最新臨床指引。建議在預防章節增加生活方式建議。"
     checklist:
@@ -55,7 +55,7 @@ reviewHistory:
       seoOptimized: true
       accessibilityCompliant: true
   - reviewer: "editor-medical-content"
-    reviewDate: 2025-01-29
+    reviewDate: "2025-01-29"
     decision: "approved"
     comments: "文章結構清晰，語言易懂。已完成 SEO 優化和無障礙檢查。"
     checklist:
@@ -73,7 +73,7 @@ qualityChecks:
   seoCheck: true
   accessibilityCheck: true
   referencesCheck: true
-  lastCheckedDate: 2025-01-29
+  lastCheckedDate: "2025-01-29"
   checkedBy: "quality-assurance-team"
 
 # 內容分類
@@ -97,29 +97,29 @@ ageGroup: "adult"
 # 內容資訊
 readingTime: 12
 wordCount: 2800
-lastUpdated: 2025-01-30
+lastUpdated: "2025-01-30"
 
 # 作者和審核
 author:
-  zh_TW: "陳維明醫師"
+  zh-TW: "陳維明醫師"
   en: "Dr. Chen Wei-Ming"
   ja: "陳維明医師"
 
 assignedWriter: "dr-chen-wei-ming"
 reviewedBy: "dr-wang-cardiology"
-lastReviewDate: 2025-01-29
-nextReviewDate: 2025-07-30
+lastReviewDate: "2025-01-29"
+nextReviewDate: "2025-07-30"
 
 # SOP 工作流程時間戳
 workflowTimestamps:
-  createdAt: 2025-01-15
-  submittedForReview: 2025-01-27
-  reviewStarted: 2025-01-28
-  reviewCompleted: 2025-01-29
-  qualityCheckStarted: 2025-01-29
-  qualityCheckCompleted: 2025-01-29
-  publishedAt: 2025-01-30
-  lastModified: 2025-01-30
+  createdAt: "2025-01-15"
+  submittedForReview: "2025-01-27"
+  reviewStarted: "2025-01-28"
+  reviewCompleted: "2025-01-29"
+  qualityCheckStarted: "2025-01-29"
+  qualityCheckCompleted: "2025-01-29"
+  publishedAt: "2025-01-30"
+  lastModified: "2025-01-30"
 
 # SOP 通知設定
 notifications:
@@ -161,17 +161,17 @@ flowchartCode: |
 featuredImage:
   src: "/images/education/atrial-fibrillation-ecg.jpg"
   alt:
-    zh_TW: "心房顫動心電圖示例"
+    zh-TW: "心房顫動心電圖示例"
     en: "Atrial fibrillation ECG example"
     ja: "心房細動心電図の例"
   caption:
-    zh_TW: "典型的心房顫動心電圖表現，可見不規則的 R-R 間距"
+    zh-TW: "典型的心房顫動心電圖表現，可見不規則的 R-R 間距"
     en: "Typical atrial fibrillation ECG showing irregular R-R intervals"
     ja: "典型的な心房細動心電図で、不規則なR-R間隔を示している"
 
 # 醫療資訊
 clinicalRelevance:
-  zh_TW: "心房顫動影響全球約 3300 萬人，是中風的重要危險因子。及早診斷和適當治療可顯著降低併發症風險。"
+  zh-TW: "心房顫動影響全球約 3300 萬人，是中風的重要危險因子。及早診斷和適當治療可顯著降低併發症風險。"
   en: "Atrial fibrillation affects approximately 33 million people worldwide and is a major risk factor for stroke. Early diagnosis and appropriate treatment can significantly reduce complication risks."
   ja: "心房細動は世界中で約3300万人に影響を与え、脳卒中の主要な危険因子です。早期診断と適切な治療により、合併症のリスクを大幅に減らすことができます。"
 
@@ -193,7 +193,7 @@ references:
 
 # 免責聲明和警告
 medicalDisclaimer:
-  zh_TW: "本文僅供教育參考，不能替代專業醫療建議。如有症狀請諮詢合格醫療專業人員。"
+  zh-TW: "本文僅供教育參考，不能替代專業醫療建議。如有症狀請諮詢合格醫療專業人員。"
   en: "This article is for educational purposes only and cannot replace professional medical advice. Please consult qualified healthcare professionals if you have symptoms."
   ja: "この記事は教育目的のみであり、専門的な医療アドバイスに代わるものではありません。症状がある場合は、資格のある医療専門家にご相談ください。"
 
@@ -204,12 +204,12 @@ viewCount: 1250
 
 # SEO 和元資料
 seoTitle:
-  zh_TW: "心房顫動完整指南 - 症狀診斷治療全攻略 | 醫療平台"
+  zh-TW: "心房顫動完整指南 - 症狀診斷治療全攻略 | 醫療平台"
   en: "Complete Atrial Fibrillation Guide - Symptoms, Diagnosis & Treatment | Medical Platform"
   ja: "心房細動完全ガイド - 症状・診断・治療の全て | 医療プラットフォーム"
 
 seoDescription:
-  zh_TW: "專業心房顫動醫療指南，詳細介紹症狀識別、診斷方法、治療選項和預防措施。由心臟科專家審核，提供最新臨床資訊。"
+  zh-TW: "專業心房顫動醫療指南，詳細介紹症狀識別、診斷方法、治療選項和預防措施。由心臟科專家審核，提供最新臨床資訊。"
   en: "Professional atrial fibrillation medical guide with detailed symptom identification, diagnostic methods, treatment options and prevention measures. Reviewed by cardiology experts with latest clinical information."
   ja: "心房細動の専門医療ガイド。症状の識別、診断方法、治療選択肢、予防策を詳しく紹介。循環器専門医による審査で最新の臨床情報を提供。"
 

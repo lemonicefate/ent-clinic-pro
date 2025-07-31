@@ -1,10 +1,10 @@
 ---
 title:
-  zh_TW: "範例衛教文章"
+  zh-TW: "範例衛教文章"
   en: "Sample Education Article"
   ja: "サンプル教育記事"
 excerpt:
-  zh_TW: "這是一個範例衛教文章，用於測試平台功能。"
+  zh-TW: "這是一個範例衛教文章，用於測試平台功能。"
   en: "This is a sample education article for testing platform functionality."
   ja: "これはプラットフォーム機能をテストするためのサンプル教育記事です。"
 category: "disease"
@@ -15,14 +15,14 @@ patientFriendly: true
 professionalLevel: false
 ageGroup: "adult"
 readingTime: 5
-lastUpdated: 2024-01-15
+lastUpdated: "2024-01-15"
 author:
-  zh_TW: "醫療團隊"
+  zh-TW: "醫療團隊"
   en: "Medical Team"
   ja: "医療チーム"
 reviewedBy: "Dr. Sample"
-lastReviewDate: 2024-01-15
-nextReviewDate: 2024-07-15
+lastReviewDate: "2024-01-15"
+nextReviewDate: "2024-07-15"
 relatedCalculators: ["bmi"]
 relatedEducation: []
 hasFlowchart: false

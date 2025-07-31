@@ -247,13 +247,13 @@ const getDifficultyBadge = (difficulty: string) => {
                   
                   <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2 group-hover:text-medical-primary-600 transition-colors">
                     <a href={`/education/${entry.slug}`}>
-                      {edu.title[locale]}
+                      {edu.title?.[locale] || edu.title?.['zh-TW'] || entry.slug}
                     </a>
                   </h3>
                   
                   {edu.excerpt && (
                     <p class="text-medical-neutral-600 text-sm mb-4 line-clamp-2">
-                      {edu.excerpt[locale]}
+                      {edu.excerpt?.[locale] || edu.excerpt?.['zh-TW'] || ''}
                     </p>
                   )}
                   
@@ -296,7 +296,7 @@ const getDifficultyBadge = (difficulty: string) => {
                     <div class="mt-2">
                       <div class="flex items-center justify-between text-xs text-medical-neutral-400">
                         {edu.author && (
-                          <span>作者: {edu.author[locale]}</span>
+                          <span>作者: {edu.author?.[locale] || edu.author?.['zh-TW'] || '未知'}</span>
                         )}
                         {edu.lastUpdated && (
                           <span>更新: {formatDate(edu.lastUpdated, locale)}</span>
@@ -351,7 +351,7 @@ const getDifficultyBadge = (difficulty: string) => {
                       href={`/education/${article.slug}`}
                       class="block text-sm text-medical-neutral-700 hover:text-medical-primary-600 transition-colors truncate"
                     >
-                      • {article.title[locale]}
+                      • {article.title?.[locale] || article.title?.['zh-TW'] || article.slug}
                     </a>
                   ))}
                   {articles.length > 3 && (
