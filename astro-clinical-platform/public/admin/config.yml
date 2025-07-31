@@ -4,13 +4,7 @@
 # 基於最新 Decap CMS GitHub OAuth 實現
 
 backend:
-  name: github
-  repo: lemonicefate/ent-clinic-pro
-  branch: master
-  # --- 👇 GitHub OAuth 認證設定 👇 ---
-  auth_type: pkce
-  base_url: https://your-project-name.glitch.me # ⚠️【必要】請替換成您的 Glitch 伺服器網址
-  app_id: YOUR_GITHUB_OAUTH_CLIENT_ID # ⚠️【必要】請替換成您的 GitHub OAuth App Client ID
+  name: git-gateway
 
 # 本地開發設定（開發時可啟用）
 # local_backend: true
