@@ -1,5 +1,4 @@
 ---
----
 title:
   zh-TW: "範例衛教文章"
   en: "Sample Education Article"

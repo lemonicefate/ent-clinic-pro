@@ -1,5 +1,4 @@
 ---
----
 title:
   zh-TW: '心房顫動：症狀、診斷與治療指南'
   en: 'Atrial Fibrillation: Symptoms, Diagnosis, and Treatment Guide'
