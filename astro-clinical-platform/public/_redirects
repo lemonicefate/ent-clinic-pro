@@ -4,8 +4,5 @@
 /calculator/* /tools/:splat 301
 /calc/* /tools/:splat 301
 
-# Admin SPA routing for Decap CMS
-/admin/* /admin/index.html 200
-
 # SPA fallback for client-side routing
 # /* /index.html 200
