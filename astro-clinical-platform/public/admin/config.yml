@@ -152,34 +152,19 @@ collections:
           - { label: '⚖️ 內分泌科', value: 'endocrinology' }
           - { label: '🫘 腎臟科', value: 'nephrology' }
           - { label: '🫁 胸腔科', value: 'pulmonology' }
+          - { label: '👂 耳鼻喉科', value: 'ent' }
+          - { label: '🦠 感染科', value: 'infectious-disease' }
+          - { label: '🧘 身心科', value: 'psychiatry' }
+          - { label: '🫧 泌尿科', value: 'urology' }
 
-      - label: '難度等級'
-        name: 'difficulty'
+      - label: '受眾'
+        name: 'audience'
         widget: 'select'
-        default: 'basic'
+        default: 'general-public'
         required: true
         options:
-          - { label: '🟢 基礎 - 一般民眾可理解', value: 'basic' }
-          - { label: '🟡 中級 - 需要基本醫學知識', value: 'intermediate' }
-          - { label: '🔴 進階 - 醫療專業人員', value: 'advanced' }
-
-      # 目標受眾
-      - label: '病患友善'
-        name: 'patientFriendly'
-        widget: 'boolean'
-        required: false
-        default: true
-
-      - label: '年齡群組'
-        name: 'ageGroup'
-        widget: 'select'
-        required: false
-        default: 'all'
-        options:
-          - { label: '所有年齡', value: 'all' }
-          - { label: '兒童', value: 'pediatric' }
-          - { label: '成人', value: 'adult' }
-          - { label: '老年', value: 'geriatric' }
+          - { label: '一般民眾', value: 'general-public' }
+          - { label: '醫療人員', value: 'medical-professionals' }
 
       # 內容資訊
       - label: '閱讀時間（分鐘）'
