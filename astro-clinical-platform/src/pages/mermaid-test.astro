@@ -15,7 +15,7 @@ const locale = 'zh-TW';
   title={pageTitle}
   description={pageDescription}
   locale={locale}
-  pageType="test"
+  pageType="education"
   medicalContent={true}
 >
   <div class="container mx-auto px-4 py-8">
@@ -29,25 +29,23 @@ const locale = 'zh-TW';
         1. 基本流程圖 - 醫療診斷流程
       </h2>
       <div class="bg-white p-6 rounded-lg border border-gray-200">
-        ```mermaid
-        flowchart TD
-            A[患者就診] --> B{症狀評估}
-            B -->|發燒| C[測量體溫]
-            B -->|咳嗽| D[聽診檢查]
-            B -->|胸痛| E[心電圖檢查]
-            C --> F[血液檢查]
-            D --> G[胸部X光]
-            E --> H[心臟超音波]
-            F --> I{診斷結果}
-            G --> I
-            H --> I
-            I -->|感染| J[抗生素治療]
-            I -->|病毒感染| K[症狀治療]
-            I -->|心臟問題| L[轉診心臟科]
-            J --> M[追蹤治療]
-            K --> M
-            L --> N[專科治療]
-        ```
+        <pre><code class="language-mermaid">{`flowchart TD
+    A[患者就診] --> B{症狀評估}
+    B -->|發燒| C[測量體溫]
+    B -->|咳嗽| D[聽診檢查]
+    B -->|胸痛| E[心電圖檢查]
+    C --> F[血液檢查]
+    D --> G[胸部X光]
+    E --> H[心臟超音波]
+    F --> I{診斷結果}
+    G --> I
+    H --> I
+    I -->|感染| J[抗生素治療]
+    I -->|病毒感染| K[症狀治療]
+    I -->|心臟問題| L[轉診心臟科]
+    J --> M[追蹤治療]
+    K --> M
+    L --> N[專科治療]`}</code></pre>
       </div>
     </section>
 
@@ -57,22 +55,20 @@ const locale = 'zh-TW';
         2. 序列圖 - 醫療會診流程
       </h2>
       <div class="bg-white p-6 rounded-lg border border-gray-200">
-        ```mermaid
-        sequenceDiagram
-            participant P as 患者
-            participant GP as 家醫科醫師
-            participant S as 專科醫師
-            participant L as 檢驗科
-            
-            P->>GP: 症狀描述
-            GP->>P: 初步檢查
-            GP->>L: 開立檢驗單
-            L->>GP: 檢驗結果
-            GP->>S: 轉診申請
-            S->>P: 專科診察
-            S->>GP: 診斷報告
-            GP->>P: 治療計劃說明
-        ```
+        <pre><code class="language-mermaid">{`sequenceDiagram
+    participant P as 患者
+    participant GP as 家醫科醫師
+    participant S as 專科醫師
+    participant L as 檢驗科
+    
+    P->>GP: 症狀描述
+    GP->>P: 初步檢查
+    GP->>L: 開立檢驗單
+    L->>GP: 檢驗結果
+    GP->>S: 轉診申請
+    S->>P: 專科診察
+    S->>GP: 診斷報告
+    GP->>P: 治療計劃說明`}</code></pre>
       </div>
     </section>
 
@@ -82,22 +78,20 @@ const locale = 'zh-TW';
         3. 甘特圖 - 治療計劃時程
       </h2>
       <div class="bg-white p-6 rounded-lg border border-gray-200">
-        ```mermaid
-        gantt
-            title 患者治療計劃時程表
-            dateFormat  YYYY-MM-DD
-            section 診斷階段
-            初診評估           :done,    des1, 2024-01-01,2024-01-02
-            血液檢查           :done,    des2, 2024-01-02, 2024-01-03
-            影像檢查           :done,    des3, 2024-01-03, 2024-01-04
-            section 治療階段
-            藥物治療           :active,  des4, 2024-01-05, 2024-01-19
-            物理治療           :         des5, 2024-01-10, 2024-01-24
-            section 追蹤階段
-            第一次追蹤        :         des6, 2024-01-20, 2024-01-21
-            第二次追蹤        :         des7, 2024-02-05, 2024-02-06
-            療效評估           :         des8, 2024-02-20, 2024-02-21
-        ```
+        <pre><code class="language-mermaid">{`gantt
+    title 患者治療計劃時程表
+    dateFormat  YYYY-MM-DD
+    section 診斷階段
+    初診評估           :done,    des1, 2024-01-01,2024-01-02
+    血液檢查           :done,    des2, 2024-01-02, 2024-01-03
+    影像檢查           :done,    des3, 2024-01-03, 2024-01-04
+    section 治療階段
+    藥物治療           :active,  des4, 2024-01-05, 2024-01-19
+    物理治療           :         des5, 2024-01-10, 2024-01-24
+    section 追蹤階段
+    第一次追蹤        :         des6, 2024-01-20, 2024-01-21
+    第二次追蹤        :         des7, 2024-02-05, 2024-02-06
+    療效評估           :         des8, 2024-02-20, 2024-02-21`}</code></pre>
       </div>
     </section>
 
@@ -107,23 +101,21 @@ const locale = 'zh-TW';
         4. 狀態圖 - 病患狀態轉換
       </h2>
       <div class="bg-white p-6 rounded-lg border border-gray-200">
-        ```mermaid
-        stateDiagram-v2
-            [*] --> 健康
-            健康 --> 症狀出現 : 發病
-            症狀出現 --> 就醫 : 尋求醫療
-            就醫 --> 診斷中 : 接受檢查
-            診斷中 --> 確診 : 診斷確立
-            確診 --> 治療中 : 開始治療
-            治療中 --> 康復 : 治療成功
-            治療中 --> 病情惡化 : 治療無效
-            病情惡化 --> 調整治療 : 更換療法
-            調整治療 --> 治療中 : 繼續治療
-            康復 --> 追蹤 : 定期檢查
-            追蹤 --> 健康 : 完全康復
-            追蹤 --> 復發 : 病情復發
-            復發 --> 就醫 : 再次就醫
-        ```
+        <pre><code class="language-mermaid">{`stateDiagram-v2
+    [*] --> 健康
+    健康 --> 症狀出現 : 發病
+    症狀出現 --> 就醫 : 尋求醫療
+    就醫 --> 診斷中 : 接受檢查
+    診斷中 --> 確診 : 診斷確立
+    確診 --> 治療中 : 開始治療
+    治療中 --> 康復 : 治療成功
+    治療中 --> 病情惡化 : 治療無效
+    病情惡化 --> 調整治療 : 更換療法
+    調整治療 --> 治療中 : 繼續治療
+    康復 --> 追蹤 : 定期檢查
+    追蹤 --> 健康 : 完全康復
+    追蹤 --> 復發 : 病情復發
+    復發 --> 就醫 : 再次就醫`}</code></pre>
       </div>
     </section>
 
@@ -133,14 +125,12 @@ const locale = 'zh-TW';
         5. 圓餅圖 - 疾病分布統計
       </h2>
       <div class="bg-white p-6 rounded-lg border border-gray-200">
-        ```mermaid
-        pie title 門診疾病分布統計
-            "感冒" : 35
-            "高血壓" : 25
-            "糖尿病" : 20
-            "心臟病" : 10
-            "其他" : 10
-        ```
+        <pre><code class="language-mermaid">{`pie title 門診疾病分布統計
+    "感冒" : 35
+    "高血壓" : 25
+    "糖尿病" : 20
+    "心臟病" : 10
+    "其他" : 10`}</code></pre>
       </div>
     </section>
 
