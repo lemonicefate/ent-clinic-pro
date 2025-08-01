@@ -65,7 +65,7 @@ const medicalSpecialties = [
     id: 'general',
     name: '一般醫學',
     icon: 'medical',
-    color: 'bg-blue-500',
+    color: 'bg-medical-primary-500',
     description: '基礎醫療評估工具'
   },
   {
@@ -106,7 +106,7 @@ const medicalSpecialties = [
   <!-- 主要內容區域 -->
   <div class="min-h-screen">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-br from-medical-primary-600 via-medical-primary-700 to-medical-primary-800 text-black">
+    <section class="bg-gradient-to-br from-medical-primary-600 via-medical-primary-700 to-medical-primary-800 text-white">
       <div class="container mx-auto px-4 py-16 lg:py-24">
         <div class="max-w-4xl mx-auto text-center">
           <!-- 主標題 -->
@@ -116,7 +116,7 @@ const medicalSpecialties = [
           </h1>
           
           <!-- 副標題 -->
-          <p class="text-xl lg:text-2xl mb-8 text-black leading-relaxed">
+          <p class="text-xl lg:text-2xl mb-8 text-white leading-relaxed">
             整合臨床決策工具與病患衛教資源<br>
             提升醫療效率，優化診療品質
           </p>
@@ -141,13 +141,13 @@ const medicalSpecialties = [
             </a>
             <a 
               href="/education" 
-              class="bg-medical-primary-500 text-black px-8 py-3 rounded-lg font-semibold hover:bg-medical-primary-400 transition-colors shadow-lg border border-medical-primary-400"
+              class="bg-medical-primary-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-medical-primary-400 transition-colors shadow-lg border border-medical-primary-400"
             >
               衛教資源
             </a>
             <a 
               href="/categories" 
-              class="bg-transparent text-black px-8 py-3 rounded-lg font-semibold hover:bg-medical-primary-600 transition-colors border border-black"
+              class="bg-transparent text-white px-8 py-3 rounded-lg font-semibold hover:bg-medical-primary-600 transition-colors border border-white"
             >
               專科分類
             </a>
@@ -253,7 +253,7 @@ const medicalSpecialties = [
                   calculator.data.category === 'cardiology' ? 'bg-red-100 text-red-800' :
                   calculator.data.category === 'neurology' ? 'bg-purple-100 text-purple-800' :
                   calculator.data.category === 'endocrinology' ? 'bg-green-100 text-green-800' :
-                  'bg-blue-100 text-blue-800'
+                  'bg-medical-primary-100 text-medical-primary-800'
                 }`}>
                   {calculator.data.category === 'cardiology' ? '心臟科' :
                    calculator.data.category === 'neurology' ? '神經科' :
@@ -333,7 +333,7 @@ const medicalSpecialties = [
                 <div class="flex items-center space-x-2 mb-3">
                   <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                     article.data.category === 'disease' ? 'bg-red-100 text-red-800' :
-                    article.data.category === 'medication' ? 'bg-blue-100 text-blue-800' :
+                    article.data.category === 'medication' ? 'bg-medical-primary-100 text-medical-primary-800' :
                     article.data.category === 'procedure' ? 'bg-purple-100 text-purple-800' :
                     'bg-green-100 text-green-800'
                   }`}>
@@ -409,7 +409,7 @@ const medicalSpecialties = [
     </section>
 
     <!-- 演示功能 -->
-    <section class="py-16 bg-blue-50">
+    <section class="py-16 bg-medical-neutral-50">
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -422,8 +422,8 @@ const medicalSpecialties = [
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-medical-primary-100 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-medical-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
               </svg>
             </div>
@@ -433,7 +433,7 @@ const medicalSpecialties = [
             </p>
             <a 
               href="/medication-system-demo" 
-              class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+              class="inline-flex items-center text-medical-primary-600 hover:text-medical-primary-700 font-medium"
             >
               體驗演示
               <svg class="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
