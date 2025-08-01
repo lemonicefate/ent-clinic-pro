@@ -128,6 +128,7 @@ collections:
         max: 10
         field:
           label: '標籤'
+          name: 'tag'
           widget: 'string'
         hint: '請輸入1-10個相關標籤，有助於文章分類和搜尋'
 
@@ -247,6 +248,7 @@ collections:
             max: 5
             field:
               label: '作者姓名'
+              name: 'author'
               widget: 'string'
           - label: '期刊名稱'
             name: 'journal'
@@ -301,7 +303,7 @@ collections:
         name: 'keywords'
         widget: 'list'
         required: false
-        field: { label: '關鍵字', widget: 'string' }
+        field: { label: '關鍵字', name: 'keyword', widget: 'string' }
 
       # 內容本體
       - label: '內容'
