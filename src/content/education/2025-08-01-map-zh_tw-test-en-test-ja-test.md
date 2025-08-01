@@ -4,7 +4,7 @@ title:
   en: test
   ja: test
 category: prevention
-status: draft
+status: published
 version: "1.0"
 tags:
   - test
