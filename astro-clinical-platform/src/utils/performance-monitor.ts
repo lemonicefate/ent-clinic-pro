@@ -10,7 +10,7 @@
 
 // Web Vitals metrics interface
 interface WebVitalsMetric {
-  name: 'CLS' | 'FID' | 'FCP' | 'LCP' | 'TTFB' | 'INP';
+  name: 'CLS' | 'INP' | 'FCP' | 'LCP' | 'TTFB';
   value: number;
   delta: number;
   id: string;
@@ -152,25 +152,17 @@ class PerformanceMonitor {
   private async initWebVitals(): Promise<void> {
     try {
       // Dynamic import of web-vitals library
-      const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import('web-vitals');
+      const { onCLS, onINP, onLCP, onFCP, onTTFB } = await import('web-vitals');
       
       const sendToAnalytics = (metric: WebVitalsMetric) => {
         this.trackWebVital(metric);
       };
 
-      getCLS(sendToAnalytics);
-      getFID(sendToAnalytics);
-      getFCP(sendToAnalytics);
-      getLCP(sendToAnalytics);
-      getTTFB(sendToAnalytics);
-
-      // Try to get INP if available (newer metric)
-      try {
-        const { getINP } = await import('web-vitals');
-        getINP(sendToAnalytics);
-      } catch (e) {
-        // INP not available in older versions
-      }
+      onCLS(sendToAnalytics);
+      onINP(sendToAnalytics);
+      onLCP(sendToAnalytics);
+      onFCP(sendToAnalytics);
+      onTTFB(sendToAnalytics);
     } catch (error) {
       console.warn('Web Vitals library not available:', error);
       // Fallback to basic performance monitoring
