@@ -61,9 +61,9 @@ collections:
         widget: 'object'
         required: false
         fields:
-          - { label: '繁體中文', name: 'zh_TW', widget: 'text' }
-          - { label: 'English', name: 'en', widget: 'text' }
-          - { label: '日本語', name: 'ja', widget: 'text' }
+          - { label: '繁體中文', name: 'zh_TW', widget: 'text', required: false }
+          - { label: 'English', name: 'en', widget: 'text', required: false }
+          - { label: '日本語', name: 'ja', widget: 'text', required: false }
 
       - label: '分類'
         name: 'category'
@@ -205,9 +205,9 @@ collections:
         widget: 'object'
         required: false
         fields:
-          - { label: '繁體中文', name: 'zh_TW', widget: 'string' }
-          - { label: 'English', name: 'en', widget: 'string' }
-          - { label: '日本語', name: 'ja', widget: 'string' }
+          - { label: '繁體中文', name: 'zh_TW', widget: 'string', required: false }
+          - { label: 'English', name: 'en', widget: 'string', required: false }
+          - { label: '日本語', name: 'ja', widget: 'string', required: false }
 
       # 媒體資源
       - label: '特色圖片'
@@ -215,14 +215,15 @@ collections:
         widget: 'object'
         required: false
         fields:
-          - { label: '圖片', name: 'src', widget: 'image' }
+          - { label: '圖片', name: 'src', widget: 'image', required: false }
           - label: '替代文字'
             name: 'alt'
             widget: 'object'
+            required: false
             fields:
-              - { label: '繁體中文', name: 'zh_TW', widget: 'string' }
-              - { label: 'English', name: 'en', widget: 'string' }
-              - { label: '日本語', name: 'ja', widget: 'string' }
+              - { label: '繁體中文', name: 'zh_TW', widget: 'string', required: false }
+              - { label: 'English', name: 'en', widget: 'string', required: false }
+              - { label: '日本語', name: 'ja', widget: 'string', required: false }
 
       # 醫療資訊
       - label: '證據等級'
@@ -254,6 +255,7 @@ collections:
               label: '作者姓名'
               name: 'author'
               widget: 'string'
+              required: false
           - label: '期刊名稱'
             name: 'journal'
             widget: 'string'
@@ -292,18 +294,18 @@ collections:
         widget: 'object'
         required: false
         fields:
-          - { label: '繁體中文', name: 'zh_TW', widget: 'string' }
-          - { label: 'English', name: 'en', widget: 'string' }
-          - { label: '日本語', name: 'ja', widget: 'string' }
+          - { label: '繁體中文', name: 'zh_TW', widget: 'string', required: false }
+          - { label: 'English', name: 'en', widget: 'string', required: false }
+          - { label: '日本語', name: 'ja', widget: 'string', required: false }
 
       - label: 'SEO 描述'
         name: 'seoDescription'
         widget: 'object'
         required: false
         fields:
-          - { label: '繁體中文', name: 'zh_TW', widget: 'text' }
-          - { label: 'English', name: 'en', widget: 'text' }
-          - { label: '日本語', name: 'ja', widget: 'text' }
+          - { label: '繁體中文', name: 'zh_TW', widget: 'text', required: false }
+          - { label: 'English', name: 'en', widget: 'text', required: false }
+          - { label: '日本語', name: 'ja', widget: 'text', required: false }
 
       - label: '關鍵字'
         name: 'keywords'
@@ -345,8 +347,8 @@ collections:
         widget: 'object'
         required: false
         fields:
-          - { label: '繁體中文', name: 'zh_TW', widget: 'text' }
-          - { label: 'English', name: 'en', widget: 'text' }
+          - { label: '繁體中文', name: 'zh_TW', widget: 'text', required: false }
+          - { label: 'English', name: 'en', widget: 'text', required: false }
       - { label: '顏色', name: 'color', widget: 'color', required: false }
       - { label: '圖示', name: 'icon', widget: 'string', required: false }
       - { label: '啟用', name: 'isActive', widget: 'boolean', default: true }
