@@ -95,7 +95,8 @@ collections:
         name: 'version'
         widget: 'string'
         default: '1.0'
-        pattern: ['^\\d+\\.\\d+$', '版本格式應為 x.y (例如: 1.0, 2.1)']
+        required: false
+        pattern: ['^\d+\.\d+$', '版本格式應為 x.y (例如: 1.0, 2.1)']
 
       - label: '指定審核者'
         name: 'reviewers'
@@ -166,11 +167,13 @@ collections:
       - label: '病患友善'
         name: 'patientFriendly'
         widget: 'boolean'
+        required: false
         default: true
 
       - label: '年齡群組'
         name: 'ageGroup'
         widget: 'select'
+        required: false
         default: 'all'
         options:
           - { label: '所有年齡', value: 'all' }
@@ -191,6 +194,7 @@ collections:
       - label: '最後更新'
         name: 'lastUpdated'
         widget: 'datetime'
+        required: false
         default: ''
         date_format: 'YYYY-MM-DD'
         time_format: 'HH:mm'
@@ -273,11 +277,13 @@ collections:
       - label: '啟用'
         name: 'isActive'
         widget: 'boolean'
+        required: false
         default: true
 
       - label: '特色內容'
         name: 'isFeatured'
         widget: 'boolean'
+        required: false
         default: false
 
       # SEO 和元資料
