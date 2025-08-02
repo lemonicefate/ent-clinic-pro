@@ -198,6 +198,8 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
     {educationContent.length > 0 ? (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="content-grid">
         {educationContent.map(edu => {
+          // 產生一個絕對不會出錯的 slug
+          const articleSlug = edu.slug || edu.id.slice(0, -3);
           const difficulty = getDifficultyBadge(edu.difficulty);
           const readingTime = edu.readingTime || 5;
           
@@ -234,7 +236,7 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
                 </div>
                 
                 <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2 group-hover:text-medical-primary-600 transition-colors">
-                  <a href={`/education/${edu.slug}`}>
+                  <a href={`/education/${articleSlug}`}>
                     {edu.title[locale]}
                   </a>
                 </h3>
@@ -280,7 +282,7 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
                   )}
                   
                   <a 
-                    href={`/education/${edu.slug}`}
+                    href={`/education/${articleSlug}`}
                     class="inline-flex items-center text-sm text-medical-primary-600 hover:text-medical-primary-700 font-medium transition-colors"
                   >
                     閱讀文章
