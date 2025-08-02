@@ -1,0 +1,91 @@
+{
+  "sections": [
+    {
+      "title": "藥物劑量計算結果",
+      "cards": [
+        {
+          "type": "primary",
+          "title": "總藥錠數",
+          "value": "{{totalPills}}",
+          "unit": "顆",
+          "icon": "💊"
+        },
+        {
+          "type": "secondary",
+          "title": "最終劑量",
+          "value": "{{finalAmoDose}}",
+          "unit": "mg/kg/day"
+        }
+      ],
+      "layout": "grid",
+      "columns": 2
+    },
+    {
+      "title": "藥物組合",
+      "cards": [
+        {
+          "type": "info",
+          "title": "Curam 625mg",
+          "value": "{{numCuram}}",
+          "unit": "顆",
+          "color": "text-blue-600"
+        },
+        {
+          "type": "info",
+          "title": "Amox 500mg",
+          "value": "{{numAmox500}}",
+          "unit": "顆",
+          "color": "text-green-600"
+        },
+        {
+          "type": "info",
+          "title": "Amox 250mg",
+          "value": "{{numAmox250}}",
+          "unit": "顆",
+          "color": "text-indigo-600"
+        }
+      ],
+      "layout": "grid",
+      "columns": 3
+    },
+    {
+      "title": "用藥資訊",
+      "cards": [
+        {
+          "type": "secondary",
+          "title": "用藥頻次",
+          "value": "{{frequency === 2 ? 'BID' : frequency === 3 ? 'TID' : frequency === 4 ? 'QID' : frequency + 'x'}}",
+          "description": "每日 {{frequency}} 次"
+        },
+        {
+          "type": "secondary",
+          "title": "Amox:Clav 比例",
+          "value": "{{ratio === 'N/A' ? 'N/A' : ratio + ':1'}}",
+          "description": "(AMO : CLA)"
+        }
+      ],
+      "layout": "grid",
+      "columns": 2
+    }
+  ],
+  "recommendations": [
+    {
+      "text": "將總共 {{totalPills}} 顆藥錠磨成粉末混合，這是 {{days}} 天的總藥量",
+      "type": "info"
+    },
+    {
+      "text": "若每日{{frequency}}次服藥，請平均分成 {{days * frequency}} 份",
+      "type": "info"
+    },
+    {
+      "text": "請確認患者無青黴素過敏史",
+      "type": "warning"
+    }
+  ],
+  "notes": [
+    "本計算適用於兒童 Amoxicillin/Clavulanate 劑量計算",
+    "計算結果已考慮 Amoxicillin:Clavulanate 比例限制（4:1 到 14:1）",
+    "Clavulanate 每日劑量不超過 10 mg/kg/day",
+    "實際用藥請遵循醫師處方，本工具僅供參考"
+  ]
+}

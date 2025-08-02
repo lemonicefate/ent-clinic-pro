@@ -1,0 +1,136 @@
+{
+  "id": "pediatric-antibiotic-calculator",
+  "name": {
+    "zh-TW": "兒童抗生素劑量計算器",
+    "en": "Pediatric Antibiotic Dose Calculator",
+    "ja": "小児抗生物質用量計算機"
+  },
+  "description": {
+    "zh-TW": "兒童抗生素劑量計算器可視化配置",
+    "en": "Pediatric Antibiotic Dose Calculator visualization configuration",
+    "ja": "小児抗生物質用量計算機の可視化設定"
+  },
+  "category": "pediatrics",
+  "version": "1.0.0",
+  "charts": [
+    {
+      "type": "tabs",
+      "title": {
+        "zh-TW": "藥物分類",
+        "en": "Drug Categories",
+        "ja": "薬物分類"
+      },
+      "config": {
+        "tabs": [
+          {
+            "id": "bacterial",
+            "label": {
+              "zh-TW": "抗細菌藥物",
+              "en": "Antibacterial Drugs",
+              "ja": "抗菌薬"
+            },
+            "icon": "🦠",
+            "color": "blue"
+          },
+          {
+            "id": "viral",
+            "label": {
+              "zh-TW": "抗病毒藥物",
+              "en": "Antiviral Drugs",
+              "ja": "抗ウイルス薬"
+            },
+            "icon": "🦠",
+            "color": "green"
+          },
+          {
+            "id": "fungal",
+            "label": {
+              "zh-TW": "抗黴菌藥物",
+              "en": "Antifungal Drugs",
+              "ja": "抗真菌薬"
+            },
+            "icon": "🍄",
+            "color": "purple"
+          }
+        ]
+      }
+    },
+    {
+      "type": "card-list",
+      "title": {
+        "zh-TW": "藥物劑量卡片",
+        "en": "Drug Dose Cards",
+        "ja": "薬物用量カード"
+      },
+      "config": {
+        "expandable": true,
+        "showBorder": true,
+        "borderColors": {
+          "default": "border-teal-500",
+          "warning": "border-yellow-500",
+          "error": "border-red-500"
+        }
+      }
+    }
+  ],
+  "resultDisplay": {
+    "primaryValue": {
+      "format": "number",
+      "precision": 0,
+      "unit": {
+        "zh-TW": "種藥物",
+        "en": "medications",
+        "ja": "種類の薬物"
+      }
+    },
+    "secondaryValues": {
+      "bacterialDrugs": {
+        "format": "array",
+        "displayAs": "cards"
+      },
+      "viralDrugs": {
+        "format": "array",
+        "displayAs": "cards"
+      }
+    },
+    "interpretation": {
+      "showRiskLevel": false,
+      "showRecommendations": true,
+      "showCalculationSteps": false
+    },
+    "layout": {
+      "type": "tabbed",
+      "defaultTab": "bacterial",
+      "showSummary": true
+    }
+  },
+  "interactivity": {
+    "expandableCards": true,
+    "tabNavigation": true,
+    "retryButton": true
+  },
+  "styling": {
+    "theme": "medical",
+    "colorScheme": {
+      "primary": "teal",
+      "secondary": "gray",
+      "accent": "blue"
+    },
+    "spacing": "comfortable",
+    "typography": {
+      "headingSize": "large",
+      "bodySize": "medium"
+    }
+  },
+  "accessibility": {
+    "screenReaderSupport": true,
+    "keyboardNavigation": true,
+    "highContrastMode": true,
+    "focusIndicators": true
+  },
+  "metadata": {
+    "lastUpdated": "2025-01-31T00:00:00.000Z",
+    "author": "Astro Clinical Platform",
+    "version": "1.0.0"
+  }
+}

@@ -1,0 +1,296 @@
+---
+/**
+ * 內容分類總覽頁面
+ * 顯示所有醫療內容分類和統計
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { contentCategorizer } from '../utils/content-categorization';
+import { t } from '../utils/i18n';
+import type { SupportedLocale } from '../env.d';
+
+const locale: SupportedLocale = 'zh-TW'; // 這裡應該從路由中獲取
+
+const mainCategories = contentCategorizer.getMainCategories(locale);
+const categoryStats = await contentCategorizer.getCategoryStats();
+
+const breadcrumbs = [
+  { label: t('nav.home', locale), href: '/' },
+  { label: '內容分類' }
+];
+
+// 分類圖示對應
+const categoryIcons: Record<string, string> = {
+  'cardiology': '❤️',
+  'neurology': '🧠',
+  'emergency': '🚨',
+  'internal-medicine': '🩺',
+  'surgery': '🔪',
+  'pediatrics': '👶',
+  'default': '📋'
+};
+
+// 分類顏色對應
+const categoryColors: Record<string, string> = {
+  'cardiology': 'bg-red-100 text-red-800 border-red-200',
+  'neurology': 'bg-purple-100 text-purple-800 border-purple-200',
+  'emergency': 'bg-orange-100 text-orange-800 border-orange-200',
+  'internal-medicine': 'bg-blue-100 text-blue-800 border-blue-200',
+  'surgery': 'bg-green-100 text-green-800 border-green-200',
+  'pediatrics': 'bg-pink-100 text-pink-800 border-pink-200',
+  'default': 'bg-gray-100 text-gray-800 border-gray-200'
+};
+---
+
+<BaseLayout 
+  title="醫療內容分類"
+  description="瀏覽所有醫療專科分類，包含計算機、衛教資源和診療流程"
+  locale={locale}
+  breadcrumbs={breadcrumbs}
+>
+  <main class="container mx-auto px-4 py-8">
+    <!-- 頁面標題 -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-medical-neutral-900 mb-4">
+        醫療內容分類
+      </h1>
+      <p class="text-lg text-medical-neutral-600">
+        按醫療專科瀏覽所有計算機、衛教資源和診療流程
+      </p>
+    </div>
+
+    <!-- 分類統計總覽 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-medical-primary-100 rounded-lg flex items-center justify-center">
+              🧮
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-medical-neutral-600">醫療計算機</p>
+            <p class="text-2xl font-bold text-medical-neutral-900">
+              {Object.values(categoryStats).reduce((sum, stat) => sum + stat.calculators, 0)}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-medical-success-100 rounded-lg flex items-center justify-center">
+              📚
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-medical-neutral-600">衛教資源</p>
+            <p class="text-2xl font-bold text-medical-neutral-900">
+              {Object.values(categoryStats).reduce((sum, stat) => sum + stat.education, 0)}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-medical-warning-100 rounded-lg flex items-center justify-center">
+              🔄
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-medical-neutral-600">診療流程</p>
+            <p class="text-2xl font-bold text-medical-neutral-900">
+              {Object.values(categoryStats).reduce((sum, stat) => sum + stat.flowcharts, 0)}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主要分類列表 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {mainCategories.map(category => {
+        const stats = categoryStats[category.id] || { calculators: 0, education: 0, flowcharts: 0, total: 0 };
+        const icon = categoryIcons[category.id] || categoryIcons.default;
+        const colorClass = categoryColors[category.id] || categoryColors.default;
+        const subCategories = contentCategorizer.getSubCategories(category.id, locale);
+        
+        return (
+          <div class="bg-white rounded-lg border border-medical-neutral-200 hover:shadow-md transition-shadow">
+            <div class="p-6">
+              <!-- 分類標題 -->
+              <div class="flex items-center mb-4">
+                <div class="text-2xl mr-3">{icon}</div>
+                <div>
+                  <h3 class="text-lg font-semibold text-medical-neutral-900">
+                    {category.name[locale]}
+                  </h3>
+                  <p class="text-sm text-medical-neutral-600">
+                    {category.description[locale]}
+                  </p>
+                </div>
+              </div>
+
+              <!-- 內容統計 -->
+              <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="text-center">
+                  <div class="text-lg font-bold text-medical-primary-600">
+                    {stats.calculators}
+                  </div>
+                  <div class="text-xs text-medical-neutral-500">計算機</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-lg font-bold text-medical-success-600">
+                    {stats.education}
+                  </div>
+                  <div class="text-xs text-medical-neutral-500">衛教</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-lg font-bold text-medical-warning-600">
+                    {stats.flowcharts}
+                  </div>
+                  <div class="text-xs text-medical-neutral-500">流程</div>
+                </div>
+              </div>
+
+              <!-- 子分類 -->
+              {subCategories.length > 0 && (
+                <div class="mb-4">
+                  <h4 class="text-sm font-medium text-medical-neutral-700 mb-2">子分類</h4>
+                  <div class="flex flex-wrap gap-2">
+                    {subCategories.slice(0, 3).map(subCat => (
+                      <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${colorClass}`}>
+                        {subCat.name[locale]}
+                      </span>
+                    ))}
+                    {subCategories.length > 3 && (
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-medical-neutral-100 text-medical-neutral-600 border border-medical-neutral-200">
+                        +{subCategories.length - 3} 更多
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <!-- 瀏覽按鈕 -->
+              <div class="flex space-x-2">
+                <a 
+                  href={`/categories/${category.id}`}
+                  class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-medical-primary-300 text-sm font-medium rounded-md text-medical-primary-700 bg-medical-primary-50 hover:bg-medical-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-medical-primary-500 transition-colors"
+                >
+                  瀏覽內容
+                </a>
+                {stats.total > 0 && (
+                  <a 
+                    href={`/search?category=${category.id}`}
+                    class="inline-flex items-center px-3 py-2 border border-medical-neutral-300 text-sm font-medium rounded-md text-medical-neutral-700 bg-white hover:bg-medical-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-medical-primary-500 transition-colors"
+                    title="搜尋此分類"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- 熱門標籤 -->
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-medical-neutral-900 mb-6">
+        熱門醫療標籤
+      </h2>
+      
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- 疾病標籤 -->
+          <div>
+            <h3 class="font-medium text-medical-neutral-800 mb-3">常見疾病</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                心房顫動
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                高血壓
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                糖尿病
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                心臟衰竭
+              </span>
+            </div>
+          </div>
+          
+          <!-- 風險評估 -->
+          <div>
+            <h3 class="font-medium text-medical-neutral-800 mb-3">風險評估</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-orange-100 text-orange-800">
+                中風風險
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-orange-100 text-orange-800">
+                出血風險
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-orange-100 text-orange-800">
+                心血管風險
+              </span>
+            </div>
+          </div>
+          
+          <!-- 治療方式 -->
+          <div>
+            <h3 class="font-medium text-medical-neutral-800 mb-3">治療方式</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                抗凝血治療
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                藥物治療
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                手術治療
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6 text-center">
+          <a 
+            href="/tags"
+            class="inline-flex items-center px-4 py-2 border border-medical-primary-300 text-sm font-medium rounded-md text-medical-primary-700 bg-medical-primary-50 hover:bg-medical-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-medical-primary-500 transition-colors"
+          >
+            查看所有標籤
+            <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  /* 確保卡片高度一致 */
+  .grid > div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .grid > div > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .grid > div > div > div:last-child {
+    margin-top: auto;
+  }
+</style>

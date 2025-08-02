@@ -1,0 +1,154 @@
+---
+/**
+ * 麵包屑導覽組件
+ * 提供階層式導覽路徑
+ */
+
+export interface Props {
+  items: Array<{
+    label: string;
+    href?: string;
+  }>;
+  locale?: 'zh-TW' | 'en' | 'ja';
+}
+
+const { items, locale = 'zh-TW' } = Astro.props;
+
+// 多語言文字
+const texts = {
+  'zh-TW': {
+    home: '首頁',
+    breadcrumbNav: '麵包屑導覽',
+    currentPage: '目前頁面'
+  },
+  'en': {
+    home: 'Home',
+    breadcrumbNav: 'Breadcrumb navigation',
+    currentPage: 'Current page'
+  },
+  'ja': {
+    home: 'ホーム',
+    breadcrumbNav: 'パンくずナビゲーション',
+    currentPage: '現在のページ'
+  }
+};
+
+const t = texts[locale];
+
+// 確保總是有首頁連結
+const breadcrumbItems = [
+  { label: t.home, href: locale === 'zh-TW' ? '/' : `/${locale}` },
+  ...items
+];
+---
+
+<nav aria-label={t.breadcrumbNav} class="breadcrumbs">
+  <ol class="flex items-center space-x-2 text-sm">
+    {breadcrumbItems.map((item, index) => {
+      const isLast = index === breadcrumbItems.length - 1;
+      
+      return (
+        <li class="flex items-center">
+          {/* 分隔符號 (除了第一個項目) */}
+          {index > 0 && (
+            <svg 
+              class="h-4 w-4 text-medical-neutral-400 mx-2 flex-shrink-0" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          )}
+          
+          {/* 麵包屑項目 */}
+          {isLast ? (
+            <!-- 當前頁面 (不是連結) -->
+            <span 
+              class="text-medical-neutral-800 font-medium truncate max-w-xs sm:max-w-sm md:max-w-md"
+              aria-current="page"
+              title={item.label}
+            >
+              {item.label}
+            </span>
+          ) : item.href ? (
+            <!-- 可點擊的連結 -->
+            <a 
+              href={item.href}
+              class="text-medical-neutral-600 hover:text-medical-primary-600 transition-colors focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-1 rounded px-1 py-0.5 truncate max-w-xs sm:max-w-sm"
+              title={item.label}
+            >
+              {item.label}
+            </a>
+          ) : (
+            <!-- 純文字項目 -->
+            <span 
+              class="text-medical-neutral-600 truncate max-w-xs sm:max-w-sm"
+              title={item.label}
+            >
+              {item.label}
+            </span>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+  
+  <!-- 結構化資料 -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbItems.map((item, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.label,
+      ...(item.href && { "item": item.href })
+    }))
+  })} />
+</nav>
+
+<style>
+  .breadcrumbs {
+    /* 確保在小螢幕上的可讀性 */
+    min-height: 2rem;
+  }
+  
+  /* 響應式文字截斷 */
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* 高對比模式支援 */
+  @media (prefers-contrast: high) {
+    .breadcrumbs a {
+      text-decoration: underline;
+    }
+    
+    .breadcrumbs a:hover,
+    .breadcrumbs a:focus {
+      background-color: yellow;
+      color: black;
+    }
+  }
+  
+  /* 列印樣式 */
+  @media print {
+    .breadcrumbs {
+      display: none;
+    }
+  }
+  
+  /* 小螢幕優化 */
+  @media (max-width: 640px) {
+    .breadcrumbs ol {
+      flex-wrap: wrap;
+    }
+    
+    .breadcrumbs li {
+      margin-bottom: 0.25rem;
+    }
+  }
+</style>

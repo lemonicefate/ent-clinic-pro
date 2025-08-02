@@ -1,0 +1,119 @@
+---
+// 簡化的動態計算器頁面
+import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+
+// 獲取路由參數
+const { calculator: calculatorId } = Astro.params;
+
+if (!calculatorId) {
+  return Astro.redirect('/404');
+}
+
+// Define available calculators with their plugin IDs
+const availableCalculators = {
+  'bmi': 'general.bmi',
+  'egfr': 'nephrology.egfr',
+  'cha2ds2-vasc': 'cardiology.cha2ds2-vasc'
+};
+
+// For SSG mode, we need to add getStaticPaths for dynamic routes
+export function getStaticPaths() {
+  return [
+    { params: { calculator: 'bmi' } },
+    { params: { calculator: 'egfr' } },
+    { params: { calculator: 'cha2ds2-vasc' } }
+  ];
+}
+
+// Validate calculator parameter (only needed for SSR)
+// In SSG mode, getStaticPaths ensures only valid calculators are generated
+
+const pluginId = availableCalculators[calculatorId];
+
+// Static plugin metadata for SSG compatibility
+const staticPluginData = {
+  'general.bmi': {
+    name: 'BMI 計算器',
+    description: '身體質量指數計算器，用於評估體重狀況和健康風險'
+  },
+  'nephrology.egfr': {
+    name: 'eGFR 計算器',
+    description: '估算腎絲球過濾率計算器，用於評估腎功能'
+  },
+  'cardiology.cha2ds2-vasc': {
+    name: 'CHA2DS2-VASc 評分',
+    description: '評估心房顫動患者中風風險的臨床評分工具'
+  }
+};
+
+const pluginData = staticPluginData[pluginId];
+---
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{pluginData?.name || '計算器'}</title>
+  <meta name="description" content={pluginData?.description || '醫療計算器工具'}>
+  <style>
+    /* 基本樣式 */
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .bg-gray-50 { background-color: #f9fafb; }
+    .bg-white { background-color: white; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .text-center { text-align: center; }
+    .text-3xl { font-size: 1.875rem; }
+    .font-bold { font-weight: 700; }
+    .text-gray-900 { color: #111827; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .max-w-2xl { max-width: 42rem; }
+    .text-lg { font-size: 1.125rem; }
+    .text-gray-600 { color: #4b5563; }
+    .p-6 { padding: 1.5rem; }
+    .border { border: 1px solid #d1d5db; }
+    .border-gray-200 { border-color: #e5e7eb; }
+    .rounded-lg { border-radius: 0.5rem; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- 返回按鈕 -->
+    <div class="mb-6">
+      <a 
+        href="/tools" 
+        class="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        返回工具列表
+      </a>
+    </div>
+
+    <!-- 頁面標題 -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        {pluginData?.name || '計算器'}
+      </h1>
+      <p class="text-gray-600">
+        {pluginData?.description || '醫療計算器工具'}
+      </p>
+    </div>
+
+    <!-- 計算器組件 -->
+    <div class="max-w-2xl mx-auto">
+      <PluginCalculator 
+        pluginId={pluginId}
+        locale="zh-TW"
+        client:load
+      />
+    </div>
+  </div>
+</body>
+</html>

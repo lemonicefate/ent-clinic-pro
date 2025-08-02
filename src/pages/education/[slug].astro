@@ -1,0 +1,417 @@
+---
+/**
+ * 動態教育內容頁面
+ * 根據 slug 參數載入對應的教育內容
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增 SOP 工作流程支援
+ * - 顯示版本和作者資訊
+ * - 新增審核歷史和品質檢查狀態
+ * - 優化 SEO 元資料和結構化資料
+ * - 支援開發環境預覽非發布內容
+ * 
+ * 需求對應：
+ * - 需求 7.1: 多語言支援機制 ✓
+ * - 需求 8.3: 效能監控和分析 ✓
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FlowchartRenderer from '../../components/islands/FlowchartRenderer.tsx';
+import ContentStatusIndicator from '../../components/ContentStatusIndicator.astro';
+import ContentFreshnessIndicator from '../../components/ContentFreshnessIndicator.astro';
+import VersionHistoryDisplay from '../../components/VersionHistoryDisplay.astro';
+import ReviewProgressIndicator from '../../components/ReviewProgressIndicator.astro';
+import { formatDate } from '../../utils/i18n';
+import type { SupportedLocale } from '../../env.d';
+
+// 獲取所有教育內容以生成靜態路由
+export async function getStaticPaths() {
+  const educationEntries = await getCollection('education');
+  
+  return educationEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// 從路由中獲取語言（這裡簡化為預設值）
+const locale: SupportedLocale = 'zh-TW';
+
+const isDevelopment = import.meta.env.DEV;
+
+// 檢查內容是否啟用和發布狀態
+if (!entry.data.isActive) {
+  return Astro.redirect('/404');
+}
+
+// 生產環境只顯示已發布內容，開發環境可顯示所有內容
+if (!isDevelopment && entry.data.status !== 'published') {
+  return Astro.redirect('/404');
+}
+
+// 獲取相關內容
+const allEducation = await getCollection('education');
+const relatedEducation = entry.data.relatedEducation 
+  ? allEducation.filter(e => entry.data.relatedEducation.includes(e.slug))
+  : [];
+
+// 狀態標籤配置
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case 'published': return { label: '已發布', color: 'bg-green-100 text-green-800' };
+    case 'in-review': return { label: '審核中', color: 'bg-blue-100 text-blue-800' };
+    case 'draft': return { label: '草稿', color: 'bg-gray-100 text-gray-800' };
+    case 'needs-revision': return { label: '需修改', color: 'bg-yellow-100 text-yellow-800' };
+    case 'quality-check': return { label: '品質檢查', color: 'bg-purple-100 text-purple-800' };
+    case 'ready-to-publish': return { label: '準備發布', color: 'bg-orange-100 text-orange-800' };
+    default: return { label: status, color: 'bg-gray-100 text-gray-800' };
+  }
+};
+
+const statusBadge = getStatusBadge(entry.data.status);
+
+// 構建結構化資料
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "MedicalWebPage",
+  "name": entry.data.title[locale],
+  "description": entry.data.excerpt?.[locale] || entry.data.seoDescription?.[locale],
+  "url": `${Astro.site}education/${entry.slug}`,
+  "datePublished": entry.data.workflowTimestamps?.publishedAt || entry.data.lastUpdated,
+  "dateModified": entry.data.lastUpdated,
+  "author": entry.data.author ? {
+    "@type": "Person",
+    "name": entry.data.author[locale]
+  } : undefined,
+  "publisher": {
+    "@type": "Organization",
+    "name": "醫療平台"
+  },
+  "medicalAudience": entry.data.patientFriendly ? "Patient" : "MedicalProfessional",
+  "about": entry.data.medicalSpecialties.map(specialty => ({
+    "@type": "MedicalSpecialty",
+    "name": specialty
+  }))
+};
+---
+
+<BaseLayout 
+  title={entry.data.seoTitle?.[locale] || entry.data.title[locale]}
+  description={entry.data.seoDescription?.[locale] || entry.data.excerpt?.[locale]}
+  locale={locale}
+  medicalContent={true}
+  pageType="article"
+  structuredData={structuredData}
+>
+  <!-- 內容狀態指示器（僅開發環境） -->
+  <ContentStatusIndicator
+    status={entry.data.status}
+    version={entry.data.version}
+    lastUpdated={entry.data.lastUpdated}
+    reviewHistory={entry.data.reviewHistory}
+    qualityChecks={entry.data.qualityChecks}
+    workflowTimestamps={entry.data.workflowTimestamps}
+    locale={locale}
+    showDetails={true}
+  />
+
+  <article class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- 文章標頭 -->
+    <header class="mb-8">
+      <!-- 狀態和分類標籤 -->
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        {isDevelopment && (
+          <span class={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusBadge.color}`}>
+            {statusBadge.label}
+          </span>
+        )}
+        
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-medical-primary-100 text-medical-primary-800">
+          {entry.data.category === 'disease' ? '疾病資訊' :
+           entry.data.category === 'medication' ? '藥物資訊' :
+           entry.data.category === 'procedure' ? '檢查程序' :
+           entry.data.category === 'prevention' ? '預防保健' :
+           entry.data.category === 'lifestyle' ? '生活方式' :
+           entry.data.category === 'symptoms' ? '症狀識別' :
+           entry.data.category === 'diagnosis' ? '診斷方法' :
+           entry.data.category === 'treatment' ? '治療指引' : entry.data.category}
+        </span>
+        
+        {entry.data.difficulty && (
+          <span class={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+            entry.data.difficulty === 'basic' ? 'bg-green-100 text-green-800' :
+            entry.data.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
+          }`}>
+            {entry.data.difficulty === 'basic' ? '基礎' :
+             entry.data.difficulty === 'intermediate' ? '中級' : '進階'}
+          </span>
+        )}
+        
+        {entry.data.patientFriendly && (
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-medical-success-100 text-medical-success-800">
+            病患友善
+          </span>
+        )}
+      </div>
+      
+      <!-- 文章標題 -->
+      <h1 class="text-3xl md:text-4xl font-bold text-medical-neutral-900 mb-4">
+        {entry.data.title[locale]}
+      </h1>
+      
+      <!-- 文章摘要 -->
+      {entry.data.excerpt && (
+        <p class="text-xl text-medical-neutral-600 leading-relaxed mb-6">
+          {entry.data.excerpt[locale]}
+        </p>
+      )}
+      
+      <!-- 文章元資料 -->
+      <div class="flex flex-wrap items-center gap-6 text-sm text-medical-neutral-500 border-b border-medical-neutral-200 pb-6">
+        {entry.data.author && (
+          <div class="flex items-center">
+            <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            作者: {entry.data.author[locale]}
+          </div>
+        )}
+        
+        {entry.data.readingTime && (
+          <div class="flex items-center">
+            <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            閱讀時間: {entry.data.readingTime} 分鐘
+          </div>
+        )}
+        
+        {entry.data.lastUpdated && (
+          <div class="flex items-center">
+            <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            更新: {formatDate(entry.data.lastUpdated, locale)}
+          </div>
+        )}
+        
+        {entry.data.version && (
+          <div class="flex items-center">
+            <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            版本: {entry.data.version}
+          </div>
+        )}
+        
+        {entry.data.evidenceLevel && (
+          <div class="flex items-center">
+            <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            證據等級: {entry.data.evidenceLevel}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <!-- 主要內容 -->
+    <div class="prose prose-lg max-w-none prose-medical">
+      <Content />
+    </div>
+    
+    <!-- 流程圖渲染 -->
+    {entry.data.hasFlowchart && entry.data.flowchartCode && (
+      <div class="mt-12">
+        <h2 class="text-2xl font-semibold text-medical-neutral-900 mb-6">
+          診療流程圖
+        </h2>
+        <div class="bg-white rounded-lg border border-medical-neutral-200 p-6">
+          <FlowchartRenderer 
+            client:load
+            code={entry.data.flowchartCode}
+            title={entry.data.title[locale] + ' 流程圖'}
+            locale={locale}
+          />
+        </div>
+      </div>
+    )}
+
+    <!-- 內容新鮮度指示器 -->
+    <div class="mt-12">
+      <ContentFreshnessIndicator
+        lastUpdated={entry.data.lastUpdated}
+        nextReviewDate={entry.data.nextReviewDate}
+        publishedAt={entry.data.workflowTimestamps?.publishedAt}
+        category={entry.data.category}
+        medicalSpecialties={entry.data.medicalSpecialties}
+        locale={locale}
+      />
+    </div>
+
+    <!-- 審核進度指示器（僅審核中狀態顯示） -->
+    {entry.data.status === 'in-review' && (
+      <div class="mt-8">
+        <ReviewProgressIndicator
+          status={entry.data.status}
+          reviewHistory={entry.data.reviewHistory || []}
+          currentReviewers={entry.data.reviewers}
+          submittedForReview={entry.data.workflowTimestamps?.submittedForReview}
+          locale={locale}
+          showDetails={true}
+        />
+      </div>
+    )}
+
+    <!-- 版本歷史（僅開發環境顯示） -->
+    {isDevelopment && entry.data.versionHistory && entry.data.versionHistory.length > 0 && (
+      <div class="mt-12">
+        <VersionHistoryDisplay
+          currentVersion={entry.data.version || '1.0'}
+          versionHistory={entry.data.versionHistory}
+          locale={locale}
+          maxVersions={5}
+          showDetails={true}
+          compact={false}
+        />
+      </div>
+    )}
+
+    <!-- 審核歷史（僅開發環境顯示） -->
+    {isDevelopment && entry.data.reviewHistory && entry.data.reviewHistory.length > 0 && (
+      <div class="mt-8 bg-blue-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-medical-neutral-900 mb-4 flex items-center">
+          <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          審核歷史 (開發環境)
+        </h3>
+        <div class="space-y-4">
+          {entry.data.reviewHistory.slice(0, 3).map((review, index) => (
+            <div key={index} class="bg-white rounded-lg p-4 border border-blue-200">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-medium text-medical-neutral-900">審核者: {review.reviewer}</span>
+                <div class="flex items-center space-x-2">
+                  <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    review.decision === 'approved' ? 'bg-green-100 text-green-800' :
+                    review.decision === 'rejected' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {review.decision === 'approved' ? '通過' :
+                     review.decision === 'rejected' ? '拒絕' : '需修改'}
+                  </span>
+                  <span class="text-sm text-medical-neutral-500">
+                    {formatDate(review.reviewDate, locale)}
+                  </span>
+                </div>
+              </div>
+              {review.comments && (
+                <p class="text-sm text-medical-neutral-600 mb-3">
+                  {review.comments}
+                </p>
+              )}
+              {review.checklist && (
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                  <div class={`flex items-center ${review.checklist.medicalAccuracy ? 'text-green-600' : 'text-red-600'}`}>
+                    <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d={review.checklist.medicalAccuracy ? "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" : "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"} clip-rule="evenodd" />
+                    </svg>
+                    醫療準確性
+                  </div>
+                  <div class={`flex items-center ${review.checklist.contentStructure ? 'text-green-600' : 'text-red-600'}`}>
+                    <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d={review.checklist.contentStructure ? "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" : "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"} clip-rule="evenodd" />
+                    </svg>
+                    內容結構
+                  </div>
+                  <div class={`flex items-center ${review.checklist.languageClarity ? 'text-green-600' : 'text-red-600'}`}>
+                    <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d={review.checklist.languageClarity ? "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" : "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"} clip-rule="evenodd" />
+                    </svg>
+                    語言清晰度
+                  </div>
+                  <div class={`flex items-center ${review.checklist.referencesValid ? 'text-green-600' : 'text-red-600'}`}>
+                    <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d={review.checklist.referencesValid ? "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" : "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"} clip-rule="evenodd" />
+                    </svg>
+                    參考文獻
+                  </div>
+                  <div class={`flex items-center ${review.checklist.seoOptimized ? 'text-green-600' : 'text-red-600'}`}>
+                    <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d={review.checklist.seoOptimized ? "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" : "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"} clip-rule="evenodd" />
+                    </svg>
+                    SEO 優化
+                  </div>
+                  <div class={`flex items-center ${review.checklist.accessibilityCompliant ? 'text-green-600' : 'text-red-600'}`}>
+                    <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d={review.checklist.accessibilityCompliant ? "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" : "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"} clip-rule="evenodd" />
+                    </svg>
+                    無障礙性
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- 相關內容 -->
+    {relatedEducation.length > 0 && (
+      <div class="mt-12">
+        <h3 class="text-2xl font-semibold text-medical-neutral-900 mb-6">
+          相關文章
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {relatedEducation.slice(0, 4).map(related => (
+            <article class="bg-white rounded-lg border border-medical-neutral-200 p-6 hover:shadow-lg transition-shadow">
+              <h4 class="text-lg font-semibold text-medical-neutral-900 mb-2">
+                <a href={`/education/${related.slug}`} class="hover:text-medical-primary-600 transition-colors">
+                  {related.data.title[locale]}
+                </a>
+              </h4>
+              {related.data.excerpt && (
+                <p class="text-medical-neutral-600 text-sm mb-4 line-clamp-2">
+                  {related.data.excerpt[locale]}
+                </p>
+              )}
+              <div class="flex items-center justify-between text-xs text-medical-neutral-500">
+                <span>{related.data.readingTime || 5} 分鐘閱讀</span>
+                <a 
+                  href={`/education/${related.slug}`}
+                  class="text-medical-primary-600 hover:text-medical-primary-700 font-medium transition-colors"
+                >
+                  閱讀 →
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- 醫療免責聲明 -->
+    {entry.data.medicalDisclaimer && (
+      <div class="mt-12 p-6 bg-medical-warning-50 border border-medical-warning-200 rounded-lg">
+        <div class="flex">
+          <svg class="h-6 w-6 text-medical-warning-600 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <div>
+            <h4 class="text-sm font-medium text-medical-warning-800 mb-2">
+              醫療免責聲明
+            </h4>
+            <p class="text-sm text-medical-warning-700">
+              {entry.data.medicalDisclaimer[locale]}
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+  </article>
+</BaseLayout>

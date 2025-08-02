@@ -1,0 +1,990 @@
+---
+// 審核者儀表板頁面
+// 提供審核者專用的內容審核介面
+
+import Layout from '../layouts/BaseLayout.astro';
+import PreviewBanner from '../components/PreviewBanner.astro';
+
+const title = '審核者儀表板';
+const description = '醫療衛教內容審核者專用介面';
+
+// 檢查是否為預覽模式
+const isPreview = import.meta.env.PUBLIC_PREVIEW_MODE === 'true';
+const prNumber = import.meta.env.PUBLIC_PR_NUMBER;
+const branchName = import.meta.env.PUBLIC_BRANCH_NAME;
+
+// 模擬審核資料（實際應用中會從 API 獲取）
+const mockReviewData = {
+  pr: {
+    number: prNumber || '123',
+    title: '新增心房顫動治療指南',
+    author: 'content-author',
+    branch: branchName || 'feature/af-guide',
+    status: 'pending_review',
+    created_at: '2024-01-30T10:00:00Z',
+    updated_at: '2024-01-30T14:30:00Z'
+  },
+  quality: {
+    overall_score: 85,
+    level: '良好',
+    checks: {
+      terminology: { status: 'passed', score: 90, issues: 2 },
+      accessibility: { status: 'passed', score: 88, issues: 3 },
+      readability: { status: 'warning', score: 75, issues: 8 },
+      references: { status: 'passed', score: 92, issues: 1 }
+    }
+  },
+  changes: [
+    {
+      file: 'src/content/education/atrial-fibrillation-guide.md',
+      type: 'modified',
+      additions: 45,
+      deletions: 12,
+      specialty: 'cardiology'
+    }
+  ]
+};
+---
+
+<Layout title={title} description={description}>
+  <PreviewBanner />
+  
+  <main class="reviewer-dashboard">
+    <div class="container">
+      <!-- 頁面標題 -->
+      <header class="dashboard-header">
+        <h1>👥 審核者儀表板</h1>
+        {isPreview && (
+          <div class="preview-indicator">
+            <span class="preview-badge">🔍 預覽模式</span>
+            <span class="pr-info">PR #{mockReviewData.pr.number}</span>
+          </div>
+        )}
+      </header>
+
+      <!-- PR 資訊卡片 -->
+      <section class="pr-info-card">
+        <div class="card-header">
+          <h2>📋 PR 資訊</h2>
+          <div class="status-badge pending">待審核</div>
+        </div>
+        
+        <div class="pr-details">
+          <div class="detail-grid">
+            <div class="detail-item">
+              <label>PR 標題</label>
+              <span>{mockReviewData.pr.title}</span>
+            </div>
+            <div class="detail-item">
+              <label>作者</label>
+              <span>{mockReviewData.pr.author}</span>
+            </div>
+            <div class="detail-item">
+              <label>分支</label>
+              <span class="branch-name">{mockReviewData.pr.branch}</span>
+            </div>
+            <div class="detail-item">
+              <label>建立時間</label>
+              <span id="created-time">{mockReviewData.pr.created_at}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 品質檢查摘要 -->
+      <section class="quality-summary">
+        <div class="card-header">
+          <h2>📊 品質檢查摘要</h2>
+          <div class="overall-score">
+            <span class="score-value">{mockReviewData.quality.overall_score}</span>
+            <span class="score-label">/ 100</span>
+          </div>
+        </div>
+        
+        <div class="quality-grid">
+          {Object.entries(mockReviewData.quality.checks).map(([key, check]) => (
+            <div class={`quality-item ${check.status}`}>
+              <div class="quality-icon">
+                {key === 'terminology' && '🏥'}
+                {key === 'accessibility' && '♿'}
+                {key === 'readability' && '📖'}
+                {key === 'references' && '📚'}
+              </div>
+              <div class="quality-details">
+                <h3>
+                  {key === 'terminology' && '醫療術語檢查'}
+                  {key === 'accessibility' && '無障礙性驗證'}
+                  {key === 'readability' && '可讀性分析'}
+                  {key === 'references' && '參考文獻檢查'}
+                </h3>
+                <div class="quality-stats">
+                  <span class="score">{check.score}/100</span>
+                  <span class="issues">{check.issues} 個問題</span>
+                </div>
+              </div>
+              <div class={`status-indicator ${check.status}`}>
+                {check.status === 'passed' && '✅'}
+                {check.status === 'warning' && '⚠️'}
+                {check.status === 'failed' && '❌'}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- 內容變更 -->
+      <section class="content-changes">
+        <div class="card-header">
+          <h2>📝 內容變更</h2>
+          <button class="view-diff-btn" onclick="toggleDiffView()">
+            🔍 查看差異
+          </button>
+        </div>
+        
+        <div class="changes-list">
+          {mockReviewData.changes.map((change) => (
+            <div class="change-item">
+              <div class="file-info">
+                <span class="file-icon">📄</span>
+                <span class="file-path">{change.file}</span>
+                <span class={`specialty-tag ${change.specialty}`}>
+                  {change.specialty === 'cardiology' && '心臟科'}
+                </span>
+              </div>
+              <div class="change-stats">
+                <span class="additions">+{change.additions}</span>
+                <span class="deletions">-{change.deletions}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div id="diff-view" class="diff-view" style="display: none;">
+          <div class="diff-placeholder">
+            <p>📊 內容差異比較將在此顯示</p>
+            <button onclick="loadDiffContent()">載入差異內容</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 醫療審核清單 -->
+      <section class="medical-review-checklist">
+        <div class="card-header">
+          <h2>🏥 醫療內容審核清單</h2>
+          <div class="progress-indicator">
+            <span id="checklist-progress">0/12</span> 完成
+          </div>
+        </div>
+        
+        <div class="checklist-categories">
+          <!-- 醫療準確性 -->
+          <div class="checklist-category">
+            <h3>🎯 醫療準確性</h3>
+            <div class="checklist-items">
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                醫療資訊符合最新臨床指引
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                診斷和治療建議適當且安全
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                藥物資訊準確（劑量、用法、副作用）
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                沒有可能造成誤解的內容
+              </label>
+            </div>
+          </div>
+
+          <!-- 內容品質 -->
+          <div class="checklist-category">
+            <h3>📚 內容品質</h3>
+            <div class="checklist-items">
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                內容完整且邏輯清晰
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                語言表達專業且易懂
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                圖表和插圖適當且清晰
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                參考文獻充分且可靠
+              </label>
+            </div>
+          </div>
+
+          <!-- 安全性和合規性 -->
+          <div class="checklist-category">
+            <h3>🛡️ 安全性和合規性</h3>
+            <div class="checklist-items">
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                包含適當的醫療免責聲明
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                強調個人化醫療建議的重要性
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                提醒讀者諮詢專業醫師
+              </label>
+              <label class="checklist-item">
+                <input type="checkbox" onchange="updateProgress()">
+                <span class="checkmark"></span>
+                符合醫療廣告相關法規
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 審核意見 -->
+      <section class="review-comments">
+        <div class="card-header">
+          <h2>💬 審核意見</h2>
+        </div>
+        
+        <div class="comment-form">
+          <textarea 
+            id="review-textarea" 
+            placeholder="請輸入您的審核意見和建議..."
+            rows="6"
+          ></textarea>
+          
+          <div class="comment-actions">
+            <div class="review-type">
+              <label>
+                <input type="radio" name="review-type" value="approve" checked>
+                ✅ 批准變更
+              </label>
+              <label>
+                <input type="radio" name="review-type" value="request-changes">
+                📝 要求修改
+              </label>
+              <label>
+                <input type="radio" name="review-type" value="comment">
+                💬 僅評論
+              </label>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn secondary" onclick="saveDraft()">
+                💾 儲存草稿
+              </button>
+              <button class="btn primary" onclick="submitReview()">
+                🚀 提交審核
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 快速操作 -->
+      <section class="quick-actions">
+        <div class="action-grid">
+          <a href="/preview-info" class="action-card">
+            <div class="action-icon">📊</div>
+            <div class="action-content">
+              <h3>預覽資訊</h3>
+              <p>查看詳細的預覽環境資訊</p>
+            </div>
+          </a>
+          
+          <a href="/admin" class="action-card">
+            <div class="action-icon">⚙️</div>
+            <div class="action-content">
+              <h3>CMS 管理</h3>
+              <p>進入內容管理系統</p>
+            </div>
+          </a>
+          
+          <a href="/education" class="action-card">
+            <div class="action-icon">📚</div>
+            <div class="action-content">
+              <h3>衛教內容</h3>
+              <p>瀏覽所有衛教文章</p>
+            </div>
+          </a>
+          
+          <a href={`https://github.com/your-org/astro-clinical-platform/pull/${prNumber}`} 
+             class="action-card" target="_blank" rel="noopener">
+            <div class="action-icon">🔗</div>
+            <div class="action-content">
+              <h3>GitHub PR</h3>
+              <p>在 GitHub 上查看 PR</p>
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .reviewer-dashboard {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 20px 0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+  }
+  
+  .dashboard-header h1 {
+    margin: 0;
+    color: #212529;
+    font-size: 2.5rem;
+  }
+  
+  .preview-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .preview-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .pr-info {
+    font-family: monospace;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  
+  /* 卡片樣式 */
+  .pr-info-card,
+  .quality-summary,
+  .content-changes,
+  .medical-review-checklist,
+  .review-comments,
+  .quick-actions {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  
+  .card-header {
+    background: #f8f9fa;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-header h2 {
+    margin: 0;
+    color: #495057;
+    font-size: 1.25rem;
+  }
+  
+  /* PR 資訊 */
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+  
+  .pr-details {
+    padding: 24px;
+  }
+  
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .detail-item label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .detail-item span {
+    font-size: 14px;
+    color: #212529;
+  }
+  
+  .branch-name {
+    font-family: monospace;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  
+  /* 品質檢查 */
+  .overall-score {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  
+  .score-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+  }
+  
+  .score-label {
+    color: #6c757d;
+    font-size: 1rem;
+  }
+  
+  .quality-grid {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  
+  .quality-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+  }
+  
+  .quality-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .quality-item.passed {
+    border-left: 4px solid #28a745;
+  }
+  
+  .quality-item.warning {
+    border-left: 4px solid #ffc107;
+  }
+  
+  .quality-item.failed {
+    border-left: 4px solid #dc3545;
+  }
+  
+  .quality-icon {
+    font-size: 1.5rem;
+  }
+  
+  .quality-details {
+    flex: 1;
+  }
+  
+  .quality-details h3 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: #212529;
+  }
+  
+  .quality-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #6c757d;
+  }
+  
+  .status-indicator {
+    font-size: 1.2rem;
+  }
+  
+  /* 內容變更 */
+  .view-diff-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .view-diff-btn:hover {
+    background: #0056b3;
+  }
+  
+  .changes-list {
+    padding: 24px;
+  }
+  
+  .change-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  
+  .change-item:last-child {
+    border-bottom: none;
+  }
+  
+  .file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .file-path {
+    font-family: monospace;
+    font-size: 13px;
+    color: #495057;
+  }
+  
+  .specialty-tag {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  
+  .change-stats {
+    display: flex;
+    gap: 8px;
+    font-family: monospace;
+    font-size: 12px;
+  }
+  
+  .additions {
+    color: #28a745;
+  }
+  
+  .deletions {
+    color: #dc3545;
+  }
+  
+  .diff-view {
+    border-top: 1px solid #e9ecef;
+    padding: 24px;
+    background: #f8f9fa;
+  }
+  
+  .diff-placeholder {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+  }
+  
+  /* 審核清單 */
+  .progress-indicator {
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .checklist-categories {
+    padding: 24px;
+  }
+  
+  .checklist-category {
+    margin-bottom: 24px;
+  }
+  
+  .checklist-category h3 {
+    margin: 0 0 12px 0;
+    color: #495057;
+    font-size: 1.1rem;
+  }
+  
+  .checklist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .checklist-item:hover {
+    background: #f8f9fa;
+    border-radius: 4px;
+    padding-left: 8px;
+  }
+  
+  .checklist-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #28a745;
+  }
+  
+  .checkmark {
+    font-size: 14px;
+    color: #495057;
+  }
+  
+  /* 審核意見 */
+  .comment-form {
+    padding: 24px;
+  }
+  
+  #review-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    margin-bottom: 16px;
+  }
+  
+  #review-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+  
+  .comment-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .review-type {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .review-type label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .btn.primary {
+    background: #007bff;
+    color: white;
+  }
+  
+  .btn.primary:hover {
+    background: #0056b3;
+  }
+  
+  .btn.secondary {
+    background: #6c757d;
+    color: white;
+  }
+  
+  .btn.secondary:hover {
+    background: #545b62;
+  }
+  
+  /* 快速操作 */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+  
+  .action-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+  
+  .action-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .action-icon {
+    font-size: 2rem;
+  }
+  
+  .action-content h3 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    color: #212529;
+  }
+  
+  .action-content p {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  /* 響應式設計 */
+  @media (max-width: 768px) {
+    .dashboard-header {
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .dashboard-header h1 {
+      font-size: 2rem;
+    }
+    
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .quality-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .comment-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .review-type {
+      justify-content: space-between;
+    }
+    
+    .action-buttons {
+      justify-content: stretch;
+    }
+    
+    .btn {
+      flex: 1;
+    }
+  }
+</style>
+
+<script>
+  // 更新進度指示器
+  function updateProgress() {
+    const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+    const checked = document.querySelectorAll('.checklist-item input[type="checkbox"]:checked');
+    const progress = document.getElementById('checklist-progress');
+    
+    if (progress) {
+      progress.textContent = `${checked.length}/${checkboxes.length}`;
+    }
+  }
+  
+  // 切換差異視圖
+  function toggleDiffView() {
+    const diffView = document.getElementById('diff-view');
+    const button = document.querySelector('.view-diff-btn');
+    
+    if (diffView.style.display === 'none') {
+      diffView.style.display = 'block';
+      button.textContent = '🔼 隱藏差異';
+    } else {
+      diffView.style.display = 'none';
+      button.textContent = '🔍 查看差異';
+    }
+  }
+  
+  // 載入差異內容
+  function loadDiffContent() {
+    const placeholder = document.querySelector('.diff-placeholder');
+    placeholder.innerHTML = '<p>📊 載入中...</p>';
+    
+    // 模擬載入差異內容
+    setTimeout(() => {
+      placeholder.innerHTML = `
+        <div class="diff-content">
+          <h4>📄 src/content/education/atrial-fibrillation-guide.md</h4>
+          <div class="diff-lines">
+            <div class="diff-line added">+ ## 新增章節：預防措施</div>
+            <div class="diff-line added">+ 預防心房顫動的方法包括...</div>
+            <div class="diff-line removed">- 舊的內容已被移除</div>
+            <div class="diff-line unchanged">  保持不變的內容</div>
+          </div>
+        </div>
+      `;
+    }, 1000);
+  }
+  
+  // 儲存草稿
+  function saveDraft() {
+    const textarea = document.getElementById('review-textarea');
+    const reviewType = document.querySelector('input[name="review-type"]:checked').value;
+    
+    const draft = {
+      content: textarea.value,
+      type: reviewType,
+      timestamp: new Date().toISOString()
+    };
+    
+    localStorage.setItem('review-draft', JSON.stringify(draft));
+    
+    // 顯示儲存成功訊息
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = '✅ 已儲存';
+    button.style.background = '#28a745';
+    
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.style.background = '';
+    }, 2000);
+  }
+  
+  // 提交審核
+  function submitReview() {
+    const textarea = document.getElementById('review-textarea');
+    const reviewType = document.querySelector('input[name="review-type"]:checked').value;
+    const checkedItems = document.querySelectorAll('.checklist-item input[type="checkbox"]:checked');
+    
+    if (!textarea.value.trim()) {
+      alert('請輸入審核意見');
+      return;
+    }
+    
+    if (checkedItems.length === 0) {
+      if (!confirm('您尚未完成任何檢查項目，確定要提交審核嗎？')) {
+        return;
+      }
+    }
+    
+    // 模擬提交審核
+    const button = event.target;
+    button.textContent = '🚀 提交中...';
+    button.disabled = true;
+    
+    setTimeout(() => {
+      alert(`審核已提交！\n類型: ${reviewType}\n意見: ${textarea.value}\n完成項目: ${checkedItems.length}`);
+      
+      // 清除草稿
+      localStorage.removeItem('review-draft');
+      
+      button.textContent = '✅ 已提交';
+      button.style.background = '#28a745';
+    }, 2000);
+  }
+  
+  // 載入儲存的草稿
+  function loadDraft() {
+    const draft = localStorage.getItem('review-draft');
+    if (draft) {
+      const data = JSON.parse(draft);
+      const textarea = document.getElementById('review-textarea');
+      const reviewTypeRadio = document.querySelector(`input[name="review-type"][value="${data.type}"]`);
+      
+      if (textarea) textarea.value = data.content;
+      if (reviewTypeRadio) reviewTypeRadio.checked = true;
+    }
+  }
+  
+  // 格式化時間顯示
+  function formatTime() {
+    const timeElement = document.getElementById('created-time');
+    if (timeElement) {
+      const time = new Date(timeElement.textContent);
+      timeElement.textContent = time.toLocaleString('zh-TW');
+    }
+  }
+  
+  // 初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    updateProgress();
+    loadDraft();
+    formatTime();
+    
+    // 自動儲存草稿
+    const textarea = document.getElementById('review-textarea');
+    if (textarea) {
+      textarea.addEventListener('input', function() {
+        clearTimeout(this.saveTimeout);
+        this.saveTimeout = setTimeout(() => {
+          const reviewType = document.querySelector('input[name="review-type"]:checked').value;
+          const draft = {
+            content: this.value,
+            type: reviewType,
+            timestamp: new Date().toISOString()
+          };
+          localStorage.setItem('review-draft', JSON.stringify(draft));
+        }, 2000);
+      });
+    }
+  });
+</script>

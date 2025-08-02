@@ -1,0 +1,394 @@
+{
+  "id": "bmi",
+  "name": {
+    "zh-TW": "BMI 身體質量指數計算機",
+    "en": "BMI Body Mass Index Calculator",
+    "ja": "BMI 体格指数計算機"
+  },
+  "description": {
+    "zh-TW": "計算身體質量指數 (BMI) 並評估體重狀態，協助評估肥胖相關健康風險。",
+    "en": "Calculate Body Mass Index (BMI) and assess weight status to help evaluate obesity-related health risks.",
+    "ja": "体格指数 (BMI) を計算し、体重状態を評価して肥満関連の健康リスクを評価します。"
+  },
+  "category": "general",
+  "fields": [
+    {
+      "id": "weight",
+      "type": "number",
+      "label": {
+        "zh-TW": "體重 (Weight)",
+        "en": "Weight",
+        "ja": "体重"
+      },
+      "helpText": {
+        "zh-TW": "請輸入您的體重，單位為公斤",
+        "en": "Enter your weight in kilograms",
+        "ja": "体重をキログラムで入力してください"
+      },
+      "unit": "kg",
+      "placeholder": {
+        "zh-TW": "例如：70",
+        "en": "e.g., 70",
+        "ja": "例：70"
+      },
+      "validation": {
+        "required": true,
+        "min": 20,
+        "max": 300,
+        "step": 0.1,
+        "errorMessage": {
+          "zh-TW": "請輸入有效的體重 (20-300 公斤)",
+          "en": "Please enter a valid weight (20-300 kg)",
+          "ja": "有効な体重を入力してください (20-300 kg)"
+        }
+      }
+    },
+    {
+      "id": "height",
+      "type": "number",
+      "label": {
+        "zh-TW": "身高 (Height)",
+        "en": "Height",
+        "ja": "身長"
+      },
+      "helpText": {
+        "zh-TW": "請輸入您的身高，單位為公分",
+        "en": "Enter your height in centimeters",
+        "ja": "身長をセンチメートルで入力してください"
+      },
+      "unit": "cm",
+      "placeholder": {
+        "zh-TW": "例如：170",
+        "en": "e.g., 170",
+        "ja": "例：170"
+      },
+      "validation": {
+        "required": true,
+        "min": 100,
+        "max": 250,
+        "step": 0.1,
+        "errorMessage": {
+          "zh-TW": "請輸入有效的身高 (100-250 公分)",
+          "en": "Please enter a valid height (100-250 cm)",
+          "ja": "有効な身長を入力してください (100-250 cm)"
+        }
+      }
+    },
+    {
+      "id": "age",
+      "type": "number",
+      "label": {
+        "zh-TW": "年齡 (Age)",
+        "en": "Age",
+        "ja": "年齢"
+      },
+      "helpText": {
+        "zh-TW": "年齡用於提供更精確的健康建議",
+        "en": "Age is used to provide more accurate health recommendations",
+        "ja": "年齢はより正確な健康アドバイスを提供するために使用されます"
+      },
+      "unit": "歲",
+      "placeholder": {
+        "zh-TW": "例如：30",
+        "en": "e.g., 30",
+        "ja": "例：30"
+      },
+      "validation": {
+        "required": false,
+        "min": 2,
+        "max": 120,
+        "step": 1
+      }
+    },
+    {
+      "id": "gender",
+      "type": "select",
+      "label": {
+        "zh-TW": "性別 (Gender)",
+        "en": "Gender",
+        "ja": "性別"
+      },
+      "helpText": {
+        "zh-TW": "性別用於提供更個人化的健康建議",
+        "en": "Gender is used to provide more personalized health recommendations",
+        "ja": "性別はより個人化された健康アドバイスを提供するために使用されます"
+      },
+      "options": [
+        {
+          "value": "male",
+          "label": {
+            "zh-TW": "男性",
+            "en": "Male",
+            "ja": "男性"
+          }
+        },
+        {
+          "value": "female",
+          "label": {
+            "zh-TW": "女性",
+            "en": "Female",
+            "ja": "女性"
+          }
+        }
+      ],
+      "validation": {
+        "required": false
+      }
+    }
+  ],
+  "calculationFunction": "calculateBMI",
+  "validationRules": {
+    "maxScore": 50,
+    "minScore": 10,
+    "requiredFields": ["weight", "height"]
+  },
+  "interpretation": [
+    {
+      "range": [0, 16],
+      "risk": "critical",
+      "recommendation": {
+        "zh-TW": "嚴重體重不足：BMI 過低可能表示營養不良或其他健康問題，建議立即諮詢醫師。",
+        "en": "Severely underweight: Very low BMI may indicate malnutrition or other health issues. Immediate medical consultation recommended.",
+        "ja": "重度の低体重：BMIが非常に低い場合、栄養失調や他の健康問題を示している可能性があります。直ちに医師に相談することをお勧めします。"
+      },
+      "color": "#dc2626",
+      "icon": "exclamation",
+      "actionItems": [
+        {
+          "zh-TW": "立即諮詢醫師或營養師",
+          "en": "Consult a doctor or nutritionist immediately",
+          "ja": "直ちに医師または栄養士に相談"
+        },
+        {
+          "zh-TW": "評估是否有潛在疾病",
+          "en": "Assess for underlying medical conditions",
+          "ja": "潜在的な疾患の評価"
+        },
+        {
+          "zh-TW": "制定營養補充計劃",
+          "en": "Develop a nutritional supplementation plan",
+          "ja": "栄養補給計画の策定"
+        }
+      ]
+    },
+    {
+      "range": [16, 18.5],
+      "risk": "moderate",
+      "recommendation": {
+        "zh-TW": "體重不足：建議增加營養攝取，適當增重以達到健康體重範圍。",
+        "en": "Underweight: Recommend increasing nutritional intake and appropriate weight gain to reach healthy weight range.",
+        "ja": "低体重：栄養摂取を増やし、健康的な体重範囲に達するために適切な体重増加をお勧めします。"
+      },
+      "color": "#f59e0b",
+      "icon": "exclamation-triangle",
+      "actionItems": [
+        {
+          "zh-TW": "諮詢營養師制定增重計劃",
+          "en": "Consult nutritionist for weight gain plan",
+          "ja": "栄養士に相談して体重増加計画を立てる"
+        },
+        {
+          "zh-TW": "增加健康的高熱量食物",
+          "en": "Increase healthy high-calorie foods",
+          "ja": "健康的な高カロリー食品を増やす"
+        },
+        {
+          "zh-TW": "定期監測體重變化",
+          "en": "Monitor weight changes regularly",
+          "ja": "体重変化を定期的に監視"
+        }
+      ]
+    },
+    {
+      "range": [18.5, 25],
+      "risk": "low",
+      "recommendation": {
+        "zh-TW": "正常體重：恭喜！您的體重在健康範圍內，請維持均衡飲食和規律運動。",
+        "en": "Normal weight: Congratulations! Your weight is in the healthy range. Maintain balanced diet and regular exercise.",
+        "ja": "正常体重：おめでとうございます！あなたの体重は健康的な範囲内です。バランスの取れた食事と定期的な運動を維持してください。"
+      },
+      "color": "#22c55e",
+      "icon": "check-circle",
+      "actionItems": [
+        {
+          "zh-TW": "維持均衡飲食",
+          "en": "Maintain balanced diet",
+          "ja": "バランスの取れた食事を維持"
+        },
+        {
+          "zh-TW": "保持規律運動習慣",
+          "en": "Keep regular exercise routine",
+          "ja": "定期的な運動習慣を保つ"
+        },
+        {
+          "zh-TW": "定期健康檢查",
+          "en": "Regular health check-ups",
+          "ja": "定期的な健康診断"
+        }
+      ]
+    },
+    {
+      "range": [25, 30],
+      "risk": "moderate",
+      "recommendation": {
+        "zh-TW": "體重過重：建議透過飲食控制和增加運動來減重，降低慢性疾病風險。",
+        "en": "Overweight: Recommend weight loss through diet control and increased exercise to reduce chronic disease risk.",
+        "ja": "過体重：食事制限と運動量の増加による減量をお勧めし、慢性疾患のリスクを軽減します。"
+      },
+      "color": "#f59e0b",
+      "icon": "exclamation-triangle",
+      "actionItems": [
+        {
+          "zh-TW": "制定健康的減重計劃",
+          "en": "Develop healthy weight loss plan",
+          "ja": "健康的な減量計画を立てる"
+        },
+        {
+          "zh-TW": "增加身體活動量",
+          "en": "Increase physical activity",
+          "ja": "身体活動量を増やす"
+        },
+        {
+          "zh-TW": "監測血壓、血糖等指標",
+          "en": "Monitor blood pressure, glucose levels",
+          "ja": "血圧、血糖値などを監視"
+        }
+      ]
+    },
+    {
+      "range": [30, 35],
+      "risk": "high",
+      "recommendation": {
+        "zh-TW": "輕度肥胖：建議積極減重並諮詢醫師，評估相關健康風險和治療選項。",
+        "en": "Class I Obesity: Recommend active weight loss and medical consultation to assess health risks and treatment options.",
+        "ja": "クラスI肥満：積極的な減量と医師への相談をお勧めし、健康リスクと治療選択肢を評価します。"
+      },
+      "color": "#ef4444",
+      "icon": "exclamation",
+      "actionItems": [
+        {
+          "zh-TW": "諮詢醫師評估健康風險",
+          "en": "Consult doctor to assess health risks",
+          "ja": "医師に相談して健康リスクを評価"
+        },
+        {
+          "zh-TW": "考慮專業減重計劃",
+          "en": "Consider professional weight loss program",
+          "ja": "専門的な減量プログラムを検討"
+        },
+        {
+          "zh-TW": "檢查代謝症候群指標",
+          "en": "Check metabolic syndrome markers",
+          "ja": "メタボリックシンドロームの指標をチェック"
+        }
+      ]
+    },
+    {
+      "range": [35, 40],
+      "risk": "high",
+      "recommendation": {
+        "zh-TW": "中度肥胖：強烈建議醫療介入，可能需要藥物治療或其他醫療協助。",
+        "en": "Class II Obesity: Strongly recommend medical intervention, may need medication or other medical assistance.",
+        "ja": "クラスII肥満：医療介入を強くお勧めし、薬物治療やその他の医療支援が必要な場合があります。"
+      },
+      "color": "#dc2626",
+      "icon": "exclamation",
+      "actionItems": [
+        {
+          "zh-TW": "尋求專業醫療協助",
+          "en": "Seek professional medical help",
+          "ja": "専門的な医療支援を求める"
+        },
+        {
+          "zh-TW": "評估減重手術適應症",
+          "en": "Evaluate bariatric surgery candidacy",
+          "ja": "減量手術の適応を評価"
+        },
+        {
+          "zh-TW": "密切監測併發症",
+          "en": "Closely monitor complications",
+          "ja": "合併症を密接に監視"
+        }
+      ]
+    },
+    {
+      "range": [40, 100],
+      "risk": "critical",
+      "recommendation": {
+        "zh-TW": "重度肥胖：需要立即且積極的醫療介入，包括考慮減重手術等治療選項。",
+        "en": "Class III Obesity: Requires immediate and aggressive medical intervention, including consideration of bariatric surgery.",
+        "ja": "クラスIII肥満：減量手術の検討を含む、即座かつ積極的な医療介入が必要です。"
+      },
+      "color": "#dc2626",
+      "icon": "exclamation",
+      "actionItems": [
+        {
+          "zh-TW": "立即尋求專科醫師治療",
+          "en": "Seek immediate specialist treatment",
+          "ja": "直ちに専門医の治療を求める"
+        },
+        {
+          "zh-TW": "評估減重手術選項",
+          "en": "Evaluate bariatric surgery options",
+          "ja": "減量手術の選択肢を評価"
+        },
+        {
+          "zh-TW": "全面健康風險評估",
+          "en": "Comprehensive health risk assessment",
+          "ja": "包括的な健康リスク評価"
+        }
+      ]
+    }
+  ],
+  "clinicalGuidelines": {
+    "zh-TW": "根據世界衛生組織 (WHO) 和台灣衛生福利部的標準，BMI 是評估成人體重狀態的重要指標。正常 BMI 範圍為 18.5-24.9 kg/m²。BMI ≥27 被定義為肥胖，需要積極的健康管理。",
+    "en": "According to World Health Organization (WHO) standards, BMI is an important indicator for assessing adult weight status. Normal BMI range is 18.5-24.9 kg/m². BMI ≥30 is defined as obesity requiring active health management.",
+    "ja": "世界保健機関（WHO）の基準によると、BMIは成人の体重状態を評価する重要な指標です。正常なBMI範囲は18.5-24.9 kg/m²です。BMI≥25は過体重、BMI≥30は肥満と定義され、積極的な健康管理が必要です。"
+  },
+  "evidenceLevel": "A",
+  "references": [
+    {
+      "title": "Obesity: preventing and managing the global epidemic",
+      "authors": ["WHO Expert Committee"],
+      "journal": "World Health Organization Technical Report Series",
+      "year": 2000,
+      "volume": "894",
+      "pages": "i-xii, 1-253",
+      "pmid": "11234459"
+    },
+    {
+      "title": "Clinical Guidelines on the Identification, Evaluation, and Treatment of Overweight and Obesity in Adults",
+      "authors": ["NHLBI Obesity Education Initiative"],
+      "journal": "National Heart, Lung, and Blood Institute",
+      "year": 1998,
+      "url": "https://www.nhlbi.nih.gov/guidelines/obesity/ob_gdlns.pdf"
+    },
+    {
+      "title": "Body mass index and mortality among 1.46 million white adults",
+      "authors": ["Berrington de Gonzalez A", "Hartge P", "Cerhan JR"],
+      "journal": "New England Journal of Medicine",
+      "year": 2010,
+      "volume": "363",
+      "pages": "2211-2219",
+      "doi": "10.1056/NEJMoa1000367",
+      "pmid": "21121834"
+    }
+  ],
+  "tags": ["BMI", "body mass index", "obesity", "weight management", "health assessment"],
+  "medicalSpecialties": ["general", "internal-medicine", "endocrinology"],
+  "difficulty": "basic",
+  "isActive": true,
+  "isFeatured": true,
+  "lastUpdated": "2024-01-15T00:00:00.000Z",
+  "seoTitle": {
+    "zh-TW": "BMI 計算機 - 身體質量指數計算器 | 體重健康評估工具",
+    "en": "BMI Calculator - Body Mass Index Calculator | Weight Health Assessment Tool",
+    "ja": "BMI計算機 - 体格指数計算器 | 体重健康評価ツール"
+  },
+  "seoDescription": {
+    "zh-TW": "免費的 BMI 身體質量指數計算機，快速評估您的體重狀態和健康風險。提供個人化的健康建議和體重管理指導。",
+    "en": "Free BMI Body Mass Index calculator to quickly assess your weight status and health risks. Provides personalized health recommendations and weight management guidance.",
+    "ja": "無料のBMI体格指数計算機で、体重状態と健康リスクを迅速に評価。個人化された健康アドバイスと体重管理ガイダンスを提供。"
+  },
+  "keywords": ["BMI", "身體質量指數", "體重計算", "肥胖評估", "健康指標", "body mass index", "weight calculator", "obesity assessment"]
+}

@@ -1,0 +1,486 @@
+/**
+ * 計算結果展示引擎樣式
+ */
+
+/* ============================================================================
+   基礎結果樣式
+   ============================================================================ */
+
+.calculator-results {
+  @apply w-full space-y-6;
+}
+
+.calculator-results-title {
+  @apply text-xl font-bold text-medical-neutral-900 mb-4;
+}
+
+.calculator-results-description {
+  @apply text-medical-neutral-600 mb-6 leading-relaxed;
+}
+
+.calculator-results-content {
+  @apply space-y-6;
+}
+
+/* ============================================================================
+   佈局樣式
+   ============================================================================ */
+
+/* 單一佈局 */
+.calculator-results-single .calculator-results-content {
+  @apply space-y-4;
+}
+
+/* 網格佈局 */
+.results-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+/* 標籤頁佈局 */
+.results-tabs {
+  @apply space-y-4;
+}
+
+.results-tab-list {
+  @apply flex flex-wrap border-b border-medical-neutral-200;
+}
+
+.results-tab {
+  @apply px-4 py-2 text-sm font-medium text-medical-neutral-600 hover:text-medical-neutral-900 hover:border-medical-neutral-300 border-b-2 border-transparent transition-colors duration-200;
+}
+
+.results-tab.active {
+  @apply text-medical-primary-600 border-medical-primary-600;
+}
+
+.results-tab-content {
+  @apply pt-6;
+}
+
+/* 手風琴佈局 */
+.results-accordion {
+  @apply space-y-2;
+}
+
+.results-accordion-section {
+  @apply bg-white rounded-lg border border-medical-neutral-200 overflow-hidden;
+}
+
+.results-accordion-toggle {
+  @apply w-full px-6 py-4 text-left bg-medical-neutral-50 hover:bg-medical-neutral-100 transition-colors duration-200 flex items-center justify-between;
+}
+
+.accordion-icon {
+  @apply text-medical-neutral-500 transition-transform duration-200;
+}
+
+.accordion-icon.expanded {
+  @apply transform rotate-180;
+}
+
+.results-accordion-content {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.results-accordion-content.expanded {
+  @apply p-6;
+}
+
+.results-accordion-content.collapsed {
+  @apply max-h-0 overflow-hidden;
+}
+
+/* ============================================================================
+   結果顯示組件樣式
+   ============================================================================ */
+
+.result-display {
+  @apply bg-white rounded-lg border border-medical-neutral-200 p-6;
+}
+
+.result-display-card {
+  @apply p-0 border-0; /* 讓 ResultCard 自己處理樣式 */
+}
+
+.result-display-indicator {
+  @apply flex items-center justify-center;
+}
+
+.result-display-chart {
+  @apply p-4;
+}
+
+.result-display-table {
+  @apply p-0;
+}
+
+.result-display-text {
+  @apply text-center;
+}
+
+.result-display-default {
+  @apply text-center;
+}
+
+/* ============================================================================
+   表格樣式
+   ============================================================================ */
+
+.result-table table {
+  @apply w-full border-collapse;
+}
+
+.result-table td {
+  @apply border border-medical-neutral-300 px-4 py-2;
+}
+
+.result-table td:first-child {
+  @apply bg-medical-neutral-50 font-medium;
+}
+
+/* ============================================================================
+   文字顯示樣式
+   ============================================================================ */
+
+.result-text h4 {
+  @apply text-lg font-semibold text-medical-neutral-900 mb-2;
+}
+
+.result-text p {
+  @apply text-medical-neutral-600 mb-4;
+}
+
+.result-text .text-2xl {
+  @apply text-medical-primary-600;
+}
+
+/* ============================================================================
+   功能按鈕樣式
+   ============================================================================ */
+
+.result-actions {
+  @apply flex flex-wrap gap-4 mb-6 p-4 bg-medical-neutral-50 rounded-lg;
+}
+
+.result-action-group {
+  @apply flex gap-2;
+}
+
+.result-action-button {
+  @apply px-3 py-2 text-sm font-medium text-medical-neutral-700 bg-white border border-medical-neutral-300 rounded-md hover:bg-medical-neutral-50 hover:border-medical-neutral-400 focus:outline-none focus:ring-2 focus:ring-medical-primary-500 focus:ring-offset-2 transition-colors duration-200;
+}
+
+.result-action-button:hover {
+  @apply transform translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   結果解釋和建議樣式
+   ============================================================================ */
+
+.result-interpretation,
+.result-recommendations,
+.result-references {
+  @apply bg-white rounded-lg border border-medical-neutral-200 p-6 mt-6;
+}
+
+.result-interpretation-title,
+.result-recommendations-title,
+.result-references-title {
+  @apply text-lg font-semibold text-medical-neutral-900 mb-3;
+}
+
+.result-interpretation-content {
+  @apply text-medical-neutral-700 leading-relaxed;
+}
+
+.result-recommendations-list {
+  @apply space-y-2;
+}
+
+.result-recommendations-item {
+  @apply flex items-start text-medical-neutral-700;
+}
+
+.result-recommendations-item::before {
+  content: "•";
+  @apply text-medical-primary-600 font-bold mr-3 mt-1 flex-shrink-0;
+}
+
+.result-references-list {
+  @apply space-y-2 counter-reset: reference-counter;
+}
+
+.result-references-item {
+  @apply text-sm text-medical-neutral-600 leading-relaxed counter-increment: reference-counter;
+}
+
+.result-references-item::before {
+  content: counter(reference-counter) ". ";
+  @apply font-medium text-medical-neutral-700;
+}
+
+/* ============================================================================
+   主題樣式
+   ============================================================================ */
+
+/* 預設主題 */
+.calculator-results-default {
+  /* 使用預設樣式 */
+}
+
+/* 醫療主題 */
+.calculator-results-medical {
+  @apply bg-gradient-to-br from-medical-primary-50 to-medical-secondary-50;
+}
+
+.calculator-results-medical .result-display {
+  @apply border-medical-primary-200 shadow-md;
+}
+
+.calculator-results-medical .result-action-button {
+  @apply border-medical-primary-300 text-medical-primary-700 hover:bg-medical-primary-50;
+}
+
+/* 簡約主題 */
+.calculator-results-minimal {
+  @apply bg-white;
+}
+
+.calculator-results-minimal .result-display {
+  @apply border-0 shadow-none bg-transparent;
+}
+
+.calculator-results-minimal .result-action-button {
+  @apply border-0 bg-transparent hover:bg-medical-neutral-100;
+}
+
+/* 深色主題 */
+.calculator-results-dark {
+  @apply bg-medical-neutral-900 text-medical-neutral-100;
+}
+
+.calculator-results-dark .calculator-results-title {
+  @apply text-medical-neutral-100;
+}
+
+.calculator-results-dark .calculator-results-description {
+  @apply text-medical-neutral-300;
+}
+
+.calculator-results-dark .result-display {
+  @apply bg-medical-neutral-800 border-medical-neutral-700;
+}
+
+.calculator-results-dark .result-action-button {
+  @apply bg-medical-neutral-700 border-medical-neutral-600 text-medical-neutral-200 hover:bg-medical-neutral-600;
+}
+
+/* ============================================================================
+   響應式設計
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .results-grid {
+    @apply grid-cols-1;
+  }
+  
+  .results-tab-list {
+    @apply flex-col;
+  }
+  
+  .results-tab {
+    @apply border-b-0 border-r-2 text-left;
+  }
+  
+  .result-actions {
+    @apply flex-col gap-2;
+  }
+  
+  .result-action-group {
+    @apply justify-center;
+  }
+  
+  .results-accordion-toggle {
+    @apply px-4 py-3;
+  }
+  
+  .results-accordion-content.expanded {
+    @apply p-4;
+  }
+}
+
+@media (max-width: 640px) {
+  .calculator-results-title {
+    @apply text-lg;
+  }
+  
+  .result-display {
+    @apply p-4;
+  }
+  
+  .result-interpretation,
+  .result-recommendations,
+  .result-references {
+    @apply p-4;
+  }
+}
+
+/* ============================================================================
+   深色模式支援
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .calculator-results:not(.calculator-results-dark) {
+    @apply bg-medical-neutral-900 text-medical-neutral-100;
+  }
+  
+  .calculator-results:not(.calculator-results-dark) .calculator-results-title {
+    @apply text-medical-neutral-100;
+  }
+  
+  .calculator-results:not(.calculator-results-dark) .calculator-results-description {
+    @apply text-medical-neutral-300;
+  }
+  
+  .calculator-results:not(.calculator-results-dark) .result-display {
+    @apply bg-medical-neutral-800 border-medical-neutral-700;
+  }
+  
+  .calculator-results:not(.calculator-results-dark) .results-tab {
+    @apply text-medical-neutral-300 hover:text-medical-neutral-100 border-medical-neutral-700;
+  }
+  
+  .calculator-results:not(.calculator-results-dark) .results-tab.active {
+    @apply text-medical-primary-400 border-medical-primary-400;
+  }
+  
+  .calculator-results:not(.calculator-results-dark) .results-accordion-toggle {
+    @apply bg-medical-neutral-700 hover:bg-medical-neutral-600;
+  }
+  
+  .calculator-results:not(.calculator-results-dark) .result-action-button {
+    @apply bg-medical-neutral-700 border-medical-neutral-600 text-medical-neutral-200 hover:bg-medical-neutral-600;
+  }
+}
+
+/* ============================================================================
+   動畫效果
+   ============================================================================ */
+
+.result-display {
+  animation: resultFadeIn 0.3s ease-out;
+}
+
+@keyframes resultFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.results-tab-content {
+  animation: tabContentFadeIn 0.2s ease-out;
+}
+
+@keyframes tabContentFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.results-accordion-content.expanded {
+  animation: accordionExpand 0.3s ease-out;
+}
+
+@keyframes accordionExpand {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+/* ============================================================================
+   無障礙支援
+   ============================================================================ */
+
+.results-tab:focus,
+.results-accordion-toggle:focus,
+.result-action-button:focus {
+  @apply ring-2 ring-offset-2 ring-medical-primary-500 outline-none;
+}
+
+/* 高對比模式支援 */
+@media (prefers-contrast: high) {
+  .result-display {
+    @apply border-2 border-black;
+  }
+  
+  .result-action-button {
+    @apply border-2 border-black;
+  }
+  
+  .results-tab.active {
+    @apply border-b-4;
+  }
+}
+
+/* 減少動畫偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .result-display,
+  .results-tab-content,
+  .results-accordion-content,
+  .accordion-icon,
+  .result-action-button {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ============================================================================
+   列印樣式
+   ============================================================================ */
+
+@media print {
+  .calculator-results {
+    @apply text-black bg-white;
+  }
+  
+  .result-actions {
+    @apply hidden;
+  }
+  
+  .results-accordion-content.collapsed {
+    @apply max-h-none overflow-visible p-6;
+  }
+  
+  .results-tab-list {
+    @apply hidden;
+  }
+  
+  .results-tab-content {
+    @apply block;
+  }
+  
+  .result-display {
+    @apply border border-black bg-white break-inside-avoid;
+  }
+  
+  .result-interpretation,
+  .result-recommendations,
+  .result-references {
+    @apply border border-black bg-white break-inside-avoid;
+  }
+}

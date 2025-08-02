@@ -1,0 +1,495 @@
+---
+/**
+ * 教育內容總覽頁面
+ * 展示所有衛教資源，支援分類瀏覽和篩選
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增 SOP 工作流程支援
+ * - 過濾已發布內容（status: 'published'）
+ * - 顯示文章統計（包含狀態分布）
+ * - 新增版本和作者資訊顯示
+ * - 優化 SEO 元資料和結構化資料
+ * 
+ * 需求對應：
+ * - 需求 7.1: 多語言支援機制 ✓
+ * - 需求 8.3: 效能監控和分析 ✓
+ */
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentFreshnessIndicator from '../../components/ContentFreshnessIndicator.astro';
+import { getCollection } from 'astro:content';
+import { calculateReadingTime, formatDate, t } from '../../utils/i18n';
+import type { SupportedLocale } from '../../env.d';
+
+const locale: SupportedLocale = 'zh-TW'; // 這裡應該從路由中獲取
+
+// 獲取所有教育內容並過濾已發布的內容
+const allEducationEntries = await getCollection('education');
+
+// 根據環境決定是否顯示非發布內容
+const isDevelopment = import.meta.env.DEV;
+
+// 過濾內容：生產環境只顯示已發布內容，開發環境顯示所有內容
+const filteredEducation = allEducationEntries.filter(entry => {
+  if (isDevelopment) {
+    return entry.data.isActive !== false; // 開發環境顯示所有啟用的內容
+  }
+  return entry.data.status === 'published' && entry.data.isActive !== false;
+});
+
+// 分類處理
+const featuredEducation = filteredEducation.filter(entry => entry.data.isFeatured);
+const patientFriendlyEducation = filteredEducation.filter(entry => entry.data.patientFriendly);
+const professionalEducation = filteredEducation.filter(entry => entry.data.professionalLevel);
+
+const breadcrumbs = [
+  { label: t('nav.home', locale), href: '/' },
+  { label: t('nav.education', locale) }
+];
+
+// 按分類分組教育內容
+const educationByCategory = filteredEducation.reduce((acc, entry) => {
+  const category = entry.data.category;
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(entry);
+  return acc;
+}, {} as Record<string, typeof filteredEducation>);
+
+// 按醫療專科分組
+const educationBySpecialty = filteredEducation.reduce((acc, entry) => {
+  entry.data.medicalSpecialties.forEach(specialty => {
+    if (!acc[specialty]) {
+      acc[specialty] = [];
+    }
+    acc[specialty].push(entry);
+  });
+  return acc;
+}, {} as Record<string, typeof filteredEducation>);
+
+// SOP 統計資料
+const sopStats = {
+  total: allEducationEntries.length,
+  published: allEducationEntries.filter(e => e.data.status === 'published').length,
+  inReview: allEducationEntries.filter(e => e.data.status === 'in-review').length,
+  draft: allEducationEntries.filter(e => e.data.status === 'draft').length,
+  needsRevision: allEducationEntries.filter(e => e.data.status === 'needs-revision').length,
+  qualityCheck: allEducationEntries.filter(e => e.data.status === 'quality-check').length,
+  readyToPublish: allEducationEntries.filter(e => e.data.status === 'ready-to-publish').length
+};
+
+// 分類配置
+const categoryConfig = {
+  'disease': { label: '疾病資訊', icon: '🏥', color: 'red', description: '各種疾病的症狀、診斷和治療資訊' },
+  'treatment': { label: '治療指引', icon: '💊', color: 'blue', description: '治療方法和用藥指導' },
+  'prevention': { label: '預防保健', icon: '🛡️', color: 'green', description: '疾病預防和健康維護' },
+  'procedure': { label: '醫療程序', icon: '🔬', color: 'purple', description: '檢查和手術程序說明' },
+  'medication': { label: '藥物資訊', icon: '💉', color: 'orange', description: '藥物使用和副作用' },
+  'lifestyle': { label: '生活方式', icon: '🏃', color: 'teal', description: '健康生活方式建議' }
+};
+
+const specialtyConfig = {
+  'cardiology': { label: '心臟科', icon: '❤️' },
+  'neurology': { label: '神經科', icon: '🧠' },
+  'emergency': { label: '急診醫學', icon: '🚨' },
+  'internal-medicine': { label: '內科', icon: '🩺' },
+  'surgery': { label: '外科', icon: '🔪' },
+  'pediatrics': { label: '小兒科', icon: '👶' },
+  'general': { label: '一般醫學', icon: '📋' }
+};
+
+const getDifficultyBadge = (difficulty: string) => {
+  switch (difficulty) {
+    case 'basic': return { label: '基礎', color: 'bg-green-100 text-green-800' };
+    case 'intermediate': return { label: '中級', color: 'bg-yellow-100 text-yellow-800' };
+    case 'advanced': return { label: '進階', color: 'bg-red-100 text-red-800' };
+    default: return { label: '基礎', color: 'bg-gray-100 text-gray-800' };
+  }
+};
+---
+
+<BaseLayout 
+  title="醫療衛教資源"
+  description="專業的醫療衛教內容，包含疾病資訊、治療指引、預防保健等豐富的健康教育資源"
+  locale={locale}
+  medicalContent={true}
+  pageType="education"
+  breadcrumbs={breadcrumbs}
+>
+  <main class="container mx-auto px-4 py-8">
+    <!-- 頁面標題 -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-medical-neutral-900 mb-4">
+        醫療衛教資源
+      </h1>
+      <p class="text-xl text-medical-neutral-600 max-w-3xl mx-auto">
+        提供專業、準確、易懂的醫療健康資訊，幫助患者和家屬更好地了解疾病和治療
+      </p>
+    </div>
+
+    <!-- 統計概覽 -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6 text-center">
+        <div class="text-3xl font-bold text-medical-primary-600 mb-2">
+          {sopStats.published}
+        </div>
+        <div class="text-sm text-medical-neutral-600">已發布文章</div>
+        {isDevelopment && (
+          <div class="text-xs text-medical-neutral-500 mt-1">
+            總計: {sopStats.total}
+          </div>
+        )}
+      </div>
+      
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6 text-center">
+        <div class="text-3xl font-bold text-medical-success-600 mb-2">
+          {patientFriendlyEducation.length}
+        </div>
+        <div class="text-sm text-medical-neutral-600">病患友善</div>
+      </div>
+      
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6 text-center">
+        <div class="text-3xl font-bold text-medical-warning-600 mb-2">
+          {professionalEducation.length}
+        </div>
+        <div class="text-sm text-medical-neutral-600">專業級內容</div>
+      </div>
+      
+      <div class="bg-white rounded-lg border border-medical-neutral-200 p-6 text-center">
+        <div class="text-3xl font-bold text-medical-error-600 mb-2">
+          {Object.keys(educationByCategory).length}
+        </div>
+        <div class="text-sm text-medical-neutral-600">內容分類</div>
+      </div>
+    </div>
+
+    <!-- SOP 工作流程統計（僅開發環境顯示） -->
+    {isDevelopment && (
+      <div class="bg-medical-neutral-50 rounded-lg p-6 mb-12">
+        <h2 class="text-lg font-semibold text-medical-neutral-900 mb-4 flex items-center">
+          <svg class="h-5 w-5 text-medical-primary-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          SOP 工作流程統計 (開發環境)
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">{sopStats.published}</div>
+            <div class="text-xs text-medical-neutral-600">已發布</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">{sopStats.inReview}</div>
+            <div class="text-xs text-medical-neutral-600">審核中</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-gray-600">{sopStats.draft}</div>
+            <div class="text-xs text-medical-neutral-600">草稿</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-yellow-600">{sopStats.needsRevision}</div>
+            <div class="text-xs text-medical-neutral-600">需修改</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-purple-600">{sopStats.qualityCheck}</div>
+            <div class="text-xs text-medical-neutral-600">品質檢查</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-orange-600">{sopStats.readyToPublish}</div>
+            <div class="text-xs text-medical-neutral-600">準備發布</div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- 精選內容 -->
+    {featuredEducation.length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-medical-neutral-900 mb-6 flex items-center">
+          <svg class="h-6 w-6 text-medical-warning-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+          精選內容
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredEducation.slice(0, 6).map(entry => {
+            const edu = entry.data;
+            const category = categoryConfig[edu.category] || { label: edu.category, icon: '📄', color: 'gray' };
+            const difficulty = getDifficultyBadge(edu.difficulty);
+            const readingTime = edu.readingTime || 5;
+            
+            return (
+              <article class="bg-white rounded-lg border border-medical-neutral-200 hover:shadow-lg transition-shadow group">
+                <div class="p-6">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="text-2xl">{category.icon}</div>
+                    <div class="flex flex-wrap gap-1">
+                      <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${difficulty.color}`}>
+                        {difficulty.label}
+                      </span>
+                      {edu.patientFriendly && (
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-medical-success-100 text-medical-success-800">
+                          病患友善
+                        </span>
+                      )}
+                      {isDevelopment && edu.status !== 'published' && (
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          {edu.status === 'draft' ? '草稿' :
+                           edu.status === 'in-review' ? '審核中' :
+                           edu.status === 'needs-revision' ? '需修改' :
+                           edu.status === 'quality-check' ? '品質檢查' :
+                           edu.status === 'ready-to-publish' ? '準備發布' : edu.status}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2 group-hover:text-medical-primary-600 transition-colors">
+                    <a href={`/education/${entry.slug}`}>
+                      {edu.title?.[locale] || edu.title?.['zh-TW'] || entry.slug}
+                    </a>
+                  </h3>
+                  
+                  {edu.excerpt && (
+                    <p class="text-medical-neutral-600 text-sm mb-4 line-clamp-2">
+                      {edu.excerpt?.[locale] || edu.excerpt?.['zh-TW'] || ''}
+                    </p>
+                  )}
+                  
+                  <div class="flex items-center justify-between text-xs text-medical-neutral-500">
+                    <div class="flex items-center space-x-4">
+                      <span class="flex items-center">
+                        <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {readingTime} 分鐘
+                      </span>
+                      <span class="capitalize">{category.label}</span>
+                      {edu.version && (
+                        <span class="text-medical-neutral-400">v{edu.version}</span>
+                      )}
+                    </div>
+                    <a 
+                      href={`/education/${entry.slug}`}
+                      class="text-medical-primary-600 hover:text-medical-primary-700 font-medium transition-colors"
+                    >
+                      閱讀 →
+                    </a>
+                  </div>
+                  
+                  {/* 內容新鮮度指示器 */}
+                  <div class="mt-3 pt-3 border-t border-medical-neutral-100">
+                    <ContentFreshnessIndicator
+                      lastUpdated={edu.lastUpdated}
+                      nextReviewDate={edu.nextReviewDate}
+                      publishedAt={edu.workflowTimestamps?.publishedAt}
+                      category={edu.category}
+                      medicalSpecialties={edu.medicalSpecialties}
+                      locale={locale}
+                      showInline={true}
+                    />
+                  </div>
+                  
+                  {/* 作者和更新資訊 */}
+                  {(edu.author || edu.lastUpdated) && (
+                    <div class="mt-2">
+                      <div class="flex items-center justify-between text-xs text-medical-neutral-400">
+                        {edu.author && (
+                          <span>作者: {edu.author?.[locale] || edu.author?.['zh-TW'] || '未知'}</span>
+                        )}
+                        {edu.lastUpdated && (
+                          <span>更新: {formatDate(edu.lastUpdated, locale)}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <!-- 按分類瀏覽 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-medical-neutral-900 mb-6 flex items-center">
+        <svg class="h-6 w-6 text-medical-primary-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        按內容分類
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Object.entries(educationByCategory).map(([categoryKey, articles]) => {
+          const category = categoryConfig[categoryKey] || { label: categoryKey, icon: '📄', color: 'gray', description: '' };
+          
+          return (
+            <div key={categoryKey} class="bg-white rounded-lg border border-medical-neutral-200 hover:shadow-md transition-shadow">
+              <div class="p-6">
+                <div class="flex items-center mb-4">
+                  <div class="text-3xl mr-4">{category.icon}</div>
+                  <div>
+                    <h3 class="text-lg font-semibold text-medical-neutral-900">
+                      {category.label}
+                    </h3>
+                    <p class="text-sm text-medical-neutral-600">
+                      {articles.length} 篇文章
+                    </p>
+                  </div>
+                </div>
+                
+                <p class="text-sm text-medical-neutral-600 mb-4">
+                  {category.description}
+                </p>
+                
+                <div class="space-y-2 mb-4">
+                  {articles.slice(0, 3).map(article => (
+                    <a 
+                      key={article.slug}
+                      href={`/education/${article.slug}`}
+                      class="block text-sm text-medical-neutral-700 hover:text-medical-primary-600 transition-colors truncate"
+                    >
+                      • {article.title?.[locale] || article.title?.['zh-TW'] || article.slug}
+                    </a>
+                  ))}
+                  {articles.length > 3 && (
+                    <p class="text-xs text-medical-neutral-500">
+                      還有 {articles.length - 3} 篇文章...
+                    </p>
+                  )}
+                </div>
+                
+                <a 
+                  href={`/education/category/${categoryKey}`}
+                  class="inline-flex items-center text-sm text-medical-primary-600 hover:text-medical-primary-700 font-medium transition-colors"
+                >
+                  查看全部
+                  <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- 按醫療專科瀏覽 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-medical-neutral-900 mb-6 flex items-center">
+        <svg class="h-6 w-6 text-medical-success-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+        按醫療專科
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {Object.entries(educationBySpecialty).map(([specialtyKey, articles]) => {
+          const specialty = specialtyConfig[specialtyKey] || { label: specialtyKey, icon: '🏥' };
+          
+          return (
+            <div key={specialtyKey} class="bg-white rounded-lg border border-medical-neutral-200 p-4 hover:border-medical-primary-300 hover:bg-medical-primary-50 transition-colors">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center">
+                  <span class="text-xl mr-2">{specialty.icon}</span>
+                  <span class="font-medium text-medical-neutral-900 text-sm">
+                    {specialty.label}
+                  </span>
+                </div>
+                <span class="text-xs text-medical-neutral-500">
+                  {articles.length}
+                </span>
+              </div>
+              
+              <a 
+                href={`/education/specialty/${specialtyKey}`}
+                class="text-xs text-medical-primary-600 hover:text-medical-primary-700 transition-colors"
+              >
+                查看內容 →
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- 使用指南 -->
+    <section class="bg-medical-neutral-50 rounded-lg p-8">
+      <h2 class="text-2xl font-bold text-medical-neutral-900 mb-6 text-center">
+        如何使用衛教資源
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-medical-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="h-8 w-8 text-medical-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2">
+            1. 搜尋內容
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            使用搜尋功能或瀏覽分類找到您需要的健康資訊
+          </p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-medical-success-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="h-8 w-8 text-medical-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2">
+            2. 閱讀學習
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            仔細閱讀內容，注意重要提醒和警告事項
+          </p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-medical-warning-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="h-8 w-8 text-medical-warning-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2">
+            3. 諮詢醫師
+          </h3>
+          <p class="text-medical-neutral-600 text-sm">
+            將學到的知識與您的醫師討論，制定個人化治療計劃
+          </p>
+        </div>
+      </div>
+      
+      <div class="mt-8 p-4 bg-medical-warning-50 border border-medical-warning-200 rounded-lg">
+        <div class="flex">
+          <svg class="h-5 w-5 text-medical-warning-600 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <div>
+            <h4 class="text-sm font-medium text-medical-warning-800 mb-1">
+              重要提醒
+            </h4>
+            <p class="text-sm text-medical-warning-700">
+              本網站提供的醫療資訊僅供教育參考，不能取代專業醫療建議、診斷或治療。如有健康問題，請諮詢合格的醫療專業人員。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

@@ -1,0 +1,480 @@
+/**
+ * Plugin Error Boundary Styles
+ * 
+ * Comprehensive styling for plugin error boundaries and error handling UI.
+ * Designed to be accessible, responsive, and consistent with the medical theme.
+ */
+
+/* ============================================================================
+   Base Error Boundary Styles
+   ============================================================================ */
+
+.plugin-error-boundary {
+  @apply w-full min-h-[200px] flex items-center justify-center p-4;
+  @apply bg-gradient-to-br from-red-50 to-orange-50;
+  @apply border border-red-200 rounded-lg shadow-sm;
+}
+
+.plugin-error-boundary__container {
+  @apply max-w-md w-full text-center space-y-4;
+}
+
+.plugin-error-boundary__icon {
+  @apply flex justify-center mb-4;
+}
+
+.plugin-error-boundary__content {
+  @apply space-y-4;
+}
+
+.plugin-error-boundary__title {
+  @apply text-xl font-semibold text-gray-900 mb-2;
+}
+
+.plugin-error-boundary__description {
+  @apply text-gray-700 text-sm leading-relaxed mb-4;
+}
+
+.plugin-error-boundary__error-type {
+  @apply text-xs font-medium text-gray-600 mb-3;
+}
+
+/* ============================================================================
+   Error Type Indicators
+   ============================================================================ */
+
+.error-type {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.error-type--plugin {
+  @apply bg-red-100 text-red-800;
+}
+
+.error-type--calculation {
+  @apply bg-orange-100 text-orange-800;
+}
+
+.error-type--validation {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.error-type--timeout {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.error-type--dependency {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.error-type--unknown {
+  @apply bg-gray-100 text-gray-800;
+}
+
+/* ============================================================================
+   Error Details Section
+   ============================================================================ */
+
+.plugin-error-boundary__details {
+  @apply mt-4 text-left;
+}
+
+.plugin-error-boundary__details summary {
+  @apply cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded;
+  @apply transition-colors duration-200;
+}
+
+.plugin-error-boundary__details[open] summary {
+  @apply text-gray-900 mb-3;
+}
+
+.plugin-error-boundary__error-details {
+  @apply space-y-3 mt-3;
+}
+
+.error-detail {
+  @apply bg-gray-50 border border-gray-200 rounded-md p-3;
+}
+
+.error-detail strong {
+  @apply block text-sm font-medium text-gray-900 mb-1;
+}
+
+.error-detail pre {
+  @apply text-xs text-gray-700 bg-white border border-gray-200 rounded p-2;
+  @apply overflow-x-auto whitespace-pre-wrap break-words;
+  @apply font-mono leading-relaxed;
+}
+
+/* ============================================================================
+   Action Buttons
+   ============================================================================ */
+
+.plugin-error-boundary__actions {
+  @apply flex flex-col sm:flex-row gap-3 justify-center mt-6;
+}
+
+.plugin-error-boundary__button {
+  @apply px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.plugin-error-boundary__button--primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+  @apply shadow-sm hover:shadow-md;
+}
+
+.plugin-error-boundary__button--primary:disabled {
+  @apply bg-gray-400 hover:bg-gray-400;
+}
+
+.plugin-error-boundary__button--secondary {
+  @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50;
+  @apply focus:ring-gray-500 shadow-sm hover:shadow-md;
+}
+
+/* ============================================================================
+   Error Metadata
+   ============================================================================ */
+
+.plugin-error-boundary__error-id {
+  @apply mt-4 text-xs text-gray-500 font-mono;
+  @apply bg-gray-100 border border-gray-200 rounded px-2 py-1 inline-block;
+}
+
+.plugin-error-boundary__error-id code {
+  @apply text-gray-700;
+}
+
+.plugin-error-boundary__retry-count {
+  @apply mt-2 text-xs text-gray-600;
+  @apply flex items-center justify-center gap-1;
+}
+
+/* ============================================================================
+   Recovery State Styles
+   ============================================================================ */
+
+.plugin-error-boundary--recovering {
+  @apply bg-gradient-to-br from-blue-50 to-indigo-50;
+  @apply border-blue-200;
+}
+
+.plugin-error-boundary--recovering .plugin-error-boundary__container {
+  @apply flex flex-col items-center;
+}
+
+.plugin-error-boundary__spinner {
+  @apply mb-4;
+}
+
+.plugin-error-boundary--recovering .plugin-error-boundary__title {
+  @apply text-blue-900;
+}
+
+.plugin-error-boundary--recovering .plugin-error-boundary__message {
+  @apply text-blue-700 text-sm;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 640px) {
+  .plugin-error-boundary {
+    @apply p-3 min-h-[150px];
+  }
+  
+  .plugin-error-boundary__container {
+    @apply max-w-none;
+  }
+  
+  .plugin-error-boundary__title {
+    @apply text-lg;
+  }
+  
+  .plugin-error-boundary__description {
+    @apply text-xs;
+  }
+  
+  .plugin-error-boundary__actions {
+    @apply flex-col gap-2;
+  }
+  
+  .plugin-error-boundary__button {
+    @apply w-full py-3;
+  }
+}
+
+/* ============================================================================
+   Dark Mode Support
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .plugin-error-boundary {
+    @apply bg-gradient-to-br from-red-900/20 to-orange-900/20;
+    @apply border-red-800/30;
+  }
+  
+  .plugin-error-boundary__title {
+    @apply text-gray-100;
+  }
+  
+  .plugin-error-boundary__description {
+    @apply text-gray-300;
+  }
+  
+  .plugin-error-boundary__error-type {
+    @apply text-gray-400;
+  }
+  
+  .error-detail {
+    @apply bg-gray-800 border-gray-700;
+  }
+  
+  .error-detail strong {
+    @apply text-gray-200;
+  }
+  
+  .error-detail pre {
+    @apply text-gray-300 bg-gray-900 border-gray-700;
+  }
+  
+  .plugin-error-boundary__button--secondary {
+    @apply bg-gray-800 text-gray-200 border-gray-600 hover:bg-gray-700;
+  }
+  
+  .plugin-error-boundary__error-id {
+    @apply bg-gray-800 border-gray-700 text-gray-400;
+  }
+  
+  .plugin-error-boundary__error-id code {
+    @apply text-gray-300;
+  }
+  
+  .plugin-error-boundary--recovering {
+    @apply bg-gradient-to-br from-blue-900/20 to-indigo-900/20;
+    @apply border-blue-800/30;
+  }
+  
+  .plugin-error-boundary--recovering .plugin-error-boundary__title {
+    @apply text-blue-200;
+  }
+  
+  .plugin-error-boundary--recovering .plugin-error-boundary__message {
+    @apply text-blue-300;
+  }
+}
+
+/* ============================================================================
+   High Contrast Mode Support
+   ============================================================================ */
+
+@media (prefers-contrast: high) {
+  .plugin-error-boundary {
+    @apply border-2 border-red-600;
+  }
+  
+  .plugin-error-boundary__title {
+    @apply text-black font-bold;
+  }
+  
+  .plugin-error-boundary__description {
+    @apply text-black;
+  }
+  
+  .plugin-error-boundary__button--primary {
+    @apply bg-blue-800 border-2 border-blue-900;
+  }
+  
+  .plugin-error-boundary__button--secondary {
+    @apply border-2 border-gray-800 text-black;
+  }
+  
+  .error-type {
+    @apply border border-current;
+  }
+}
+
+/* ============================================================================
+   Reduced Motion Support
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .plugin-error-boundary__button {
+    @apply transition-none;
+  }
+  
+  .plugin-error-boundary__spinner svg {
+    @apply animate-none;
+  }
+  
+  .plugin-error-boundary__details summary {
+    @apply transition-none;
+  }
+}
+
+/* ============================================================================
+   Print Styles
+   ============================================================================ */
+
+@media print {
+  .plugin-error-boundary {
+    @apply bg-white border-black;
+  }
+  
+  .plugin-error-boundary__actions {
+    @apply hidden;
+  }
+  
+  .plugin-error-boundary__details {
+    @apply block;
+  }
+  
+  .plugin-error-boundary__details summary {
+    @apply hidden;
+  }
+  
+  .plugin-error-boundary__error-details {
+    @apply block;
+  }
+}
+
+/* ============================================================================
+   Animation Keyframes
+   ============================================================================ */
+
+@keyframes plugin-error-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.plugin-error-boundary {
+  animation: plugin-error-fade-in 0.3s ease-out;
+}
+
+@keyframes plugin-recovery-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.plugin-error-boundary--recovering .plugin-error-boundary__message {
+  animation: plugin-recovery-pulse 2s ease-in-out infinite;
+}
+
+/* ============================================================================
+   Focus Management
+   ============================================================================ */
+
+.plugin-error-boundary__button:focus-visible {
+  @apply ring-2 ring-offset-2;
+}
+
+.plugin-error-boundary__details summary:focus-visible {
+  @apply ring-2 ring-offset-2 ring-blue-500;
+}
+
+/* ============================================================================
+   Utility Classes for Error States
+   ============================================================================ */
+
+.error-state-critical {
+  @apply bg-red-100 border-red-500 text-red-900;
+}
+
+.error-state-warning {
+  @apply bg-yellow-100 border-yellow-500 text-yellow-900;
+}
+
+.error-state-info {
+  @apply bg-blue-100 border-blue-500 text-blue-900;
+}
+
+.error-state-success {
+  @apply bg-green-100 border-green-500 text-green-900;
+}
+
+/* ============================================================================
+   Loading States
+   ============================================================================ */
+
+.plugin-error-loading {
+  @apply opacity-50 pointer-events-none;
+}
+
+.plugin-error-loading::after {
+  content: '';
+  @apply absolute inset-0 bg-white/50 flex items-center justify-center;
+}
+
+/* ============================================================================
+   Accessibility Enhancements
+   ============================================================================ */
+
+.plugin-error-boundary[role="alert"] {
+  @apply focus:outline-none;
+}
+
+.plugin-error-boundary__title[id] {
+  /* For aria-labelledby references */
+}
+
+.plugin-error-boundary__description[id] {
+  /* For aria-describedby references */
+}
+
+/* Screen reader only content */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  clip: rect(0, 0, 0, 0);
+}
+
+/* ============================================================================
+   Component Variants
+   ============================================================================ */
+
+.plugin-error-boundary--compact {
+  @apply min-h-[120px] p-3;
+}
+
+.plugin-error-boundary--compact .plugin-error-boundary__title {
+  @apply text-base;
+}
+
+.plugin-error-boundary--compact .plugin-error-boundary__description {
+  @apply text-xs;
+}
+
+.plugin-error-boundary--inline {
+  @apply min-h-0 p-2 bg-red-50 border-l-4 border-red-400;
+  @apply rounded-none;
+}
+
+.plugin-error-boundary--inline .plugin-error-boundary__container {
+  @apply text-left max-w-none;
+}
+
+.plugin-error-boundary--inline .plugin-error-boundary__icon {
+  @apply hidden;
+}
+
+.plugin-error-boundary--fullscreen {
+  @apply fixed inset-0 z-50 bg-white/95 backdrop-blur-sm;
+  @apply flex items-center justify-center p-8;
+}
+
+.plugin-error-boundary--fullscreen .plugin-error-boundary__container {
+  @apply max-w-lg;
+}

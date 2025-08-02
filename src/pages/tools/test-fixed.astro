@@ -1,0 +1,62 @@
+---
+import '../../styles/global.css';
+import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+---
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>修復後的計算器測試</title>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">
+      修復後的計算器測試
+    </h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- BMI 計算器 -->
+      <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">BMI 計算器</h2>
+        <PluginCalculator 
+          pluginId="general.bmi"
+          locale="zh-TW"
+          client:load
+        />
+      </div>
+      
+      <!-- eGFR 計算器 -->
+      <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">eGFR 計算器</h2>
+        <PluginCalculator 
+          pluginId="nephrology.egfr"
+          locale="zh-TW"
+          client:load
+        />
+      </div>
+      
+      <!-- CHA2DS2-VASc 評分 -->
+      <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">CHA2DS2-VASc 評分</h2>
+        <PluginCalculator 
+          pluginId="cardiology.cha2ds2-vasc"
+          locale="zh-TW"
+          client:load
+        />
+      </div>
+    </div>
+    
+    <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <h3 class="text-lg font-semibold text-blue-900 mb-2">測試說明</h3>
+      <ul class="text-sm text-blue-800 space-y-1">
+        <li>• 這個頁面使用正確的 Tailwind CSS 引入方式</li>
+        <li>• 所有計算器都應該能正常載入和運作</li>
+        <li>• 如果看到樣式正確顯示，說明 CSS 問題已解決</li>
+        <li>• 如果計算器能正常計算，說明 React 組件正常工作</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

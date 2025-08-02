@@ -1,0 +1,32 @@
+---
+/**
+ * 決策樹測試頁面
+ * 用於測試決策樹組件功能
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DecisionTree from '../components/islands/DecisionTree.tsx';
+import { getEntry } from 'astro:content';
+
+// 獲取測試決策樹
+const chestPainTree = await getEntry('decision-trees', 'chest-pain-evaluation');
+const locale = 'zh-TW';
+---
+
+<BaseLayout 
+  title="決策樹測試"
+  description="測試決策樹組件功能"
+  locale={locale}
+>
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-8">決策樹測試頁面</h1>
+    
+    {chestPainTree && (
+      <DecisionTree 
+        decisionTree={chestPainTree.data} 
+        locale={locale}
+        client:load
+      />
+    )}
+  </main>
+</BaseLayout>

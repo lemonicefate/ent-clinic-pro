@@ -1,0 +1,40 @@
+{
+  "sections": [
+    {
+      "title": "BMI 計算結果",
+      "cards": [
+        {
+          "type": "primary",
+          "title": "BMI 指數",
+          "value": "{{bmi}}",
+          "unit": "kg/m²",
+          "color": "{{color}}",
+          "icon": "⚖️"
+        },
+        {
+          "type": "secondary",
+          "title": "體重分類",
+          "value": "{{category}}",
+          "color": "{{color}}"
+        }
+      ],
+      "layout": "grid",
+      "columns": 2
+    }
+  ],
+  "recommendations": [
+    {
+      "text": "BMI 僅為初步評估工具，建議搭配其他健康指標進行綜合評估",
+      "type": "info"
+    },
+    {
+      "text": "如需專業建議，請諮詢醫師或營養師",
+      "type": "info"
+    }
+  ],
+  "notes": [
+    "BMI 不適用於孕婦、哺乳期婦女、18歲以下兒童及青少年",
+    "肌肉量較高的運動員可能會有較高的 BMI 值，但不代表過重",
+    "老年人的 BMI 標準可能需要適度調整"
+  ]
+}

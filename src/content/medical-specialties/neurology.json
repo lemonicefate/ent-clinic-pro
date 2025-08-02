@@ -1,0 +1,193 @@
+{
+  "id": "neurology",
+  "name": {
+    "zh_TW": "神經科",
+    "en": "Neurology",
+    "ja": "神経科"
+  },
+  "slug": "neurology",
+  "description": {
+    "zh_TW": "專門診斷和治療神經系統疾病的醫學專科，包括腦部、脊髓、周邊神經系統的疾病，如中風、癲癇、帕金森氏症、失智症等。",
+    "en": "Medical specialty focused on diagnosing and treating nervous system disorders, including brain, spinal cord, and peripheral nervous system diseases such as stroke, epilepsy, Parkinson's disease, and dementia.",
+    "ja": "脳、脊髄、末梢神経系の疾患を診断・治療する医学専門分野で、脳卒中、てんかん、パーキンソン病、認知症などを含みます。"
+  },
+  "workflowConfig": {
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
+    "requiredApprovals": 2,
+    "reviewTimeLimit": 10,
+    "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review", "statistical-review"],
+    "autoAssignmentRules": {
+      "enabled": true,
+      "balanceWorkload": true,
+      "avoidConflicts": true,
+      "preferExpertise": true,
+      "maxConcurrentReviews": 2
+    },
+    "reviewerPool": [
+      {
+        "id": "dr-liu-neurology",
+        "name": "劉神經醫師",
+        "role": "neurologist",
+        "specializations": ["stroke", "epilepsy", "movement-disorders"],
+        "maxConcurrentReviews": 2,
+        "averageReviewTime": 6.5,
+        "isActive": true
+      },
+      {
+        "id": "dr-zhang-neurology",
+        "name": "張腦神經醫師",
+        "role": "neurologist",
+        "specializations": ["dementia", "headache", "neuromuscular-disorders"],
+        "maxConcurrentReviews": 3,
+        "averageReviewTime": 8.2,
+        "isActive": true
+      },
+      {
+        "id": "editor-medical-neuro",
+        "name": "神經科醫學編輯",
+        "role": "medical-editor",
+        "specializations": ["neurology-content", "medical-writing"],
+        "maxConcurrentReviews": 4,
+        "averageReviewTime": 4.1,
+        "isActive": true
+      }
+    ],
+    "escalationRules": {
+      "timeoutDays": 12,
+      "escalateTo": "department-head",
+      "notificationSchedule": [5, 8, 12]
+    }
+  },
+  "contentTemplate": {
+    "requiredSections": [
+      {
+        "section": "神經學檢查",
+        "description": {
+          "zh_TW": "詳述神經學檢查的方法和發現",
+          "en": "Detail neurological examination methods and findings",
+          "ja": "神経学的検査の方法と所見を詳述"
+        },
+        "order": 1
+      },
+      {
+        "section": "影像學診斷",
+        "description": {
+          "zh_TW": "說明相關的神經影像學檢查",
+          "en": "Explain relevant neuroimaging studies",
+          "ja": "関連する神経画像検査を説明"
+        },
+        "order": 2
+      },
+      {
+        "section": "治療方針",
+        "description": {
+          "zh_TW": "描述藥物治療和非藥物治療選項",
+          "en": "Describe pharmacological and non-pharmacological treatment options",
+          "ja": "薬物療法と非薬物療法の選択肢を説明"
+        },
+        "order": 3
+      },
+      {
+        "section": "復健計畫",
+        "description": {
+          "zh_TW": "提供神經復健和長期照護建議",
+          "en": "Provide neurorehabilitation and long-term care recommendations",
+          "ja": "神経リハビリテーションと長期ケアの推奨事項を提供"
+        },
+        "order": 4
+      }
+    ],
+    "customFields": [
+      {
+        "name": "神經功能評估",
+        "type": "select",
+        "label": {
+          "zh_TW": "神經功能評估量表",
+          "en": "Neurological Function Assessment Scale",
+          "ja": "神経機能評価スケール"
+        },
+        "required": false,
+        "options": [
+          {
+            "value": "gcs",
+            "label": {
+              "zh_TW": "格拉斯哥昏迷指數 (GCS)",
+              "en": "Glasgow Coma Scale (GCS)",
+              "ja": "グラスゴー昏睡尺度 (GCS)"
+            }
+          },
+          {
+            "value": "nihss",
+            "label": {
+              "zh_TW": "美國國立衛生院中風量表 (NIHSS)",
+              "en": "National Institutes of Health Stroke Scale (NIHSS)",
+              "ja": "米国国立衛生研究所脳卒中スケール (NIHSS)"
+            }
+          },
+          {
+            "value": "mmse",
+            "label": {
+              "zh_TW": "簡易智能狀態檢查 (MMSE)",
+              "en": "Mini-Mental State Examination (MMSE)",
+              "ja": "ミニメンタルステート検査 (MMSE)"
+            }
+          }
+        ]
+      }
+    ],
+    "defaultTags": [
+      "神經科",
+      "神經系統疾病",
+      "腦部疾病",
+      "神經學檢查"
+    ],
+    "suggestedKeywords": [
+      "中風",
+      "癲癇",
+      "帕金森氏症",
+      "失智症",
+      "頭痛",
+      "腦電圖",
+      "腦部磁振造影",
+      "神經傳導檢查"
+    ]
+  },
+  "color": "#9b59b6",
+  "icon": "brain",
+  "coverImage": "/images/specialties/neurology-cover.jpg",
+  "sortOrder": 2,
+  "isActive": true,
+  "isFeatured": true,
+  "calculatorCount": 6,
+  "educationCount": 18,
+  "flowchartCount": 4,
+  "sopStats": {
+    "totalArticles": 18,
+    "publishedArticles": 14,
+    "inReviewArticles": 3,
+    "averageReviewTime": 7.8,
+    "approvalRate": 0.78
+  },
+  "seoTitle": {
+    "zh_TW": "神經科 - 神經系統疾病診斷與治療 | 醫療平台",
+    "en": "Neurology - Nervous System Disorders Diagnosis & Treatment | Medical Platform",
+    "ja": "神経科 - 神経系疾患の診断と治療 | 医療プラットフォーム"
+  },
+  "seoDescription": {
+    "zh_TW": "提供專業的神經科醫療資訊，包括中風、癲癇、帕金森氏症、失智症等神經系統疾病的診斷、治療和復健指導。由神經科專家審核。",
+    "en": "Professional neurology medical information including diagnosis, treatment and rehabilitation guidance for nervous system disorders such as stroke, epilepsy, Parkinson's disease, and dementia. Reviewed by neurology specialists.",
+    "ja": "脳卒中、てんかん、パーキンソン病、認知症などの神経系疾患の診断、治療、リハビリテーション指導を含む専門的な神経科医療情報。神経科専門医による審査。"
+  },
+  "keywords": [
+    "神經科",
+    "神經系統疾病",
+    "中風",
+    "癲癇",
+    "帕金森氏症",
+    "失智症",
+    "頭痛",
+    "腦電圖",
+    "神經學檢查",
+    "神經復健"
+  ]
+}

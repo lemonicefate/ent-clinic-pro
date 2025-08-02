@@ -1,0 +1,378 @@
+---
+/**
+ * 內容管理儀表板組件
+ * 在開發環境顯示內容統計、狀態分布和管理工具
+ * 
+ * 更新日期：2025-01-30
+ * 更新內容：新增內容管理儀表板功能
+ * 
+ * 需求對應：
+ * - 需求 6.1: 版本控制和追蹤系統 ✓
+ * - 需求 6.2: 內容狀態指示器 ✓
+ * - 需求 8.1: 內容統計和分析 ✓
+ */
+
+import { getCollection } from 'astro:content';
+import { formatDate } from '../utils/i18n';
+import type { SupportedLocale } from '../env.d';
+
+interface Props {
+  locale?: SupportedLocale;
+  showOnlyInDev?: boolean;
+}
+
+const {
+  locale = 'zh-TW',
+  showOnlyInDev = true
+} = Astro.props;
+
+const isDevelopment = import.meta.env.DEV;
+
+// 如果設定為僅開發環境顯示且當前不是開發環境，則不顯示
+if (showOnlyInDev && !isDevelopment) {
+  return null;
+}
+
+// 獲取所有教育內容
+const allEducation = await getCollection('education');
+
+// 計算各種統計資料
+const stats = {
+  total: allEducation.length,
+  published: allEducation.filter(e => e.data.status === 'published').length,
+  inReview: allEducation.filter(e => e.data.status === 'in-review').length,
+  draft: allEducation.filter(e => e.data.status === 'draft').length,
+  needsRevision: allEducation.filter(e => e.data.status === 'needs-revision').length,
+  qualityCheck: allEducation.filter(e => e.data.status === 'quality-check').length,
+  readyToPublish: allEducation.filter(e => e.data.status === 'ready-to-publish').length
+};
+
+// 按專科分組統計
+const specialtyStats = allEducation.reduce((acc, entry) => {
+  entry.data.medicalSpecialties.forEach(specialty => {
+    if (!acc[specialty]) {
+      acc[specialty] = {
+        total: 0,
+        published: 0,
+        inReview: 0,
+        draft: 0,
+        needsRevision: 0,
+        qualityCheck: 0,
+        readyToPublish: 0
+      };
+    }
+    acc[specialty].total++;
+    acc[specialty][entry.data.status]++;
+  });
+  return acc;
+}, {} as Record<string, typeof stats>);
+
+// 按分類統計
+const categoryStats = allEducation.reduce((acc, entry) => {
+  const category = entry.data.category;
+  if (!acc[category]) {
+    acc[category] = {
+      total: 0,
+      published: 0,
+      inReview: 0,
+      draft: 0,
+      needsRevision: 0,
+      qualityCheck: 0,
+      readyToPublish: 0
+    };
+  }
+  acc[category].total++;
+  acc[category][entry.data.status]++;
+  return acc;
+}, {} as Record<string, typeof stats>);
+
+// 計算內容新鮮度統計
+const now = new Date();
+const freshnessStats = {
+  fresh: 0,
+  aging: 0,
+  stale: 0,
+  critical: 0
+};
+
+allEducation.forEach(entry => {
+  const lastUpdated = new Date(entry.data.lastUpdated);
+  const daysSinceUpdate = Math.floor((now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24));
+  
+  if (daysSinceUpdate <= 90) freshnessStats.fresh++;
+  else if (daysSinceUpdate <= 180) freshnessStats.aging++;
+  else if (daysSinceUpdate <= 365) freshnessStats.stale++;
+  else freshnessStats.critical++;
+});
+
+// 找出需要關注的內容
+const needsAttention = allEducation.filter(entry => {
+  const lastUpdated = new Date(entry.data.lastUpdated);
+  const daysSinceUpdate = Math.floor((now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24));
+  
+  return (
+    entry.data.status === 'needs-revision' ||
+    (entry.data.status === 'in-review' && entry.data.workflowTimestamps?.submittedForReview && 
+     Math.floor((now.getTime() - new Date(entry.data.workflowTimestamps.submittedForReview).getTime()) / (1000 * 60 * 60 * 24)) > 7) ||
+    daysSinceUpdate > 365
+  );
+});
+
+// 狀態配置
+const statusConfig = {
+  published: { label: '已發布', color: 'text-green-600', bgColor: 'bg-green-100' },
+  inReview: { label: '審核中', color: 'text-blue-600', bgColor: 'bg-blue-100' },
+  draft: { label: '草稿', color: 'text-gray-600', bgColor: 'bg-gray-100' },
+  needsRevision: { label: '需修改', color: 'text-yellow-600', bgColor: 'bg-yellow-100' },
+  qualityCheck: { label: '品質檢查', color: 'text-purple-600', bgColor: 'bg-purple-100' },
+  readyToPublish: { label: '準備發布', color: 'text-orange-600', bgColor: 'bg-orange-100' }
+};
+
+// 專科名稱映射
+const specialtyNames = {
+  cardiology: '心臟科',
+  neurology: '神經科',
+  orthopedics: '骨科',
+  emergency: '急診醫學',
+  pediatrics: '小兒科',
+  general: '一般醫學',
+  endocrinology: '內分泌科',
+  nephrology: '腎臟科',
+  pulmonology: '胸腔科',
+  surgery: '外科'
+};
+
+// 分類名稱映射
+const categoryNames = {
+  disease: '疾病資訊',
+  medication: '藥物資訊',
+  procedure: '檢查程序',
+  prevention: '預防保健',
+  lifestyle: '生活方式',
+  symptoms: '症狀識別',
+  diagnosis: '診斷方法',
+  treatment: '治療指引'
+};
+---
+
+<div class="bg-white rounded-lg border border-gray-200 shadow-sm">
+  <!-- 儀表板標頭 -->
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <h2 class="text-xl font-semibold text-gray-900">內容管理儀表板</h2>
+        {isDevelopment && (
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+            開發環境
+          </span>
+        )}
+      </div>
+      <div class="text-sm text-gray-500">
+        最後更新: {formatDate(new Date().toISOString(), locale, 'short')}
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <!-- 總體統計 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+      <div class="text-center">
+        <div class="text-2xl font-bold text-gray-900 mb-1">{stats.total}</div>
+        <div class="text-sm text-gray-600">總文章數</div>
+      </div>
+      {Object.entries(statusConfig).map(([status, config]) => (
+        <div key={status} class="text-center">
+          <div class={`text-2xl font-bold mb-1 ${config.color}`}>
+            {stats[status]}
+          </div>
+          <div class="text-sm text-gray-600">{config.label}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- 工作流程健康度 -->
+    <div class="mb-8 p-4 bg-gray-50 rounded-lg">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">工作流程健康度</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="text-center">
+          <div class={`text-3xl font-bold mb-2 ${
+            stats.published / stats.total >= 0.8 ? 'text-green-600' :
+            stats.published / stats.total >= 0.6 ? 'text-yellow-600' : 'text-red-600'
+          }`}>
+            {Math.round((stats.published / stats.total) * 100)}%
+          </div>
+          <div class="text-sm text-gray-600">發布率</div>
+          <div class="text-xs text-gray-500 mt-1">
+            {stats.published / stats.total >= 0.8 ? '優秀' :
+             stats.published / stats.total >= 0.6 ? '良好' : '需改善'}
+          </div>
+        </div>
+        
+        <div class="text-center">
+          <div class={`text-3xl font-bold mb-2 ${
+            stats.needsRevision <= 5 ? 'text-green-600' :
+            stats.needsRevision <= 10 ? 'text-yellow-600' : 'text-red-600'
+          }`}>
+            {stats.needsRevision}
+          </div>
+          <div class="text-sm text-gray-600">待修改</div>
+          <div class="text-xs text-gray-500 mt-1">
+            {stats.needsRevision <= 5 ? '流暢' :
+             stats.needsRevision <= 10 ? '正常' : '積壓'}
+          </div>
+        </div>
+        
+        <div class="text-center">
+          <div class={`text-3xl font-bold mb-2 ${
+            stats.inReview <= 10 ? 'text-green-600' :
+            stats.inReview <= 20 ? 'text-yellow-600' : 'text-red-600'
+          }`}>
+            {stats.inReview}
+          </div>
+          <div class="text-sm text-gray-600">審核中</div>
+          <div class="text-xs text-gray-500 mt-1">
+            {stats.inReview <= 10 ? '正常' :
+             stats.inReview <= 20 ? '繁忙' : '壅塞'}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 內容新鮮度統計 -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">內容新鮮度分布</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+          <div class="text-2xl font-bold text-green-600 mb-1">{freshnessStats.fresh}</div>
+          <div class="text-sm text-gray-600">🟢 新鮮內容</div>
+          <div class="text-xs text-gray-500 mt-1">≤ 90 天</div>
+        </div>
+        <div class="text-center p-4 bg-yellow-50 rounded-lg">
+          <div class="text-2xl font-bold text-yellow-600 mb-1">{freshnessStats.aging}</div>
+          <div class="text-sm text-gray-600">🟡 老化內容</div>
+          <div class="text-xs text-gray-500 mt-1">91-180 天</div>
+        </div>
+        <div class="text-center p-4 bg-orange-50 rounded-lg">
+          <div class="text-2xl font-bold text-orange-600 mb-1">{freshnessStats.stale}</div>
+          <div class="text-sm text-gray-600">🟠 過時內容</div>
+          <div class="text-xs text-gray-500 mt-1">181-365 天</div>
+        </div>
+        <div class="text-center p-4 bg-red-50 rounded-lg">
+          <div class="text-2xl font-bold text-red-600 mb-1">{freshnessStats.critical}</div>
+          <div class="text-sm text-gray-600">🔴 急需更新</div>
+          <div class="text-xs text-gray-500 mt-1">> 365 天</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 需要關注的內容 -->
+    {needsAttention.length > 0 && (
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <svg class="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          需要關注的內容 ({needsAttention.length})
+        </h3>
+        <div class="space-y-2 max-h-64 overflow-y-auto">
+          {needsAttention.slice(0, 10).map(entry => {
+            const lastUpdated = new Date(entry.data.lastUpdated);
+            const daysSinceUpdate = Math.floor((now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24));
+            
+            return (
+              <div key={entry.slug} class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center space-x-2">
+                    <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                      statusConfig[entry.data.status]?.bgColor || 'bg-gray-100'
+                    } ${statusConfig[entry.data.status]?.color || 'text-gray-600'}`}>
+                      {statusConfig[entry.data.status]?.label || entry.data.status}
+                    </span>
+                    <span class="text-sm font-medium text-gray-900 truncate">
+                      {entry.data.title['zh-TW'] || entry.data.title}
+                    </span>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">
+                    {daysSinceUpdate > 365 ? `${daysSinceUpdate} 天未更新` : 
+                     entry.data.status === 'needs-revision' ? '需要修改' :
+                     '審核逾期'}
+                  </div>
+                </div>
+                <a 
+                  href={`/education/${entry.slug}`}
+                  class="text-sm text-blue-600 hover:text-blue-700 font-medium ml-4"
+                >
+                  查看 →
+                </a>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    <!-- 專科統計 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- 按專科統計 -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">專科分布</h3>
+        <div class="space-y-3">
+          {Object.entries(specialtyStats).slice(0, 6).map(([specialty, stats]) => (
+            <div key={specialty} class="flex items-center justify-between p-3 bg-gray-50 rounded">
+              <div class="flex items-center space-x-3">
+                <span class="font-medium text-gray-900">
+                  {specialtyNames[specialty] || specialty}
+                </span>
+                <span class="text-sm text-gray-500">
+                  {stats.total} 篇
+                </span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="flex space-x-1">
+                  <div class="w-3 h-3 bg-green-500 rounded" title={`已發布: ${stats.published}`}></div>
+                  <div class="w-3 h-3 bg-blue-500 rounded" title={`審核中: ${stats.inReview}`}></div>
+                  <div class="w-3 h-3 bg-gray-400 rounded" title={`草稿: ${stats.draft}`}></div>
+                </div>
+                <span class="text-sm text-gray-500">
+                  {Math.round((stats.published / stats.total) * 100)}%
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- 按分類統計 -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">內容分類</h3>
+        <div class="space-y-3">
+          {Object.entries(categoryStats).slice(0, 6).map(([category, stats]) => (
+            <div key={category} class="flex items-center justify-between p-3 bg-gray-50 rounded">
+              <div class="flex items-center space-x-3">
+                <span class="font-medium text-gray-900">
+                  {categoryNames[category] || category}
+                </span>
+                <span class="text-sm text-gray-500">
+                  {stats.total} 篇
+                </span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="flex space-x-1">
+                  <div class="w-3 h-3 bg-green-500 rounded" title={`已發布: ${stats.published}`}></div>
+                  <div class="w-3 h-3 bg-blue-500 rounded" title={`審核中: ${stats.inReview}`}></div>
+                  <div class="w-3 h-3 bg-gray-400 rounded" title={`草稿: ${stats.draft}`}></div>
+                </div>
+                <span class="text-sm text-gray-500">
+                  {Math.round((stats.published / stats.total) * 100)}%
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

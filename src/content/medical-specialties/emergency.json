@@ -1,0 +1,241 @@
+{
+  "id": "emergency",
+  "name": {
+    "zh_TW": "急診醫學科",
+    "en": "Emergency Medicine",
+    "ja": "救急医学科"
+  },
+  "slug": "emergency",
+  "description": {
+    "zh_TW": "專門處理急性疾病和外傷的醫學專科，提供24小時不間斷的緊急醫療服務，包括生命威脅性疾病的初步穩定和治療。",
+    "en": "Medical specialty focused on acute illness and trauma care, providing 24-hour continuous emergency medical services including initial stabilization and treatment of life-threatening conditions.",
+    "ja": "急性疾患と外傷の治療を専門とする医学分野で、生命に関わる疾患の初期安定化と治療を含む24時間継続的な救急医療サービスを提供。"
+  },
+  "workflowConfig": {
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
+    "requiredApprovals": 2,
+    "reviewTimeLimit": 3,
+    "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review"],
+    "autoAssignmentRules": {
+      "enabled": true,
+      "balanceWorkload": true,
+      "avoidConflicts": true,
+      "preferExpertise": true,
+      "maxConcurrentReviews": 4,
+      "priorityHandling": true
+    },
+    "reviewerPool": [
+      {
+        "id": "dr-chen-emergency",
+        "name": "陳急診醫師",
+        "role": "emergency-physician",
+        "specializations": ["trauma", "resuscitation", "toxicology"],
+        "maxConcurrentReviews": 4,
+        "averageReviewTime": 2.1,
+        "isActive": true,
+        "availability": "24/7"
+      },
+      {
+        "id": "dr-wang-emergency",
+        "name": "王急診醫師",
+        "role": "emergency-physician",
+        "specializations": ["pediatric-emergency", "cardiac-emergency", "stroke"],
+        "maxConcurrentReviews": 3,
+        "averageReviewTime": 2.8,
+        "isActive": true,
+        "availability": "24/7"
+      },
+      {
+        "id": "editor-medical-em",
+        "name": "急診醫學編輯",
+        "role": "medical-editor",
+        "specializations": ["emergency-content", "medical-writing", "protocol-development"],
+        "maxConcurrentReviews": 6,
+        "averageReviewTime": 1.8,
+        "isActive": true
+      }
+    ],
+    "escalationRules": {
+      "timeoutDays": 5,
+      "escalateTo": "department-head",
+      "notificationSchedule": [1, 3, 5],
+      "urgentEscalation": true
+    }
+  },
+  "contentTemplate": {
+    "requiredSections": [
+      {
+        "section": "緊急評估",
+        "description": {
+          "zh_TW": "描述快速評估和檢傷分類的方法",
+          "en": "Describe rapid assessment and triage methods",
+          "ja": "迅速評価とトリアージ方法を説明"
+        },
+        "order": 1
+      },
+      {
+        "section": "急救處置",
+        "description": {
+          "zh_TW": "詳述緊急處置和生命支持措施",
+          "en": "Detail emergency procedures and life support measures",
+          "ja": "緊急処置と生命維持措置を詳述"
+        },
+        "order": 2
+      },
+      {
+        "section": "穩定化治療",
+        "description": {
+          "zh_TW": "說明病患穩定化的治療策略",
+          "en": "Explain patient stabilization treatment strategies",
+          "ja": "患者安定化の治療戦略を説明"
+        },
+        "order": 3
+      },
+      {
+        "section": "轉診考量",
+        "description": {
+          "zh_TW": "提供轉診時機和注意事項",
+          "en": "Provide referral timing and considerations",
+          "ja": "紹介のタイミングと考慮事項を提供"
+        },
+        "order": 4
+      }
+    ],
+    "customFields": [
+      {
+        "name": "檢傷分類",
+        "type": "select",
+        "label": {
+          "zh_TW": "檢傷分類等級",
+          "en": "Triage Level",
+          "ja": "トリアージレベル"
+        },
+        "required": false,
+        "options": [
+          {
+            "value": "level1",
+            "label": {
+              "zh_TW": "第一級 - 復甦急救",
+              "en": "Level 1 - Resuscitation",
+              "ja": "レベル1 - 蘇生"
+            }
+          },
+          {
+            "value": "level2",
+            "label": {
+              "zh_TW": "第二級 - 危急",
+              "en": "Level 2 - Emergent",
+              "ja": "レベル2 - 緊急"
+            }
+          },
+          {
+            "value": "level3",
+            "label": {
+              "zh_TW": "第三級 - 緊急",
+              "en": "Level 3 - Urgent",
+              "ja": "レベル3 - 急性"
+            }
+          },
+          {
+            "value": "level4",
+            "label": {
+              "zh_TW": "第四級 - 次緊急",
+              "en": "Level 4 - Less Urgent",
+              "ja": "レベル4 - 準緊急"
+            }
+          },
+          {
+            "value": "level5",
+            "label": {
+              "zh_TW": "第五級 - 非緊急",
+              "en": "Level 5 - Non-urgent",
+              "ja": "レベル5 - 非緊急"
+            }
+          }
+        ]
+      },
+      {
+        "name": "生命徵象評估",
+        "type": "select",
+        "label": {
+          "zh_TW": "生命徵象評估工具",
+          "en": "Vital Signs Assessment Tool",
+          "ja": "バイタルサイン評価ツール"
+        },
+        "required": false,
+        "options": [
+          {
+            "value": "abcde",
+            "label": {
+              "zh_TW": "ABCDE評估法",
+              "en": "ABCDE Assessment",
+              "ja": "ABCDE評価法"
+            }
+          },
+          {
+            "value": "news",
+            "label": {
+              "zh_TW": "國家早期預警評分 (NEWS)",
+              "en": "National Early Warning Score (NEWS)",
+              "ja": "国家早期警告スコア (NEWS)"
+            }
+          }
+        ]
+      }
+    ],
+    "defaultTags": [
+      "急診醫學",
+      "緊急醫療",
+      "急救",
+      "檢傷分類"
+    ],
+    "suggestedKeywords": [
+      "急診",
+      "急救",
+      "檢傷分類",
+      "心肺復甦術",
+      "外傷處理",
+      "中毒處理",
+      "休克",
+      "生命支持"
+    ]
+  },
+  "color": "#e74c3c",
+  "icon": "emergency",
+  "coverImage": "/images/specialties/emergency-cover.jpg",
+  "sortOrder": 5,
+  "isActive": true,
+  "isFeatured": true,
+  "calculatorCount": 15,
+  "educationCount": 28,
+  "flowchartCount": 12,
+  "sopStats": {
+    "totalArticles": 28,
+    "publishedArticles": 25,
+    "inReviewArticles": 2,
+    "averageReviewTime": 2.5,
+    "approvalRate": 0.89
+  },
+  "seoTitle": {
+    "zh_TW": "急診醫學科 - 緊急醫療與急救處置 | 醫療平台",
+    "en": "Emergency Medicine - Emergency Care & First Aid Procedures | Medical Platform",
+    "ja": "救急医学科 - 救急医療と応急処置 | 医療プラットフォーム"
+  },
+  "seoDescription": {
+    "zh_TW": "提供專業的急診醫學資訊，包括緊急評估、檢傷分類、急救處置、生命支持等急診醫療知識。由急診醫學專家審核，確保內容準確實用。",
+    "en": "Professional emergency medicine information including emergency assessment, triage, first aid procedures, life support and other emergency medical knowledge. Reviewed by emergency medicine specialists to ensure accurate and practical content.",
+    "ja": "緊急評価、トリアージ、応急処置、生命維持などの救急医療知識を含む専門的な救急医学情報。救急医学専門医による審査により、正確で実用的な内容を保証。"
+  },
+  "keywords": [
+    "急診醫學",
+    "緊急醫療",
+    "急救",
+    "檢傷分類",
+    "心肺復甦術",
+    "外傷處理",
+    "中毒處理",
+    "休克",
+    "生命支持",
+    "ABCDE評估"
+  ]
+}

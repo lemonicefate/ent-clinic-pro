@@ -1,0 +1,246 @@
+{
+  "id": "pediatrics",
+  "name": {
+    "zh_TW": "小兒科",
+    "en": "Pediatrics",
+    "ja": "小児科"
+  },
+  "slug": "pediatrics",
+  "description": {
+    "zh_TW": "專門照護嬰兒、兒童和青少年健康的醫學專科，涵蓋從出生到18歲的各種疾病預防、診斷、治療和健康促進。",
+    "en": "Medical specialty dedicated to the health care of infants, children, and adolescents, covering disease prevention, diagnosis, treatment, and health promotion from birth to 18 years of age.",
+    "ja": "乳児、小児、青少年の健康管理を専門とする医学分野で、出生から18歳までの疾病予防、診断、治療、健康増進を含みます。"
+  },
+  "workflowConfig": {
+    "reviewerRoles": ["specialist", "medical-editor", "content-reviewer"],
+    "requiredApprovals": 3,
+    "reviewTimeLimit": 5,
+    "specialRequirements": ["evidence-level-check", "guideline-compliance", "peer-review", "ethics-review"],
+    "autoAssignmentRules": {
+      "enabled": true,
+      "balanceWorkload": true,
+      "avoidConflicts": true,
+      "preferExpertise": true,
+      "maxConcurrentReviews": 2
+    },
+    "reviewerPool": [
+      {
+        "id": "dr-wu-pediatrics",
+        "name": "吳小兒科醫師",
+        "role": "pediatrician",
+        "specializations": ["general-pediatrics", "infectious-diseases", "developmental-pediatrics"],
+        "maxConcurrentReviews": 2,
+        "averageReviewTime": 4.1,
+        "isActive": true
+      },
+      {
+        "id": "dr-chang-pediatrics",
+        "name": "張兒童醫師",
+        "role": "pediatrician",
+        "specializations": ["neonatology", "pediatric-cardiology", "adolescent-medicine"],
+        "maxConcurrentReviews": 3,
+        "averageReviewTime": 5.5,
+        "isActive": true
+      },
+      {
+        "id": "dr-lee-pediatrics",
+        "name": "李兒科醫師",
+        "role": "pediatrician",
+        "specializations": ["pediatric-emergency", "child-abuse", "behavioral-pediatrics"],
+        "maxConcurrentReviews": 2,
+        "averageReviewTime": 4.8,
+        "isActive": true
+      },
+      {
+        "id": "editor-medical-peds",
+        "name": "小兒科醫學編輯",
+        "role": "medical-editor",
+        "specializations": ["pediatrics-content", "medical-writing", "child-health-education"],
+        "maxConcurrentReviews": 5,
+        "averageReviewTime": 3.2,
+        "isActive": true
+      }
+    ],
+    "escalationRules": {
+      "timeoutDays": 7,
+      "escalateTo": "department-head",
+      "notificationSchedule": [2, 4, 7]
+    }
+  },
+  "contentTemplate": {
+    "requiredSections": [
+      {
+        "section": "年齡特異性考量",
+        "description": {
+          "zh_TW": "說明不同年齡層的特殊考量和差異",
+          "en": "Explain age-specific considerations and differences",
+          "ja": "年齢別の特別な考慮事項と違いを説明"
+        },
+        "order": 1
+      },
+      {
+        "section": "生長發育評估",
+        "description": {
+          "zh_TW": "詳述生長發育里程碑和評估方法",
+          "en": "Detail growth and developmental milestones and assessment methods",
+          "ja": "成長発達のマイルストーンと評価方法を詳述"
+        },
+        "order": 2
+      },
+      {
+        "section": "疫苗接種",
+        "description": {
+          "zh_TW": "提供疫苗接種時程和注意事項",
+          "en": "Provide vaccination schedule and precautions",
+          "ja": "予防接種スケジュールと注意事項を提供"
+        },
+        "order": 3
+      },
+      {
+        "section": "家長衛教",
+        "description": {
+          "zh_TW": "提供家長照護指導和衛教資訊",
+          "en": "Provide parental care guidance and health education",
+          "ja": "保護者向けのケア指導と健康教育を提供"
+        },
+        "order": 4
+      }
+    ],
+    "customFields": [
+      {
+        "name": "年齡群組",
+        "type": "select",
+        "label": {
+          "zh_TW": "目標年齡群組",
+          "en": "Target Age Group",
+          "ja": "対象年齢群"
+        },
+        "required": true,
+        "options": [
+          {
+            "value": "newborn",
+            "label": {
+              "zh_TW": "新生兒 (0-28天)",
+              "en": "Newborn (0-28 days)",
+              "ja": "新生児 (0-28日)"
+            }
+          },
+          {
+            "value": "infant",
+            "label": {
+              "zh_TW": "嬰兒 (1個月-2歲)",
+              "en": "Infant (1 month-2 years)",
+              "ja": "乳児 (1ヶ月-2歳)"
+            }
+          },
+          {
+            "value": "preschool",
+            "label": {
+              "zh_TW": "學齡前 (2-5歲)",
+              "en": "Preschool (2-5 years)",
+              "ja": "就学前 (2-5歳)"
+            }
+          },
+          {
+            "value": "school-age",
+            "label": {
+              "zh_TW": "學齡期 (6-12歲)",
+              "en": "School-age (6-12 years)",
+              "ja": "学童期 (6-12歳)"
+            }
+          },
+          {
+            "value": "adolescent",
+            "label": {
+              "zh_TW": "青少年 (13-18歲)",
+              "en": "Adolescent (13-18 years)",
+              "ja": "青少年 (13-18歳)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "發展評估工具",
+        "type": "select",
+        "label": {
+          "zh_TW": "發展評估工具",
+          "en": "Developmental Assessment Tool",
+          "ja": "発達評価ツール"
+        },
+        "required": false,
+        "options": [
+          {
+            "value": "denver",
+            "label": {
+              "zh_TW": "丹佛發展篩檢測驗 (DDST)",
+              "en": "Denver Developmental Screening Test (DDST)",
+              "ja": "デンバー発達スクリーニング検査 (DDST)"
+            }
+          },
+          {
+            "value": "bayley",
+            "label": {
+              "zh_TW": "貝利嬰幼兒發展量表",
+              "en": "Bayley Scales of Infant Development",
+              "ja": "ベイリー乳幼児発達検査"
+            }
+          }
+        ]
+      }
+    ],
+    "defaultTags": [
+      "小兒科",
+      "兒童健康",
+      "生長發育",
+      "疫苗接種"
+    ],
+    "suggestedKeywords": [
+      "兒童疾病",
+      "疫苗接種",
+      "生長發育",
+      "新生兒照護",
+      "青少年健康",
+      "兒童營養",
+      "發展遲緩",
+      "小兒感染"
+    ]
+  },
+  "color": "#f39c12",
+  "icon": "child",
+  "coverImage": "/images/specialties/pediatrics-cover.jpg",
+  "sortOrder": 4,
+  "isActive": true,
+  "isFeatured": true,
+  "calculatorCount": 12,
+  "educationCount": 35,
+  "flowchartCount": 8,
+  "sopStats": {
+    "totalArticles": 35,
+    "publishedArticles": 28,
+    "inReviewArticles": 5,
+    "averageReviewTime": 4.8,
+    "approvalRate": 0.80
+  },
+  "seoTitle": {
+    "zh_TW": "小兒科 - 兒童健康照護與疾病治療 | 醫療平台",
+    "en": "Pediatrics - Child Health Care & Disease Treatment | Medical Platform",
+    "ja": "小児科 - 小児の健康管理と疾患治療 | 医療プラットフォーム"
+  },
+  "seoDescription": {
+    "zh_TW": "提供專業的小兒科醫療資訊，包括兒童疾病診斷治療、疫苗接種、生長發育評估、新生兒照護等完整的兒童健康指導。由小兒科專家審核。",
+    "en": "Professional pediatric medical information including childhood disease diagnosis and treatment, vaccination, growth and development assessment, newborn care and comprehensive child health guidance. Reviewed by pediatric specialists.",
+    "ja": "小児疾患の診断治療、予防接種、成長発達評価、新生児ケアなど包括的な小児健康指導を含む専門的な小児科医療情報。小児科専門医による審査。"
+  },
+  "keywords": [
+    "小兒科",
+    "兒童健康",
+    "疫苗接種",
+    "生長發育",
+    "新生兒照護",
+    "青少年健康",
+    "兒童營養",
+    "發展遲緩",
+    "小兒感染",
+    "家長衛教"
+  ]
+}

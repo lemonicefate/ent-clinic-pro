@@ -1,0 +1,87 @@
+{
+  "title": "醫療專科審核者分配配置",
+  "description": "定義各醫療專科的審核者池和自動分配規則",
+  "version": "1.0",
+  "lastUpdated": "2025-01-30",
+  "globalSettings": {
+    "defaultReviewTimeLimit": 7,
+    "defaultRequiredApprovals": 2,
+    "maxConcurrentReviewsPerReviewer": 5,
+    "escalationTimeoutDays": 10,
+    "notificationSchedule": [3, 7, 10]
+  },
+  "reviewerRoles": {
+    "specialist": {
+      "name": {
+        "zh_TW": "專科醫師",
+        "en": "Medical Specialist",
+        "ja": "専門医"
+      },
+      "description": "具有專科認證的醫師，負責醫療內容的專業審核",
+      "permissions": ["medical-review", "content-approval", "clinical-validation"],
+      "priority": 1
+    },
+    "medical-editor": {
+      "name": {
+        "zh_TW": "醫學編輯",
+        "en": "Medical Editor",
+        "ja": "医学編集者"
+      },
+      "description": "負責醫學內容的編輯和格式審核",
+      "permissions": ["content-editing", "format-review", "language-review"],
+      "priority": 2
+    },
+    "content-reviewer": {
+      "name": {
+        "zh_TW": "內容審核員",
+        "en": "Content Reviewer",
+        "ja": "コンテンツレビュアー"
+      },
+      "description": "負責內容結構和品質的審核",
+      "permissions": ["content-structure", "quality-check", "seo-review"],
+      "priority": 3
+    },
+    "department-head": {
+      "name": {
+        "zh_TW": "科室主任",
+        "en": "Department Head",
+        "ja": "科長"
+      },
+      "description": "科室主任，負責最終審核和爭議解決",
+      "permissions": ["final-approval", "dispute-resolution", "policy-override"],
+      "priority": 0
+    }
+  },
+  "assignmentAlgorithm": {
+    "name": "智能審核者分配算法",
+    "version": "1.0",
+    "description": "基於專業領域、工作負載平衡和可用性的智能分配算法",
+    "factors": {
+      "expertise": {
+        "weight": 0.4,
+        "description": "審核者專業領域匹配度"
+      },
+      "workload": {
+        "weight": 0.3,
+        "description": "當前工作負載平衡"
+      },
+      "availability": {
+        "weight": 0.2,
+        "description": "審核者可用性和時區"
+      },
+      "performance": {
+        "weight": 0.1,
+        "description": "歷史審核表現和速度"
+      }
+    },
+    "rules": [
+      "每篇文章至少需要一位專科醫師審核",
+      "每篇文章至少需要一位醫學編輯審核",
+      "小兒科文章需要額外的倫理審核",
+      "急診醫學文章優先處理",
+      "避免利益衝突的審核者組合",
+      "平衡審核者的工作負載",
+      "考慮審核者的時區和工作時間"
+    ]
+  }
+}

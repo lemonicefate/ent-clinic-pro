@@ -1,0 +1,215 @@
+[
+  {
+    "id": "fdb-449732",
+    "name": {
+      "en": "Tylenol PM Extra Strength",
+      "zh": "泰諾PM加強型",
+      "ja": "タイレノールPMエクストラストレングス"
+    },
+    "genericName": {
+      "en": "Acetaminophen/Diphenhydramine",
+      "zh": "對乙醯氨基酚/苯海拉明",
+      "ja": "アセトアミノフェン/ジフェンヒドラミン"
+    },
+    "strength": "25 mg-500 mg",
+    "dosageForm": {
+      "en": "tablet",
+      "zh": "錠劑",
+      "ja": "錠剤"
+    },
+    "category": "pain-relief",
+    "description": {
+      "en": "Pain reliever and sleep aid combination medication",
+      "zh": "止痛劑和助眠劑複合藥物",
+      "ja": "鎮痛剤と睡眠補助薬の配合薬"
+    },
+    "indications": {
+      "en": ["Pain relief", "Sleep aid", "Headache", "Minor aches"],
+      "zh": ["止痛", "助眠", "頭痛", "輕微疼痛"],
+      "ja": ["疼痛緩和", "睡眠補助", "頭痛", "軽度の痛み"]
+    },
+    "contraindications": {
+      "en": ["Liver disease", "Alcohol use", "MAO inhibitor use"],
+      "zh": ["肝病", "飲酒", "使用MAO抑制劑"],
+      "ja": ["肝疾患", "アルコール使用", "MAO阻害薬使用"]
+    },
+    "sideEffects": {
+      "common": {
+        "en": ["Drowsiness", "Dizziness", "Dry mouth"],
+        "zh": ["嗜睡", "頭暈", "口乾"],
+        "ja": ["眠気", "めまい", "口渇"]
+      },
+      "serious": {
+        "en": ["Liver damage", "Allergic reaction"],
+        "zh": ["肝損傷", "過敏反應"],
+        "ja": ["肝障害", "アレルギー反応"]
+      }
+    },
+    "dosage": {
+      "adult": {
+        "en": "2 tablets at bedtime, do not exceed 2 tablets in 24 hours",
+        "zh": "睡前服用2錠，24小時內不超過2錠",
+        "ja": "就寝時に2錠、24時間以内に2錠を超えないこと"
+      }
+    },
+    "interactions": [
+      {
+        "medication": "Warfarin",
+        "severity": "moderate",
+        "description": {
+          "en": "May increase bleeding risk",
+          "zh": "可能增加出血風險",
+          "ja": "出血リスクを増加させる可能性"
+        }
+      }
+    ],
+    "rxnormCode": "1092189",
+    "fdcCode": "449732",
+    "image": "/images/medications/tylenol-pm.jpg"
+  },
+  {
+    "id": "fdb-259181",
+    "name": {
+      "en": "Advil",
+      "zh": "安舒疼",
+      "ja": "アドビル"
+    },
+    "genericName": {
+      "en": "Ibuprofen",
+      "zh": "布洛芬",
+      "ja": "イブプロフェン"
+    },
+    "strength": "200 mg",
+    "dosageForm": {
+      "en": "tablet",
+      "zh": "錠劑",
+      "ja": "錠剤"
+    },
+    "category": "pain-relief",
+    "description": {
+      "en": "Nonsteroidal anti-inflammatory drug (NSAID) for pain and inflammation",
+      "zh": "非類固醇抗炎藥物，用於止痛和消炎",
+      "ja": "痛みと炎症のための非ステロイド性抗炎症薬（NSAID）"
+    },
+    "indications": {
+      "en": ["Pain relief", "Fever reduction", "Inflammation", "Headache"],
+      "zh": ["止痛", "退燒", "消炎", "頭痛"],
+      "ja": ["疼痛緩和", "解熱", "炎症", "頭痛"]
+    },
+    "contraindications": {
+      "en": ["Kidney disease", "Heart disease", "Stomach ulcers", "Aspirin allergy"],
+      "zh": ["腎病", "心臟病", "胃潰瘍", "阿司匹林過敏"],
+      "ja": ["腎疾患", "心疾患", "胃潰瘍", "アスピリンアレルギー"]
+    },
+    "sideEffects": {
+      "common": {
+        "en": ["Stomach upset", "Nausea", "Heartburn"],
+        "zh": ["胃部不適", "噁心", "胃灼熱"],
+        "ja": ["胃の不調", "吐き気", "胸やけ"]
+      },
+      "serious": {
+        "en": ["GI bleeding", "Kidney damage", "Heart attack risk"],
+        "zh": ["胃腸出血", "腎損傷", "心臟病發作風險"],
+        "ja": ["消化管出血", "腎障害", "心臓発作リスク"]
+      }
+    },
+    "dosage": {
+      "adult": {
+        "en": "200-400 mg every 4-6 hours, maximum 1200 mg per day",
+        "zh": "每4-6小時200-400毫克，每日最多1200毫克",
+        "ja": "4-6時間ごとに200-400mg、1日最大1200mg"
+      }
+    },
+    "interactions": [
+      {
+        "medication": "Warfarin",
+        "severity": "high",
+        "description": {
+          "en": "Significantly increases bleeding risk",
+          "zh": "顯著增加出血風險",
+          "ja": "出血リスクを大幅に増加"
+        }
+      },
+      {
+        "medication": "ACE inhibitors",
+        "severity": "moderate",
+        "description": {
+          "en": "May reduce effectiveness of blood pressure medication",
+          "zh": "可能降低血壓藥物的效果",
+          "ja": "血圧薬の効果を低下させる可能性"
+        }
+      }
+    ],
+    "rxnormCode": "5640",
+    "fdcCode": "259181",
+    "image": "/images/medications/advil.jpg"
+  },
+  {
+    "id": "fdb-123456",
+    "name": {
+      "en": "Metformin",
+      "zh": "二甲雙胍",
+      "ja": "メトホルミン"
+    },
+    "genericName": {
+      "en": "Metformin Hydrochloride",
+      "zh": "鹽酸二甲雙胍",
+      "ja": "メトホルミン塩酸塩"
+    },
+    "strength": "500 mg",
+    "dosageForm": {
+      "en": "tablet",
+      "zh": "錠劑",
+      "ja": "錠剤"
+    },
+    "category": "diabetes",
+    "description": {
+      "en": "Antidiabetic medication for type 2 diabetes management",
+      "zh": "用於2型糖尿病管理的抗糖尿病藥物",
+      "ja": "2型糖尿病管理のための抗糖尿病薬"
+    },
+    "indications": {
+      "en": ["Type 2 diabetes", "Prediabetes", "PCOS"],
+      "zh": ["2型糖尿病", "糖尿病前期", "多囊卵巢綜合症"],
+      "ja": ["2型糖尿病", "前糖尿病", "PCOS"]
+    },
+    "contraindications": {
+      "en": ["Kidney disease", "Liver disease", "Heart failure", "Metabolic acidosis"],
+      "zh": ["腎病", "肝病", "心力衰竭", "代謝性酸中毒"],
+      "ja": ["腎疾患", "肝疾患", "心不全", "代謝性アシドーシス"]
+    },
+    "sideEffects": {
+      "common": {
+        "en": ["Nausea", "Diarrhea", "Stomach upset", "Metallic taste"],
+        "zh": ["噁心", "腹瀉", "胃部不適", "金屬味"],
+        "ja": ["吐き気", "下痢", "胃の不調", "金属味"]
+      },
+      "serious": {
+        "en": ["Lactic acidosis", "Vitamin B12 deficiency"],
+        "zh": ["乳酸酸中毒", "維生素B12缺乏"],
+        "ja": ["乳酸アシドーシス", "ビタミンB12欠乏"]
+      }
+    },
+    "dosage": {
+      "adult": {
+        "en": "500 mg twice daily with meals, may increase to 2000 mg daily",
+        "zh": "每日兩次，每次500毫克，隨餐服用，可增至每日2000毫克",
+        "ja": "食事と共に1日2回500mg、1日2000mgまで増量可能"
+      }
+    },
+    "interactions": [
+      {
+        "medication": "Contrast dye",
+        "severity": "high",
+        "description": {
+          "en": "Must discontinue before contrast procedures",
+          "zh": "造影檢查前必須停藥",
+          "ja": "造影検査前に中止が必要"
+        }
+      }
+    ],
+    "rxnormCode": "6809",
+    "fdcCode": "123456",
+    "image": "/images/medications/metformin.jpg"
+  }
+]
