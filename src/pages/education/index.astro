@@ -215,6 +215,8 @@ const getDifficultyBadge = (difficulty: string) => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredEducation.slice(0, 6).map(entry => {
             const edu = entry.data;
+            // 產生一個絕對不會出錯的 slug
+            const articleSlug = entry.slug || entry.id.slice(0, -3);
             const category = categoryConfig[edu.category] || { label: edu.category, icon: '📄', color: 'gray' };
             const difficulty = getDifficultyBadge(edu.difficulty);
             const readingTime = edu.readingTime || 5;
@@ -246,8 +248,8 @@ const getDifficultyBadge = (difficulty: string) => {
                   </div>
                   
                   <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2 group-hover:text-medical-primary-600 transition-colors">
-                    <a href={`/education/${entry.slug}`}>
-                      {edu.title?.[locale] || edu.title?.['zh-TW'] || entry.slug}
+                    <a href={`/education/${articleSlug}`}>
+                      {edu.title?.[locale] || edu.title?.['zh-TW'] || articleSlug}
                     </a>
                   </h3>
                   
@@ -271,7 +273,7 @@ const getDifficultyBadge = (difficulty: string) => {
                       )}
                     </div>
                     <a 
-                      href={`/education/${entry.slug}`}
+                      href={`/education/${articleSlug}`}
                       class="text-medical-primary-600 hover:text-medical-primary-700 font-medium transition-colors"
                     >
                       閱讀 →
@@ -345,15 +347,19 @@ const getDifficultyBadge = (difficulty: string) => {
                 </p>
                 
                 <div class="space-y-2 mb-4">
-                  {articles.slice(0, 3).map(article => (
-                    <a 
-                      key={article.slug}
-                      href={`/education/${article.slug}`}
-                      class="block text-sm text-medical-neutral-700 hover:text-medical-primary-600 transition-colors truncate"
-                    >
-                      • {article.title?.[locale] || article.title?.['zh-TW'] || article.slug}
-                    </a>
-                  ))}
+                  {articles.slice(0, 3).map(article => {
+                    // 產生一個絕對不會出錯的 slug
+                    const articleSlug = article.slug || article.id.slice(0, -3);
+                    return (
+                      <a 
+                        key={article.id}
+                        href={`/education/${articleSlug}`}
+                        class="block text-sm text-medical-neutral-700 hover:text-medical-primary-600 transition-colors truncate"
+                      >
+                        • {article.data.title?.[locale] || article.data.title?.['zh-TW'] || articleSlug}
+                      </a>
+                    );
+                  })}
                   {articles.length > 3 && (
                     <p class="text-xs text-medical-neutral-500">
                       還有 {articles.length - 3} 篇文章...
