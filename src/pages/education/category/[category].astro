@@ -203,15 +203,15 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
           // 如果 slug 最終是空的，就跳過這篇文章
           if (!articleSlug) return null;
           
-          const difficulty = getDifficultyBadge(edu.difficulty);
-          const readingTime = edu.readingTime || 5;
+          const difficulty = getDifficultyBadge(edu.data.difficulty);
+          const readingTime = edu.data.readingTime || 5;
           
           return (
             <article 
               class="bg-white rounded-lg border border-medical-neutral-200 hover:shadow-lg transition-shadow group content-item"
-              data-patient-friendly={edu.patientFriendly}
-              data-professional={edu.professionalLevel}
-              data-difficulty={edu.difficulty}
+              data-patient-friendly={edu.data.patientFriendly}
+              data-professional={edu.data.professionalLevel}
+              data-difficulty={edu.data.difficulty}
             >
               <div class="p-6">
                 <div class="flex items-start justify-between mb-4">
@@ -219,34 +219,34 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
                     <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${difficulty.color}`}>
                       {difficulty.label}
                     </span>
-                    {edu.patientFriendly && (
+                    {edu.data.patientFriendly && (
                       <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-medical-success-100 text-medical-success-800">
                         病患友善
                       </span>
                     )}
-                    {edu.professionalLevel && (
+                    {edu.data.professionalLevel && (
                       <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-medical-primary-100 text-medical-primary-800">
                         專業級
                       </span>
                     )}
                   </div>
                   
-                  {edu.evidenceLevel && (
+                  {edu.data.evidenceLevel && (
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-medical-warning-100 text-medical-warning-800">
-                      證據 {edu.evidenceLevel}
+                      證據 {edu.data.evidenceLevel}
                     </span>
                   )}
                 </div>
                 
                 <h3 class="text-lg font-semibold text-medical-neutral-900 mb-2 group-hover:text-medical-primary-600 transition-colors">
                   <a href={`/education/${articleSlug}`}>
-                    {edu.title[locale]}
+                    {edu.data.title[locale]}
                   </a>
                 </h3>
                 
-                {edu.excerpt && (
+                {edu.data.excerpt && (
                   <p class="text-medical-neutral-600 text-sm mb-4 line-clamp-3">
-                    {edu.excerpt[locale]}
+                    {edu.data.excerpt[locale]}
                   </p>
                 )}
                 
@@ -259,14 +259,14 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
                       {readingTime} 分鐘
                     </span>
                     <span>
-                      {formatDate(new Date(edu.lastUpdated), locale, { month: 'short', day: 'numeric' })}
+                      {formatDate(new Date(edu.data.lastUpdated), locale, { month: 'short', day: 'numeric' })}
                     </span>
                   </div>
                 </div>
                 
-                {edu.tags && edu.tags.length > 0 && (
+                {edu.data.tags && edu.data.tags.length > 0 && (
                   <div class="flex flex-wrap gap-1 mb-4">
-                    {edu.tags.slice(0, 3).map(tag => (
+                    {edu.data.tags.slice(0, 3).map(tag => (
                       <span key={tag} class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-medical-neutral-100 text-medical-neutral-600">
                         #{tag}
                       </span>
@@ -275,7 +275,7 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
                 )}
                 
                 <div class="flex items-center justify-between">
-                  {edu.hasFlowchart && (
+                  {edu.data.hasFlowchart && (
                     <span class="inline-flex items-center text-xs text-medical-success-600">
                       <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
