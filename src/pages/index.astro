@@ -318,8 +318,10 @@ const medicalSpecialties = [
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {featuredEducation.map((article) => {
-            // 產生一個絕對不會出錯的 slug
-            const articleSlug = article.slug || article.id.slice(0, -3);
+            // 使用更安全的 slug 產生邏輯
+            const articleSlug = article?.slug || (article?.id ? article.id.slice(0, -3) : '');
+            // 如果 slug 最終是空的，就跳過這篇文章
+            if (!articleSlug) return null;
             
             return (
               <article class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">

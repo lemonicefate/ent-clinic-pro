@@ -198,8 +198,11 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
     {educationContent.length > 0 ? (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="content-grid">
         {educationContent.map(edu => {
-          // 產生一個絕對不會出錯的 slug
-          const articleSlug = edu.slug || edu.id.slice(0, -3);
+          // 使用更安全的 slug 產生邏輯
+          const articleSlug = edu?.slug || (edu?.id ? edu.id.slice(0, -3) : '');
+          // 如果 slug 最終是空的，就跳過這篇文章
+          if (!articleSlug) return null;
+          
           const difficulty = getDifficultyBadge(edu.difficulty);
           const readingTime = edu.readingTime || 5;
           

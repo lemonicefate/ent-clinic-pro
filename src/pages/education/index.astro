@@ -215,8 +215,11 @@ const getDifficultyBadge = (difficulty: string) => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredEducation.slice(0, 6).map(entry => {
             const edu = entry.data;
-            // 產生一個絕對不會出錯的 slug
-            const articleSlug = entry.slug || entry.id.slice(0, -3);
+            // 使用更安全的 slug 產生邏輯
+            const articleSlug = entry?.slug || (entry?.id ? entry.id.slice(0, -3) : '');
+            // 如果 slug 最終是空的，就跳過這篇文章
+            if (!articleSlug) return null;
+            
             const category = categoryConfig[edu.category] || { label: edu.category, icon: '📄', color: 'gray' };
             const difficulty = getDifficultyBadge(edu.difficulty);
             const readingTime = edu.readingTime || 5;
@@ -348,8 +351,11 @@ const getDifficultyBadge = (difficulty: string) => {
                 
                 <div class="space-y-2 mb-4">
                   {articles.slice(0, 3).map(article => {
-                    // 產生一個絕對不會出錯的 slug
-                    const articleSlug = article.slug || article.id.slice(0, -3);
+                    // 使用更安全的 slug 產生邏輯
+                    const articleSlug = article?.slug || (article?.id ? article.id.slice(0, -3) : '');
+                    // 如果 slug 最終是空的，就跳過這篇文章
+                    if (!articleSlug) return null;
+                    
                     return (
                       <a 
                         key={article.id}
