@@ -2,14 +2,46 @@
   "mcpServers": {
     "context7": {
       "command": "uvx",
-      "args": ["context7-mcp-server@latest"],
+      "args": [
+        "context7-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "mcp_Context7_resolve_library_id",
+        "mcp_Context7_get_library_docs"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "serena": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "D:\\ai_project\\ent-pro\\serena",
+        "serena",
+        "start-mcp-server"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false,
       "autoApprove": [
-        "mcp_Context7_resolve_library_id",
-        "mcp_Context7_get_library_docs"
+        "find_symbol",
+        "activate_project",
+        "list_dir",
+        "find_file",
+        "create_text_file",
+        "execute_shell_command"
       ]
     }
   }
