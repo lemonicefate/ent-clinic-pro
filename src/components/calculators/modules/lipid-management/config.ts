@@ -262,6 +262,13 @@ export const config: CalculatorConfig = {
       }
     ]
   },
-  tags: ['cardiology', 'lipid', 'cholesterol', 'cardiovascular-risk', 'taiwan-guidelines'],
-  difficulty: 'intermediate'
+  
+  metadata: {
+    tags: ['cardiology', 'lipid', 'cholesterol', 'cardiovascular-risk', 'taiwan-guidelines'],
+    difficulty: 'intermediate',
+    lastUpdated: '2024-01-26',
+    author: 'Astro Clinical Platform',
+    reviewedBy: 'Cardiology Team',
+    estimatedTime: 5
+  }
 };
