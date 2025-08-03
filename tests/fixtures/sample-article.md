@@ -12,7 +12,7 @@ specialty: "cardiology"
 tags: ["atrial-fibrillation", "cardiology", "diagnosis"]
 difficulty: "intermediate"
 readingTime: 10
-lastUpdated: "2025-08-03T14:55:43.379Z"
+lastUpdated: "2025-08-03T22:49:21.965Z"
 author:
   zh_TW: "心臟科醫師"
   en: "Cardiologist"

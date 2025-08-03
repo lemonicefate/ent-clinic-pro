@@ -1,0 +1,59 @@
+{
+  "moduleLoadTimes": {
+    "bmi": {
+      "loadTime": 1.31,
+      "fileCount": 6,
+      "totalSize": 50243,
+      "averageSizePerFile": 8374
+    },
+    "egfr": {
+      "loadTime": 2.05,
+      "fileCount": 6,
+      "totalSize": 42502,
+      "averageSizePerFile": 7084
+    },
+    "cha2ds2-vasc": {
+      "loadTime": 0.7,
+      "fileCount": 6,
+      "totalSize": 51976,
+      "averageSizePerFile": 8663
+    }
+  },
+  "memoryUsage": {
+    "rss": 47.27,
+    "heapTotal": 5.81,
+    "heapUsed": 5.03,
+    "external": 1.81,
+    "arrayBuffers": 0.02
+  },
+  "bundleSizes": {
+    "CalculatorContainer.BgRCh2jx.js": {
+      "size": 17894,
+      "sizeKB": 17.47,
+      "type": "JavaScript"
+    },
+    "mindmap-definition-6CBA2TL7.BMICatjS.js": {
+      "size": 101531,
+      "sizeKB": 99.15,
+      "type": "JavaScript"
+    },
+    "PluginCalculator.BvD_O83Y.js": {
+      "size": 30345,
+      "sizeKB": 29.63,
+      "type": "JavaScript"
+    },
+    "_calculator_.-zGaJ5Nt.css": {
+      "size": 6948,
+      "sizeKB": 6.79,
+      "type": "CSS"
+    },
+    "_total": {
+      "files": 4,
+      "totalSize": 156718,
+      "totalSizeKB": 153.04
+    }
+  },
+  "timestamp": "2025-08-03T15:56:55.651Z",
+  "recommendations": [],
+  "analysisTime": 9.63
+}

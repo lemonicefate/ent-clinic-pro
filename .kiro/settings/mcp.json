@@ -19,7 +19,9 @@
       "disabled": false,
       "autoApprove": [
         "mcp_Context7_resolve_library_id",
-        "mcp_Context7_get_library_docs"
+        "mcp_Context7_get_library_docs",
+        "resolve-library-id",
+        "get-library-docs"
       ]
     },
     "playwright": {
@@ -28,7 +30,9 @@
         "@playwright/mcp@latest"
       ],
       "disabled": false,
-      "autoApprove": []
+      "autoApprove": [
+        "browser_navigate"
+      ]
     },
     "serena": {
       "command": "uv",
@@ -56,7 +60,14 @@
         "think_about_collected_information",
         "think_about_task_adherence",
         "think_about_whether_you_are_done",
-        "summarize_changes"
+        "summarize_changes",
+        "check_onboarding_performed",
+        "onboarding",
+        "get_symbols_overview",
+        "write_memory",
+        "search_for_pattern",
+        "list_memories",
+        "read_memory"
       ]
     }
   }

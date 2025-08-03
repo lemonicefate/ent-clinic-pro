@@ -28,10 +28,13 @@ export async function getStaticPaths() {
 const { category } = Astro.params;
 const locale: SupportedLocale = 'zh-TW';
 
-// 確保 category 存在
-if (!category) {
+// 確保 category 存在並進行類型斷言
+if (!category || typeof category !== 'string') {
   return Astro.redirect('/education');
 }
+
+// TypeScript 類型斷言，確保 category 是字符串
+const categoryKey = category as string;
 
 // Temporarily disable education content loading to fix build
 const educationContent = [];
@@ -88,8 +91,8 @@ const categoryConfig = {
   }
 };
 
-const currentCategory = categoryConfig[category] || {
-  label: category,
+const currentCategory = categoryConfig[categoryKey] || {
+  label: categoryKey,
   icon: '📄',
   color: 'gray',
   description: '',
@@ -331,7 +334,7 @@ const professionalContent = educationContent.filter(edu => edu.professionalLevel
       </h2>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {Object.entries(categoryConfig)
-          .filter(([key]) => key !== category)
+          .filter(([key]) => key !== categoryKey)
           .slice(0, 5)
           .map(([key, config]) => (
             <a 

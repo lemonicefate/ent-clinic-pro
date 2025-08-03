@@ -3,7 +3,7 @@
  * 醫療內容 SEO 工具 - 專門針對醫療內容的 SEO 優化
  */
 
-import type { CalculatorConfig } from './calculator-loader';
+import type { CalculatorConfig } from '../components/calculators/types';
 
 // 醫療內容類型定義
 export interface MedicalContentSEO {

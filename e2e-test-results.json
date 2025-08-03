@@ -1,0 +1,76 @@
+{
+  "tests": [
+    {
+      "name": "Page exists: tools/bmi",
+      "passed": true,
+      "details": "Page exists and contains expected content",
+      "timestamp": "2025-08-03T16:04:46.264Z"
+    },
+    {
+      "name": "Page exists: tools/egfr",
+      "passed": true,
+      "details": "Page exists and contains expected content",
+      "timestamp": "2025-08-03T16:04:46.265Z"
+    },
+    {
+      "name": "Page exists: tools/cha2ds2-vasc",
+      "passed": false,
+      "details": "Expected content not found: \"CHA2DS2-VASc\"",
+      "timestamp": "2025-08-03T16:04:46.267Z"
+    },
+    {
+      "name": "Page exists: tools",
+      "passed": false,
+      "details": "Expected content not found: \"calculator\"",
+      "timestamp": "2025-08-03T16:04:46.270Z"
+    },
+    {
+      "name": "Calculator module loading: bmi",
+      "passed": true,
+      "details": "Found 4/4 expected content items",
+      "timestamp": "2025-08-03T16:04:46.275Z"
+    },
+    {
+      "name": "Calculator module loading: egfr",
+      "passed": true,
+      "details": "Found 3/3 expected content items",
+      "timestamp": "2025-08-03T16:04:46.278Z"
+    },
+    {
+      "name": "Calculator module loading: cha2ds2-vasc",
+      "passed": true,
+      "details": "Found 3/3 expected content items",
+      "timestamp": "2025-08-03T16:04:46.281Z"
+    },
+    {
+      "name": "Calculator Registry Initialization",
+      "passed": false,
+      "details": "Insufficient registry indicators found (0/5)",
+      "timestamp": "2025-08-03T16:04:46.283Z"
+    },
+    {
+      "name": "JavaScript Bundle Integrity",
+      "passed": true,
+      "details": "Found 3 valid calculator bundles out of 3 total",
+      "timestamp": "2025-08-03T16:04:46.287Z"
+    },
+    {
+      "name": "CSS Bundle Integrity",
+      "passed": true,
+      "details": "Found calculator styles in 7/9 CSS files",
+      "timestamp": "2025-08-03T16:04:46.289Z"
+    },
+    {
+      "name": "Error Boundary Implementation",
+      "passed": true,
+      "details": "Error boundary implementation found in JavaScript bundles",
+      "timestamp": "2025-08-03T16:04:46.292Z"
+    }
+  ],
+  "summary": {
+    "total": 11,
+    "passed": 8,
+    "failed": 3
+  },
+  "timestamp": "2025-08-03T16:04:46.260Z"
+}

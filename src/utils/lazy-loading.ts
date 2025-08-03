@@ -324,17 +324,14 @@ export class LazyComponentLoader {
       const startTime = performance.now();
       
       try {
-        // 動態載入計算機組件
-        const { Calculator } = await import('../components/islands/Calculator');
+        // 動態載入新的統一計算機容器
+        const { CalculatorContainer } = await import('../components/calculators/common/CalculatorContainer');
         const { createRoot } = await import('react-dom/client');
         const { createElement } = await import('react');
         
-        // 載入計算機配置
-        const calculatorConfig = await import(`../content/calculators/${calculatorId}.json`);
-        
         const root = createRoot(element);
-        root.render(createElement(Calculator, { 
-          config: calculatorConfig.default,
+        root.render(createElement(CalculatorContainer, { 
+          calculatorId,
           onCalculate: (result: any) => {
             // 報告計算機渲染時間
             const renderTime = performance.now() - startTime;
