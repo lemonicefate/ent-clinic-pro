@@ -1,6 +1,6 @@
 ---
 import '../../styles/global.css';
-import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
 ---
 
 <!DOCTYPE html>
@@ -20,8 +20,8 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
       <!-- BMI 計算器 -->
       <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-4">BMI 計算器</h2>
-        <PluginCalculator 
-          pluginId="general.bmi"
+        <CalculatorContainer 
+          calculatorId="bmi"
           locale="zh-TW"
           client:load
         />
@@ -30,8 +30,8 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
       <!-- eGFR 計算器 -->
       <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-4">eGFR 計算器</h2>
-        <PluginCalculator 
-          pluginId="nephrology.egfr"
+        <CalculatorContainer 
+          calculatorId="egfr"
           locale="zh-TW"
           client:load
         />
@@ -40,8 +40,8 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
       <!-- CHA2DS2-VASc 評分 -->
       <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-4">CHA2DS2-VASc 評分</h2>
-        <PluginCalculator 
-          pluginId="cardiology.cha2ds2-vasc"
+        <CalculatorContainer 
+          calculatorId="cha2ds2-vasc"
           locale="zh-TW"
           client:load
         />

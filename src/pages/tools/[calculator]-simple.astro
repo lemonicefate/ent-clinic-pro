@@ -1,6 +1,6 @@
 ---
 // 簡化的動態計算器頁面
-import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
 
 // 獲取路由參數
 const { calculator: calculatorId } = Astro.params;
@@ -108,8 +108,8 @@ const pluginData = staticPluginData[pluginId];
 
     <!-- 計算器組件 -->
     <div class="max-w-2xl mx-auto">
-      <PluginCalculator 
-        pluginId={pluginId}
+      <CalculatorContainer 
+        calculatorId={calculatorId}
         locale="zh-TW"
         client:load
       />

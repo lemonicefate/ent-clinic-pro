@@ -5,7 +5,7 @@
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
 import type { SupportedLocale } from '../../types/calculator.js';
 
 const locale: SupportedLocale = 'zh-TW';
@@ -81,20 +81,13 @@ const breadcrumbs = [
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- 計算機主體 - 使用新的插件系統 -->
+      <!-- 計算機主體 - 使用新的模組化架構 -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-lg border border-gray-200 p-6">
-          <PluginCalculator 
+          <CalculatorContainer 
             client:load
-            transition:persist="cha2ds2-vasc-calculator"
-            pluginId="cardiology.cha2ds2-vasc"
+            calculatorId="cha2ds2-vasc"
             locale={locale}
-            theme="light"
-            accessibility={{
-              highContrast: false,
-              largeText: false,
-              screenReader: false
-            }}
             className="cha2ds2-vasc-calculator"
           />
         </div>

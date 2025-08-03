@@ -1,0 +1,30 @@
+{
+  "id": "test-cardiology",
+  "name": {
+    "zh_TW": "測試心臟科",
+    "en": "Test Cardiology",
+    "ja": "テスト循環器科"
+  },
+  "slug": "test-cardiology",
+  "description": {
+    "zh_TW": "測試心臟科描述",
+    "en": "Test cardiology description",
+    "ja": "テスト循環器科の説明"
+  },
+  "color": "#e74c3c",
+  "icon": "heart",
+  "articleCount": 5,
+  "isActive": true,
+  "reviewers": [
+    "cardiologist@example.com",
+    "editor@example.com"
+  ],
+  "workflowConfig": {
+    "reviewerRoles": [
+      "specialist",
+      "medical-editor"
+    ],
+    "requiredApprovals": 2,
+    "reviewTimeLimit": 7
+  }
+}

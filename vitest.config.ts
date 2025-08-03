@@ -4,7 +4,7 @@ import { resolve } from 'path'
 export default defineConfig({
   test: {
     // Test environment configuration
-    environment: 'node',
+    environment: 'happy-dom',
     
     // Test file patterns
     include: [

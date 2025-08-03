@@ -1,6 +1,6 @@
 ---
-// 測試 PluginCalculator 組件
-import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+// 測試 CalculatorContainer 組件
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
 ---
 
 <!DOCTYPE html>
@@ -8,7 +8,7 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>插件計算器測試</title>
+  <title>計算器測試</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f9fafb; }
     .container { max-width: 1200px; margin: 0 auto; }
@@ -23,14 +23,14 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
 </head>
 <body class="bg-gray-50">
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">插件計算器測試</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">計算器測試</h1>
     
     <!-- BMI 計算器測試 -->
     <div class="mb-12">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4">BMI 計算器</h2>
       <div class="bg-white rounded-lg border border-gray-200 p-6">
-        <PluginCalculator 
-          pluginId="general.bmi"
+        <CalculatorContainer 
+          calculatorId="bmi"
           locale="zh-TW"
           client:load
         />
@@ -41,8 +41,8 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
     <div class="mb-12">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4">eGFR 計算器</h2>
       <div class="bg-white rounded-lg border border-gray-200 p-6">
-        <PluginCalculator 
-          pluginId="nephrology.egfr"
+        <CalculatorContainer 
+          calculatorId="egfr"
           locale="zh-TW"
           client:load
         />
@@ -53,8 +53,8 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
     <div class="mb-12">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4">CHA2DS2-VASc 評分</h2>
       <div class="bg-white rounded-lg border border-gray-200 p-6">
-        <PluginCalculator 
-          pluginId="cardiology.cha2ds2-vasc"
+        <CalculatorContainer 
+          calculatorId="cha2ds2-vasc"
           locale="zh-TW"
           client:load
         />

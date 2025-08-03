@@ -1,6 +1,6 @@
 ---
 // 調試頁面 - 測試每個計算器
-import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
 ---
 
 <!DOCTYPE html>
@@ -21,36 +21,36 @@ import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
   <h1>計算器調試頁面</h1>
   
   <div class="calculator-test">
-    <h2>BMI 計算器 (general.bmi)</h2>
-    <PluginCalculator 
-      pluginId="general.bmi"
+    <h2>BMI 計算器</h2>
+    <CalculatorContainer 
+      calculatorId="bmi"
       locale="zh-TW"
       client:load
     />
   </div>
   
   <div class="calculator-test">
-    <h2>eGFR 計算器 (nephrology.egfr)</h2>
-    <PluginCalculator 
-      pluginId="nephrology.egfr"
+    <h2>eGFR 計算器</h2>
+    <CalculatorContainer 
+      calculatorId="egfr"
       locale="zh-TW"
       client:load
     />
   </div>
   
   <div class="calculator-test">
-    <h2>CHA2DS2-VASc 評分 (cardiology.cha2ds2-vasc)</h2>
-    <PluginCalculator 
-      pluginId="cardiology.cha2ds2-vasc"
+    <h2>CHA2DS2-VASc 評分</h2>
+    <CalculatorContainer 
+      calculatorId="cha2ds2-vasc"
       locale="zh-TW"
       client:load
     />
   </div>
   
   <div class="calculator-test">
-    <h2>測試不存在的計算器 (test.invalid)</h2>
-    <PluginCalculator 
-      pluginId="test.invalid"
+    <h2>測試不存在的計算器</h2>
+    <CalculatorContainer 
+      calculatorId="invalid"
       locale="zh-TW"
       client:load
     />

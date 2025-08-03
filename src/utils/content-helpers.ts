@@ -80,7 +80,7 @@ export async function getAllEducationContent(): Promise<EducationContent[]> {
  */
 export async function getEducationByCategory(category: string): Promise<EducationContent[]> {
   const education = await getAllEducationContent();
-  return education.filter(edu => edu.category === category);
+  return education.filter(edu => edu.data.category === category);
 }
 
 /**

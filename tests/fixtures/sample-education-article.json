@@ -1,0 +1,41 @@
+{
+  "title": {
+    "zh_TW": "測試衛教文章",
+    "en": "Test Education Article",
+    "ja": "テスト教育記事"
+  },
+  "excerpt": {
+    "zh_TW": "這是一篇測試用的衛教文章摘要",
+    "en": "This is a test education article excerpt",
+    "ja": "これはテスト教育記事の抜粋です"
+  },
+  "category": "general",
+  "specialty": "cardiology",
+  "tags": [
+    "test",
+    "cardiology",
+    "education"
+  ],
+  "difficulty": "basic",
+  "readingTime": 5,
+  "lastUpdated": "2025-08-03T14:55:42.794Z",
+  "author": {
+    "zh_TW": "測試作者",
+    "en": "Test Author",
+    "ja": "テスト著者"
+  },
+  "status": "published",
+  "reviewers": [
+    "reviewer1@example.com"
+  ],
+  "qualityChecks": {
+    "structureCheck": true,
+    "contentCheck": true,
+    "medicalAccuracyCheck": true,
+    "seoCheck": true,
+    "accessibilityCheck": true
+  },
+  "version": "1.0.0",
+  "isActive": true,
+  "isFeatured": false
+}

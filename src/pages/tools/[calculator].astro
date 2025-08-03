@@ -5,7 +5,7 @@
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
 import type { SupportedLocale } from '../../types/calculator.js';
 
 // 獲取路由參數
@@ -18,11 +18,11 @@ if (!calculatorId) {
 
 const locale: SupportedLocale = 'zh-TW';
 
-// Define available calculators with their plugin IDs
+// Define available calculators with their module IDs
 const availableCalculators = {
-  'bmi': 'general.bmi',
-  'egfr': 'nephrology.egfr',
-  'cha2ds2-vasc': 'cardiology.cha2ds2-vasc'
+  'bmi': 'bmi',
+  'egfr': 'egfr',
+  'cha2ds2-vasc': 'cha2ds2-vasc'
 };
 
 // For SSG mode, we need to add getStaticPaths for dynamic routes
@@ -37,23 +37,23 @@ export function getStaticPaths() {
 // Validate calculator parameter (only needed for SSR)
 // In SSG mode, getStaticPaths ensures only valid calculators are generated
 
-const pluginId = availableCalculators[calculatorId];
+const moduleId = availableCalculators[calculatorId];
 
-// Static plugin metadata for SSG compatibility
-const staticPluginData = {
-  'general.bmi': {
+// Static module metadata for SSG compatibility
+const staticModuleData = {
+  'bmi': {
     name: 'BMI 計算器',
     description: '身體質量指數計算器，用於評估體重狀況和健康風險',
     category: '一般醫學',
     icon: '📋'
   },
-  'nephrology.egfr': {
+  'egfr': {
     name: 'eGFR 計算器',
     description: '估算腎絲球過濾率計算器，用於評估腎功能',
     category: '腎臟科',
     icon: '🫘'
   },
-  'cardiology.cha2ds2-vasc': {
+  'cha2ds2-vasc': {
     name: 'CHA2DS2-VASc 評分',
     description: '評估心房顫動患者中風風險的臨床評分工具',
     category: '心臟科',
@@ -61,18 +61,18 @@ const staticPluginData = {
   }
 };
 
-const pluginData = staticPluginData[pluginId];
+const moduleData = staticModuleData[moduleId];
 
 const breadcrumbs = [
   { label: '首頁', href: '/' },
   { label: '醫療工具', href: '/tools' },
-  { label: pluginData?.name || '計算器' }
+  { label: moduleData?.name || '計算器' }
 ];
 ---
 
 <BaseLayout 
-  title={`${pluginData?.name || '計算器'} | Astro Clinical Platform`}
-  description={pluginData?.description || '醫療計算器工具'}
+  title={`${moduleData?.name || '計算器'} | Astro Clinical Platform`}
+  description={moduleData?.description || '醫療計算器工具'}
   locale={locale}
   medicalContent={true}
   pageType="calculator"
@@ -141,7 +141,7 @@ const breadcrumbs = [
     .hover\:text-blue-700:hover { color: #1d4ed8; }
     .hover\:bg-blue-700:hover { background-color: #1d4ed8; }
     .hover\:bg-gray-700:hover { background-color: #374151; }
-    /* PluginCalculator 需要的額外樣式 */
+    /* CalculatorContainer 需要的額外樣式 */
     .w-full { width: 100%; }
     .w-5 { width: 1.25rem; }
     .h-5 { height: 1.25rem; }
@@ -234,35 +234,33 @@ const breadcrumbs = [
     <div class="mb-8">
       <div class="flex items-center space-x-3 mb-4">
         <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
-          {pluginData?.icon || '🧮'}
+          {moduleData?.icon || '🧮'}
         </div>
         <div>
           <h1 class="text-3xl font-bold text-gray-900">
-            {pluginData?.name || '計算器'}
+            {moduleData?.name || '計算器'}
           </h1>
           <p class="text-gray-600 mt-1">
-            {pluginData?.description || '醫療計算器工具'}
+            {moduleData?.description || '醫療計算器工具'}
           </p>
         </div>
       </div>
       
       <div class="flex items-center space-x-2">
         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          {pluginData?.category || '醫療工具'}
+          {moduleData?.category || '醫療工具'}
         </span>
         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-          Plugin ID: {pluginId}
+          Module ID: {moduleId}
         </span>
       </div>
     </div>
 
     <!-- 計算器組件 -->
-    <div class="max-w-2xl mx-auto">
-      <PluginCalculator 
-        key={pluginId}
-        pluginId={pluginId}
+    <div class="max-w-4xl mx-auto">
+      <CalculatorContainer 
+        calculatorId={calculatorId}
         locale={locale}
-        theme="light"
         client:load
       />
     </div>

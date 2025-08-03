@@ -1,16 +1,43 @@
 ---
 /**
  * 醫療工具總覽頁面
- * 展示所有可用的醫療計算機和工具 - 使用新的插件系統
+ * 展示所有可用的醫療計算機和工具 - 使用新的模組化架構
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CalculatorRegistry } from '../../components/calculators/registry';
 import type { SupportedLocale } from '../../types/calculator.js';
 
 const locale: SupportedLocale = 'zh-TW'; // 這裡應該從路由中獲取
 
-// Static calculator definitions for SSG compatibility
-const staticCalculators = [
+// 獲取所有已發布的計算機模組
+const registry = CalculatorRegistry.getInstance();
+await registry.initialize();
+const calculators = registry.getPublished();
+
+// 將模組轉換為頁面所需的格式
+const staticCalculators = calculators.map(module => ({
+  pluginId: module.id,
+  urlPath: `/tools/${module.id}`,
+  metadata: {
+    id: module.id,
+    namespace: module.config.category,
+    version: module.metadata.version,
+    name: module.config.name,
+    description: module.config.description,
+    author: module.metadata.author,
+    tags: module.config.metadata.tags
+  },
+  config: {
+    category: module.config.category,
+    medical: module.config.medical,
+    metadata: module.config.metadata
+  },
+  namespace: module.config.category
+}));
+
+// 備用靜態定義（如果註冊表載入失敗）
+const fallbackCalculators = [
   {
     pluginId: 'general.bmi',
     urlPath: '/tools/bmi',
@@ -205,7 +232,8 @@ const staticCalculators = [
   }
 ];
 
-const availableCalculators = staticCalculators;
+// 使用動態載入的計算機，如果失敗則使用備用定義
+const availableCalculators = calculators.length > 0 ? staticCalculators : fallbackCalculators;
 const serviceStats = {
   activeCalculators: availableCalculators.length,
   categoriesCount: new Set(availableCalculators.map(c => c.namespace)).size
@@ -292,7 +320,7 @@ const getLocalizedText = (text: Record<SupportedLocale, string> | string, target
   breadcrumbs={breadcrumbs}
 >
   <style>
-    /* 基本的 CSS 樣式 - 包含 PluginCalculator 需要的類名 */
+    /* 基本的 CSS 樣式 - 包含 CalculatorContainer 需要的類名 */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; color: #111827; line-height: 1.6; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }

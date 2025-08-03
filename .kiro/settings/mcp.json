@@ -1,14 +1,22 @@
 {
   "mcpServers": {
-    "context7": {
+    "fetch": {
       "command": "uvx",
       "args": [
-        "context7-mcp-server@latest"
+        "mcp-server-fetch"
       ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": true,
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    },
+    "Context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {},
+      "disabled": false,
       "autoApprove": [
         "mcp_Context7_resolve_library_id",
         "mcp_Context7_get_library_docs"
@@ -28,8 +36,9 @@
         "run",
         "--directory",
         "D:\\ai_project\\ent-pro\\serena",
-        "serena",
-        "start-mcp-server"
+        "serena-mcp-server",
+        "--project",
+        "D:\\ai_project\\ent-pro"
       ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
@@ -41,7 +50,13 @@
         "list_dir",
         "find_file",
         "create_text_file",
-        "execute_shell_command"
+        "execute_shell_command",
+        "replace_regex",
+        "read_file",
+        "think_about_collected_information",
+        "think_about_task_adherence",
+        "think_about_whether_you_are_done",
+        "summarize_changes"
       ]
     }
   }
