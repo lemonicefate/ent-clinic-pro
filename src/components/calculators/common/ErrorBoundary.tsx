@@ -4,8 +4,8 @@
  * 捕獲和處理計算機組件中的錯誤，提供優雅的降級體驗。
  */
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { CalculatorError } from '../registry/ErrorHandler';
+import React, { Component, type ErrorInfo, type ReactNode } from 'react';
+import type { CalculatorError } from '../registry/ErrorHandler';
 
 interface ErrorBoundaryProps {
   children: ReactNode;

@@ -1,10 +1,17 @@
 ---
+/**
+ * 血脂管理與心血管風險計算機頁面
+ * 根據2022臺灣高血壓、高血脂、糖尿病指引
+ */
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PluginCalculator from '../../components/islands/PluginCalculator.tsx';
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
+import SimpleLipidManagementCalculator from '../../components/calculators/modules/lipid-management/SimpleLipidManagement.tsx';
 import type { SupportedLocale } from '../../types/calculator.js';
 
 const locale: SupportedLocale = 'zh-TW';
 
+// Static plugin metadata
 const pluginMetadata = {
   id: 'lipid-management',
   namespace: 'cardiology',
@@ -19,51 +26,85 @@ const pluginMetadata = {
     'en': 'Assess cardiovascular risk and provide lipid management recommendations based on 2022 Taiwan guidelines',
     'ja': '2022年台湾ガイドラインに基づく心血管リスク評価と脂質管理推奨'
   },
+  tags: ['cardiology', 'lipid', 'cholesterol', 'cardiovascular-risk', 'taiwan-guidelines']
 };
 
 const breadcrumbs = [
   { label: '首頁', href: '/' },
   { label: '醫療工具', href: '/tools' },
-  { label: pluginMetadata.name[locale] },
+  { label: pluginMetadata.name[locale] || pluginMetadata.name['zh-TW'] }
 ];
+
+// 結構化資料
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "MedicalRiskCalculator",
+  "name": pluginMetadata.name[locale] || pluginMetadata.name['zh-TW'],
+  "description": pluginMetadata.description[locale] || pluginMetadata.description['zh-TW'],
+  "url": `https://astro-clinical-platform.vercel.app/tools/lipid-management`,
+  "medicalSpecialty": "Cardiology",
+  "applicationCategory": "Medical Calculator",
+  "operatingSystem": "Web Browser",
+  "isAccessibleForFree": true,
+  "creator": {
+    "@type": "Organization",
+    "name": "Astro Clinical Platform"
+  }
+};
 ---
 
 <BaseLayout
-  title={`${pluginMetadata.name[locale]} | Astro Clinical Platform`}
-  description={pluginMetadata.description[locale]}
+  title={`${pluginMetadata.name[locale] || pluginMetadata.name['zh-TW']} | Astro Clinical Platform`}
+  description={pluginMetadata.description[locale] || pluginMetadata.description['zh-TW']}
   locale={locale}
   medicalContent={true}
   pageType="calculator"
+  contentId={pluginMetadata.id}
+  specialty="心臟科"
   breadcrumbs={breadcrumbs}
 >
   <main class="container mx-auto px-4 py-8">
     <!-- 計算機標題和描述 -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-4">
-        {pluginMetadata.name[locale]}
-      </h1>
-      <p class="text-lg text-gray-600">
-        {pluginMetadata.description[locale]}
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+          <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            {pluginMetadata.name[locale] || pluginMetadata.name['zh-TW']}
+          </h1>
+          <div class="flex items-center space-x-4 mt-2">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              {pluginMetadata.namespace}
+            </span>
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+              高級
+            </span>
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              v{pluginMetadata.version}
+            </span>
+            {pluginMetadata.tags && pluginMetadata.tags.length > 0 && (
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                {pluginMetadata.tags.slice(0, 2).join(', ')}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <p class="text-lg text-gray-600 leading-relaxed">
+        {pluginMetadata.description[locale] || pluginMetadata.description['zh-TW']}
       </p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- 計算機主體 -->
+      <!-- 計算機主體 - 使用 React 組件 -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-lg border border-gray-200 p-6">
-          <PluginCalculator
-            client:load
-            transition:persist="lipid-management-calculator"
-            pluginId="cardiology.lipid-management"
-            locale={locale}
-            theme="light"
-            accessibility={{
-              highContrast: false,
-              largeText: false,
-              screenReader: false,
-            }}
-            className="lipid-management-calculator"
-          />
+          <SimpleLipidManagementCalculator client:load locale={locale} />
         </div>
       </div>
 
@@ -71,105 +112,186 @@ const breadcrumbs = [
       <div class="space-y-6">
         <!-- 使用說明 -->
         <div class="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">使用說明</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            使用說明
+          </h2>
           <div class="space-y-3 text-sm text-gray-700">
             <div>
-              <h3 class="font-medium text-gray-900 mb-1">1. 疾病狀態</h3>
-              <p>勾選是否有冠心病、糖尿病、慢性腎病或家族性高膽固醇血症</p>
+              <h3 class="font-semibold text-gray-800 mb-1">1. 輸入基本資料</h3>
+              <p>年齡、性別、血壓、血糖等基本資訊</p>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900 mb-1">2. 血脂數值</h3>
-              <p>輸入最近的 LDL-C 和三酸甘油脂檢驗結果</p>
+              <h3 class="font-semibold text-gray-800 mb-1">2. 輸入血脂數值</h3>
+              <p>總膽固醇、LDL-C、HDL-C、三酸甘油脂</p>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900 mb-1">3. 風險因子</h3>
-              <p>勾選其他心血管風險因子，如年齡、吸菸、高血壓等</p>
+              <h3 class="font-semibold text-gray-800 mb-1">3. 評估風險因子</h3>
+              <p>糖尿病、吸菸、家族史等危險因子</p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-1">4. 獲得建議</h3>
+              <p>個人化的血脂管理建議與治療目標</p>
             </div>
           </div>
         </div>
 
-        <!-- 風險分級說明 -->
+        <!-- 風險分層 -->
         <div class="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">風險分級</h2>
-          <div class="space-y-3 text-sm">
-            <div class="flex items-start space-x-3">
-              <div class="w-3 h-3 bg-red-500 rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <div class="font-medium text-red-700">極高風險</div>
-                <div class="text-gray-600">已有心血管疾病、糖尿病、慢性腎病或家族性高膽固醇血症</div>
-              </div>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-red-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            心血管風險分層
+          </h2>
+          <div class="space-y-3">
+            <div class="p-3 rounded-lg bg-green-50 border-l-3 border-green-500">
+              <div class="text-sm font-medium text-green-800">低風險</div>
+              <div class="text-sm text-green-600 mt-1">LDL-C < 160 mg/dL</div>
             </div>
-            <div class="flex items-start space-x-3">
-              <div class="w-3 h-3 bg-orange-500 rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <div class="font-medium text-orange-700">中高風險</div>
-                <div class="text-gray-600">具有 2 個或以上其他風險因子</div>
-              </div>
+            <div class="p-3 rounded-lg bg-yellow-50 border-l-3 border-yellow-500">
+              <div class="text-sm font-medium text-yellow-800">中風險</div>
+              <div class="text-sm text-yellow-600 mt-1">LDL-C < 130 mg/dL</div>
             </div>
-            <div class="flex items-start space-x-3">
-              <div class="w-3 h-3 bg-yellow-500 rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <div class="font-medium text-yellow-700">中風險</div>
-                <div class="text-gray-600">具有 1 個其他風險因子</div>
-              </div>
+            <div class="p-3 rounded-lg bg-orange-50 border-l-3 border-orange-500">
+              <div class="text-sm font-medium text-orange-800">高風險</div>
+              <div class="text-sm text-orange-600 mt-1">LDL-C < 100 mg/dL</div>
             </div>
-            <div class="flex items-start space-x-3">
-              <div class="w-3 h-3 bg-green-500 rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <div class="font-medium text-green-700">低風險</div>
-                <div class="text-gray-600">無其他風險因子</div>
-              </div>
+            <div class="p-3 rounded-lg bg-red-50 border-l-3 border-red-500">
+              <div class="text-sm font-medium text-red-800">極高風險</div>
+              <div class="text-sm text-red-600 mt-1">LDL-C < 70 mg/dL</div>
             </div>
           </div>
         </div>
 
-        <!-- LDL-C 目標值 -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h2 class="text-lg font-semibold text-blue-900 mb-4">LDL-C 目標值</h2>
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
-              <span class="text-blue-700">極高風險</span>
-              <span class="font-medium text-blue-900">&lt; 70 mg/dL</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-blue-700">中高風險</span>
-              <span class="font-medium text-blue-900">&lt; 100 mg/dL</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-blue-700">中風險</span>
-              <span class="font-medium text-blue-900">&lt; 130 mg/dL</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-blue-700">低風險</span>
-              <span class="font-medium text-blue-900">&lt; 160 mg/dL</span>
-            </div>
+        <!-- 治療建議 -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-purple-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z" />
+            </svg>
+            治療建議
+          </h2>
+          <div class="space-y-2 text-sm text-gray-700">
+            <div>• 生活型態調整（飲食、運動）</div>
+            <div>• Statin 類藥物治療</div>
+            <div>• Ezetimibe 合併治療</div>
+            <div>• PCSK9 抑制劑（極高風險）</div>
+            <div>• 定期追蹤血脂數值</div>
           </div>
         </div>
 
         <!-- 重要提醒 -->
         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-          <h2 class="text-lg font-semibold text-yellow-800 mb-3">重要提醒</h2>
-          <div class="space-y-2 text-sm text-yellow-700">
-            <p>• 本計算結果僅供臨床參考，不能取代專業醫師的判斷</p>
-            <p>• 用藥建議需結合患者具體情況和醫師評估</p>
-            <p>• 定期追蹤血脂變化和肝功能檢查</p>
-            <p>• 藥物治療應配合飲食控制和規律運動</p>
-          </div>
+          <h2 class="text-lg font-semibold text-yellow-800 mb-3 flex items-center">
+            <svg class="h-5 w-5 text-yellow-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            重要提醒
+          </h2>
+          <ul class="text-sm text-yellow-700 space-y-2">
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3"></span>
+              本計算結果僅供臨床參考
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3"></span>
+              需結合臨床判斷制定治療計畫
+            </li>
+            <li class="flex items-start">
+              <span class="flex-shrink-0 w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3"></span>
+              定期監測肝功能和肌酸激酶
+            </li>
+          </ul>
         </div>
 
-        <!-- 參考指引 -->
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-3">參考指引</h2>
-          <div class="text-sm text-gray-700">
-            <p class="mb-2">基於以下臨床指引：</p>
-            <ul class="space-y-1 text-xs">
-              <li>• 2022臺灣高血壓、高血脂、糖尿病指引</li>
-              <li>• 台灣心臟學會血脂異常防治建議</li>
-              <li>• 中華民國血脂及動脈硬化學會指引</li>
-            </ul>
+        <!-- 相關工具 -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            相關工具
+          </h2>
+          <div class="space-y-3">
+            <a href="/tools/cha2ds2-vasc" class="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+              <div class="font-medium text-gray-900 text-sm">CHA₂DS₂-VASc 評分</div>
+              <div class="text-xs text-gray-600 mt-1">心房顫動中風風險評估</div>
+            </a>
+            <a href="/tools/cardiovascular-risk" class="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+              <div class="font-medium text-gray-900 text-sm">心血管風險評估</div>
+              <div class="text-xs text-gray-600 mt-1">10年心血管事件風險</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 參考文獻 -->
+    <div class="mt-12">
+      <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+          <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          參考文獻
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="border border-gray-200 rounded-lg p-4">
+            <h3 class="font-medium text-gray-900 mb-2 leading-tight">
+              2022臺灣高血脂防治指引
+            </h3>
+            <p class="text-sm text-gray-600 mb-2">
+              中華民國血脂及動脈硬化學會
+            </p>
+            <p class="text-sm text-gray-500 mb-3">
+              <em>第五版</em> (2022)
+            </p>
+          </div>
+          
+          <div class="border border-gray-200 rounded-lg p-4">
+            <h3 class="font-medium text-gray-900 mb-2 leading-tight">
+              2019 ESC/EAS Guidelines for Dyslipidaemias
+            </h3>
+            <p class="text-sm text-gray-600 mb-2">
+              European Society of Cardiology
+            </p>
+            <p class="text-sm text-gray-500 mb-3">
+              <em>European Heart Journal</em> (2019)
+            </p>
           </div>
         </div>
       </div>
     </div>
   </main>
 </BaseLayout>
+
+<style>
+  /* 確保計算機在小螢幕上的可用性 */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+  
+  /* 列印樣式 */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    .bg-white {
+      background: white !important;
+    }
+    
+    .border {
+      border: 1px solid #e5e7eb !important;
+    }
+  }
+</style>
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>

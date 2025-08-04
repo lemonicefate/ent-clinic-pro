@@ -6,6 +6,7 @@
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
+import SimpleEGFRCalculator from '../../components/calculators/modules/egfr/SimpleEGFR.tsx';
 import type { SupportedLocale } from '../../types/calculator.js';
 
 const locale: SupportedLocale = 'zh-TW';
@@ -99,15 +100,10 @@ const structuredData = {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- 計算機主體 - 使用新的模組化架構 -->
+      <!-- 計算機主體 - 使用 React 組件 -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-lg border border-gray-200 p-6">
-          <CalculatorContainer 
-            client:load
-            calculatorId="egfr"
-            locale={locale}
-            className="egfr-calculator"
-          />
+          <SimpleEGFRCalculator client:load locale={locale} />
         </div>
       </div>
 

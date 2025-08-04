@@ -1,0 +1,80 @@
+---
+/**
+ * React 組件測試頁面
+ * 用於測試 React 組件是否正確渲染和水合
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SimpleTest from '../components/test/SimpleTest.tsx';
+import InteractiveTest from '../components/test/InteractiveTest.tsx';
+import InlineStyleTest from '../components/test/InlineStyleTest.tsx';
+import SimpleBMICalculator from '../components/calculators/modules/bmi/SimpleBMI.tsx';
+import SimpleEGFRCalculator from '../components/calculators/modules/egfr/SimpleEGFR.tsx';
+
+const locale = 'zh-TW';
+---
+
+<BaseLayout 
+  title="React 組件測試 | Astro Clinical Platform"
+  description="測試 React 組件的渲染和水合功能"
+  locale={locale}
+>
+  <main class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+        🧪 React 組件測試頁面
+      </h1>
+      
+      <div class="space-y-8">
+        <!-- 基本測試 -->
+        <section class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">基本 React 測試</h2>
+          <SimpleTest client:load />
+        </section>
+        
+        <!-- 互動測試 -->
+        <section class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">互動功能測試</h2>
+          <InteractiveTest client:load />
+        </section>
+        
+        <!-- 內聯樣式測試 -->
+        <section class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">內聯樣式測試</h2>
+          <InlineStyleTest client:load />
+        </section>
+        
+        <!-- BMI 計算器測試 -->
+        <section class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">BMI 計算器測試</h2>
+          <SimpleBMICalculator client:load locale={locale} />
+        </section>
+        
+        <!-- eGFR 計算器測試 -->
+        <section class="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">eGFR 計算器測試</h2>
+          <SimpleEGFRCalculator client:load locale={locale} />
+        </section>
+      </div>
+      
+      <!-- 測試說明 -->
+      <div class="mt-12 bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <h2 class="text-lg font-semibold text-blue-900 mb-3">測試說明</h2>
+        <div class="text-blue-800 text-sm space-y-2">
+          <p>• 如果你能看到所有組件並且它們能正常互動，表示 React 水合成功</p>
+          <p>• 每個組件都使用 <code class="bg-blue-100 px-1 rounded">client:load</code> 指令來確保客戶端渲染</p>
+          <p>• BMI 和 eGFR 計算器使用內聯樣式以避免 CSS 依賴問題</p>
+          <p>• 所有組件都應該能夠正常接收用戶輸入並顯示結果</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  /* 確保頁面樣式正確 */
+  main {
+    min-height: 100vh;
+    background-color: #f9fafb;
+  }
+</style>

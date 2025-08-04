@@ -6,6 +6,10 @@
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
+import SimpleTest from '../../components/test/SimpleTest.tsx';
+import BMICalculator from '../../components/calculators/modules/bmi/index.tsx';
+import InlineStyleTest from '../../components/test/InlineStyleTest.tsx';
+import SimpleBMICalculator from '../../components/calculators/modules/bmi/SimpleBMI.tsx';
 import type { SupportedLocale } from '../../types/calculator.js';
 
 const locale: SupportedLocale = 'zh-TW';
@@ -101,15 +105,23 @@ const structuredData = {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- 計算機主體 - 使用新的插件系統 -->
+      <!-- 計算機主體 - 使用 React 組件 -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-lg border border-gray-200 p-6">
-          <CalculatorContainer 
-            client:load
-            calculatorId="bmi"
-            locale={locale}
-            className="bmi-calculator"
-          />
+          <!-- React 組件測試區域 -->
+          <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-blue-900 mb-2">🧪 React 組件測試</h3>
+            <p class="text-blue-700 text-sm mb-4">以下是 React 組件的測試區域：</p>
+            
+            <!-- 基本測試組件 -->
+            <SimpleTest client:load />
+            
+            <!-- 內聯樣式測試組件 -->
+            <InlineStyleTest client:load />
+          </div>
+          
+          <!-- 主要 BMI 計算器 -->
+          <SimpleBMICalculator client:load locale={locale} />
         </div>
       </div>
 
