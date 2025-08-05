@@ -5,7 +5,7 @@
  * 使用 Vite 的 import.meta.glob 功能自動發現和載入模組。
  */
 
-import { CalculatorModule, ModuleLoadResult } from '../types';
+import type { CalculatorModule, ModuleLoadResult } from '../types/calculator';
 
 export class ModuleLoader {
   private loadedModules = new Map<string, CalculatorModule>();

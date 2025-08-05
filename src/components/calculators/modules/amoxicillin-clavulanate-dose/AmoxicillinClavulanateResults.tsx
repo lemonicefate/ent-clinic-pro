@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { CalculatorResultsProps } from '../../types';
+import type { CalculatorResultsProps } from '../../types';
 
 const AmoxicillinClavulanateResults: React.FC<CalculatorResultsProps> = ({
   result,

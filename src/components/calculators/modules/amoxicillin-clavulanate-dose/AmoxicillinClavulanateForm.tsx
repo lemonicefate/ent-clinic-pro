@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { CalculatorFormProps } from '../../types';
+import type { CalculatorFormProps } from '../../types';
 
 const AmoxicillinClavulanateForm: React.FC<CalculatorFormProps> = ({
   values,

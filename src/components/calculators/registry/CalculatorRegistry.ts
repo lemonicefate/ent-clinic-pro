@@ -5,7 +5,7 @@
  * 提供統一的介面來存取和管理計算機模組。
  */
 
-import { CalculatorModule, SearchQuery } from '../types';
+import type { CalculatorModule, SearchQuery } from '../types/calculator';
 import { ModuleLoader } from './ModuleLoader';
 import { ErrorHandler } from './ErrorHandler';
 

@@ -5,41 +5,51 @@
  * 確保所有計算機模組的一致性和互操作性。
  */
 
-// Common types
-export type {
-  SupportedLocale,
-  RiskLevel,
-  CalculatorStatus,
-  FieldType,
-  LocalizedString,
-  ValidationError,
-  ValidationResult,
-  Reference,
-  MedicalMetadata
-} from './common';
+// 直接定義所有基本類型以避免導入問題
+export type SupportedLocale = 'zh-TW' | 'en' | 'ja';
+export type RiskLevel = 'low' | 'moderate' | 'high' | 'critical';
+export type CalculatorStatus = 'published' | 'draft' | 'deprecated';
+export type FieldType = 'number' | 'select' | 'checkbox' | 'radio' | 'radio-cards' | 'text' | 'boolean' | 'range';
 
-// Config types
-export type {
-  CalculatorField,
-  FieldOption,
-  CalculatorConfig
-} from './config';
+// 直接定義其他常用類型
+export interface LocalizedString {
+  [key: string]: string;
+  'zh-TW': string;
+  'en'?: string;
+  'ja'?: string;
+}
 
-// Result types
-export type {
-  CalculationResult,
-  CalculationBreakdown,
-  FormattedResult
-} from './results';
+export interface ValidationError {
+  field: string;
+  message: string;
+  code?: string;
+}
 
-// Calculator types
-export type {
-  CalculatorImplementation,
-  CalculatorFormProps,
-  CalculatorResultsProps,
-  CalculatorMetadata,
-  CalculatorModule,
-  ModuleLoadResult,
-  CalculatorContainerProps,
-  SearchQuery
-} from './calculator';
+export interface ValidationResult {
+  isValid: boolean;
+  errors: ValidationError[];
+}
+
+export interface Reference {
+  title: string;
+  authors: string[];
+  journal: string;
+  year: number;
+  url?: string;
+  doi?: string;
+  pmid?: string;
+}
+
+export interface MedicalMetadata {
+  specialty: string[];
+  evidenceLevel: 'A' | 'B' | 'C' | 'D';
+  references: Reference[];
+  clinicalGuidelines?: LocalizedString;
+  contraindications?: LocalizedString[];
+  limitations?: LocalizedString[];
+}
+
+// Re-export other types
+export * from './results';
+export * from './calculator';
+export * from './config';

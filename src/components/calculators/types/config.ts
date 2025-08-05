@@ -2,7 +2,7 @@
  * 計算機配置類型定義
  */
 
-import { LocalizedString, FieldType, CalculatorStatus, MedicalMetadata } from './common';
+import type { LocalizedString, FieldType, MedicalMetadata, CalculatorStatus } from './index';
 
 export interface CalculatorField {
   id: string;

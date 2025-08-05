@@ -2,7 +2,7 @@
  * Amoxicillin/Clavulanate 劑量計算邏輯
  */
 
-import { ValidationResult, CalculationResult } from '../../types';
+import type { ValidationResult, CalculationResult } from '../../types';
 
 // 藥物規格定義
 interface DrugSpec {

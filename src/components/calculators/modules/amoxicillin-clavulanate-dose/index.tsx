@@ -4,7 +4,7 @@
  * 兒童 Amoxicillin/Clavulanate 劑量計算模組
  */
 
-import { CalculatorModule } from '../../types';
+import type { CalculatorModule } from '../../types';
 import AmoxicillinClavulanateForm from './AmoxicillinClavulanateForm';
 import AmoxicillinClavulanateResults from './AmoxicillinClavulanateResults';
 import { calculate, validate, formatResult } from './calculator';

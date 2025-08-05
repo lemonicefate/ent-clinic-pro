@@ -2,7 +2,7 @@
  * Amoxicillin/Clavulanate 劑量計算機配置
  */
 
-import { CalculatorConfig } from '../../types';
+import type { CalculatorConfig } from '../../types';
 
 export const config: CalculatorConfig = {
   id: 'amoxicillin-clavulanate-dose',

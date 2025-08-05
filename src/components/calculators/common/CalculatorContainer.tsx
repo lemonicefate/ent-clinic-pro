@@ -5,7 +5,8 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { CalculatorContainerProps, CalculationResult } from '../types';
+import type { CalculatorContainerProps } from '../types/calculator';
+import type { CalculationResult } from '../types/results';
 import { CalculatorRegistry } from '../registry';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LoadingSpinner } from './LoadingSpinner';

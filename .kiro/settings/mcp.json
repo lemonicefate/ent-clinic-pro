@@ -37,7 +37,9 @@
         "browser_click",
         "browser_select_option",
         "browser_snapshot",
-        "browser_wait_for"
+        "browser_wait_for",
+        "browser_console_messages",
+        "browser_network_requests"
       ]
     },
     "serena": {
