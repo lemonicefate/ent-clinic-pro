@@ -191,11 +191,20 @@
             const days = parseInt(daysSelect.value);
 
             if (isNaN(weight) || weight <= 0) {
-                alert("請輸入有效的兒童體重。");
+                // 顯示錯誤訊息而不是彈窗
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
+                messageDiv.textContent = '請輸入有效的兒童體重。';
+                document.body.appendChild(messageDiv);
+                setTimeout(() => messageDiv.remove(), 3000);
                 return;
             }
             if (!doseTarget) {
-                alert("請選擇劑量目標。");
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
+                messageDiv.textContent = '請選擇劑量目標。';
+                document.body.appendChild(messageDiv);
+                setTimeout(() => messageDiv.remove(), 3000);
                 return;
             }
 

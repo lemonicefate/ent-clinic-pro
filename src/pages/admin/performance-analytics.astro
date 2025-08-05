@@ -234,95 +234,87 @@ const description = "Monitor website performance, user behavior, and SEO metrics
       </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Analytics Settings</h3>
-          <button class="modal-close">&times;</button>
+    <!-- Settings Panel (替代模態框) -->
+    <div id="settings-panel" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+      <h3 class="text-lg font-semibold mb-4">Analytics Settings</h3>
+      <div class="space-y-4">
+        <div class="setting-group">
+          <label class="flex items-center">
+            <input type="checkbox" id="enable-analytics" checked class="mr-2">
+            Enable Analytics Tracking
+          </label>
         </div>
-        <div class="modal-body">
-          <div class="setting-group">
-            <label>
-              <input type="checkbox" id="enable-analytics" checked>
-              Enable Analytics Tracking
-            </label>
-          </div>
-          <div class="setting-group">
-            <label>
-              Data Retention Period:
-              <select id="retention-period">
-                <option value="30">30 days</option>
-                <option value="90" selected>90 days</option>
-                <option value="365">1 year</option>
-              </select>
-            </label>
-          </div>
-          <div class="setting-group">
-            <label>
-              Refresh Interval:
-              <select id="refresh-interval">
-                <option value="10000">10 seconds</option>
-                <option value="30000" selected>30 seconds</option>
-                <option value="60000">1 minute</option>
-              </select>
-            </label>
-          </div>
-          <div class="setting-group">
-            <label>
-              <input type="checkbox" id="enable-alerts" checked>
-              Enable Performance Alerts
-            </label>
-          </div>
+        <div class="setting-group">
+          <label class="block">
+            Data Retention Period:
+            <select id="retention-period" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+              <option value="30">30 days</option>
+              <option value="90" selected>90 days</option>
+              <option value="365">1 year</option>
+            </select>
+          </label>
         </div>
-        <div class="modal-footer">
+        <div class="setting-group">
+          <label class="block">
+            Refresh Interval:
+            <select id="refresh-interval" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+              <option value="10000">10 seconds</option>
+              <option value="30000" selected>30 seconds</option>
+              <option value="60000">1 minute</option>
+            </select>
+          </label>
+        </div>
+        <div class="setting-group">
+          <label class="flex items-center">
+            <input type="checkbox" id="enable-alerts" checked class="mr-2">
+            Enable Performance Alerts
+          </label>
+        </div>
+        <div class="flex space-x-2">
           <button class="btn btn-secondary" id="cancel-settings">Cancel</button>
           <button class="btn btn-primary" id="save-settings">Save Settings</button>
         </div>
       </div>
     </div>
 
-    <!-- Alerts Modal -->
-    <div id="alerts-modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Performance Alerts Configuration</h3>
-          <button class="modal-close">&times;</button>
+    <!-- Alerts Panel (替代模態框) -->
+    <div id="alerts-panel" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+      <h3 class="text-lg font-semibold mb-4">Performance Alerts Configuration</h3>
+      <div class="space-y-6">
+        <div class="alert-config">
+          <h4 class="font-medium mb-2">Load Time Alerts</h4>
+          <label class="block">
+            Alert when page load time exceeds:
+            <input type="number" id="load-time-threshold" value="3000" min="1000" max="10000" step="100" class="ml-2 border border-gray-300 rounded px-2 py-1">
+            ms
+          </label>
         </div>
-        <div class="modal-body">
-          <div class="alert-config">
-            <h4>Load Time Alerts</h4>
-            <label>
-              Alert when page load time exceeds:
-              <input type="number" id="load-time-threshold" value="3000" min="1000" max="10000" step="100">
-              ms
-            </label>
-          </div>
-          <div class="alert-config">
-            <h4>Web Vitals Alerts</h4>
-            <label>
-              <input type="checkbox" id="alert-lcp" checked>
+        <div class="alert-config">
+          <h4 class="font-medium mb-2">Web Vitals Alerts</h4>
+          <div class="space-y-2">
+            <label class="flex items-center">
+              <input type="checkbox" id="alert-lcp" checked class="mr-2">
               Alert on poor LCP (&gt; 2.5s)
             </label>
-            <label>
-              <input type="checkbox" id="alert-fid" checked>
+            <label class="flex items-center">
+              <input type="checkbox" id="alert-fid" checked class="mr-2">
               Alert on poor FID (&gt; 100ms)
             </label>
-            <label>
-              <input type="checkbox" id="alert-cls" checked>
+            <label class="flex items-center">
+              <input type="checkbox" id="alert-cls" checked class="mr-2">
               Alert on poor CLS (&gt; 0.1)
             </label>
           </div>
-          <div class="alert-config">
-            <h4>Error Rate Alerts</h4>
-            <label>
-              Alert when error rate exceeds:
-              <input type="number" id="error-rate-threshold" value="5" min="1" max="50" step="1">
-              % of sessions
-            </label>
-          </div>
         </div>
-        <div class="modal-footer">
+        <div class="alert-config">
+          <h4 class="font-medium mb-2">Error Rate Alerts</h4>
+          <label class="block">
+            Alert when error rate exceeds:
+            <input type="number" id="error-rate-threshold" value="5" min="1" max="50" step="1" class="ml-2 border border-gray-300 rounded px-2 py-1">
+            % of sessions
+          </label>
+        </div>
+        <div class="flex space-x-2">
           <button class="btn btn-secondary" id="cancel-alerts">Cancel</button>
           <button class="btn btn-primary" id="save-alerts">Save Alert Settings</button>
         </div>
@@ -695,63 +687,7 @@ const description = "Monitor website performance, user behavior, and SEO metrics
     font-size: 12px;
   }
 
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-
-  .modal.show {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-content {
-    background: white;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 24px;
-    border-bottom: 1px solid #e5e7eb;
-  }
-
-  .modal-header h3 {
-    margin: 0;
-    color: #1f2937;
-    font-size: 1.25rem;
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #6b7280;
-    cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-body {
-    padding: 24px;
-  }
+  /* 移除模態框樣式，改用內聯面板 */
 
   .setting-group,
   .alert-config {

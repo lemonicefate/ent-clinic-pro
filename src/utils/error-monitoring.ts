@@ -237,128 +237,15 @@ export class ErrorMonitor {
     `;
     
     feedbackButton.addEventListener('click', () => {
-      this.showFeedbackModal();
+      window.open('/feedback', '_blank');
     });
     
     document.body.appendChild(feedbackButton);
   }
 
-  // 顯示回饋模態框
-  private static showFeedbackModal() {
-    const modal = document.createElement('div');
-    modal.id = 'feedback-modal';
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-    modal.innerHTML = `
-      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">提供回饋</h3>
-          <button id="close-feedback" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        
-        <form id="feedback-form">
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">回饋類型</label>
-            <select name="type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-              <option value="bug">錯誤回報</option>
-              <option value="feature">功能建議</option>
-              <option value="improvement">改進建議</option>
-              <option value="complaint">問題反映</option>
-            </select>
-          </div>
-          
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">評分</label>
-            <div class="flex space-x-2">
-              ${[1, 2, 3, 4, 5].map(rating => `
-                <button type="button" class="rating-star w-8 h-8 text-gray-300 hover:text-yellow-400" data-rating="${rating}">
-                  <svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                  </svg>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-          
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">詳細說明</label>
-            <textarea name="message" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="請詳細描述您的回饋..."></textarea>
-          </div>
-          
-          <div class="flex justify-end space-x-3">
-            <button type="button" id="cancel-feedback" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
-              取消
-            </button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-              提交回饋
-            </button>
-          </div>
-        </form>
-      </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // 綁定事件
-    let selectedRating = 0;
-    
-    modal.querySelectorAll('.rating-star').forEach(star => {
-      star.addEventListener('click', (e) => {
-        const rating = parseInt((e.currentTarget as HTMLElement).getAttribute('data-rating') || '0');
-        selectedRating = rating;
-        
-        modal.querySelectorAll('.rating-star').forEach((s, index) => {
-          if (index < rating) {
-            s.classList.add('text-yellow-400');
-            s.classList.remove('text-gray-300');
-          } else {
-            s.classList.add('text-gray-300');
-            s.classList.remove('text-yellow-400');
-          }
-        });
-      });
-    });
-    
-    modal.querySelector('#close-feedback')?.addEventListener('click', () => {
-      document.body.removeChild(modal);
-    });
-    
-    modal.querySelector('#cancel-feedback')?.addEventListener('click', () => {
-      document.body.removeChild(modal);
-    });
-    
-    modal.querySelector('#feedback-form')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target as HTMLFormElement);
-      
-      this.submitFeedback({
-        type: formData.get('type') as string,
-        rating: selectedRating,
-        message: formData.get('message') as string
-      });
-      
-      document.body.removeChild(modal);
-      
-      // 顯示感謝訊息
-      this.showThankYouMessage();
-    });
-  }
 
-  // 顯示感謝訊息
-  private static showThankYouMessage() {
-    const toast = document.createElement('div');
-    toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-    toast.textContent = '感謝您的回饋！我們會仔細考慮您的建議。';
-    
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      document.body.removeChild(toast);
-    }, 3000);
-  }
+
+
 
   // 報告錯誤
   static reportError(errorData: Omit<ErrorReport, 'id' | 'timestamp'>) {

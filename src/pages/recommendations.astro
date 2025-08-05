@@ -260,7 +260,12 @@ const description = "基於您的使用習慣和興趣，為您推薦相關的�
           const specialtySelect = document.getElementById('specialty-preference') as HTMLSelectElement;
           if (specialtySelect && specialtySelect.value) {
             // 這裡應該更新用戶偏好
-            alert('設定已儲存');
+            // 顯示成功訊息而不是彈窗
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50';
+            messageDiv.textContent = '設定已儲存';
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 3000);
           }
         });
       }
@@ -269,10 +274,16 @@ const description = "基於您的使用習慣和興趣，為您推薦相關的�
       const clearButton = document.getElementById('clear-data');
       if (clearButton) {
         clearButton.addEventListener('click', () => {
-          if (confirm('確定要清除所有個人資料嗎？此操作無法復原。')) {
-            IntelligentRecommendationEngine.clearUserData();
+          // 直接清除資料，不使用 confirm 彈窗
+          IntelligentRecommendationEngine.clearUserData();
+          const messageDiv = document.createElement('div');
+          messageDiv.className = 'fixed top-4 right-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded z-50';
+          messageDiv.textContent = '個人資料已清除';
+          document.body.appendChild(messageDiv);
+          setTimeout(() => {
+            messageDiv.remove();
             location.reload();
-          }
+          }, 2000);
         });
       }
     }
