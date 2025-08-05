@@ -45,9 +45,9 @@ const AmoxicillinClavulanateResults: React.FC<CalculatorResultsProps> = ({
         {/* 總顆數計算 */}
         {(() => {
           const days = result.customData?.days || 3;
-          const totalAugmentin = calculation.augmentin500Count * 3 * days;
-          const totalAmoxicillin500 = calculation.useAmoxicillin500 ? calculation.amoxicillin500Count * 3 * days : 0;
-          const totalAmoxicillin250 = !calculation.useAmoxicillin500 ? calculation.amoxicillin250Count * 3 * days : 0;
+          const totalAugmentin = calculation.augmentin500Count;
+          const totalAmoxicillin500 = calculation.useAmoxicillin500 ? calculation.amoxicillin500Count : 0;
+          const totalAmoxicillin250 = !calculation.useAmoxicillin500 ? calculation.amoxicillin250Count : 0;
           
           return (
             <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
@@ -78,65 +78,7 @@ const AmoxicillinClavulanateResults: React.FC<CalculatorResultsProps> = ({
           );
         })()}
 
-        <h4 className="text-sm font-medium text-gray-900">每次服用：</h4>
-        
-        {/* Augmentin 500/125mg 卡片 */}
-        <div className="bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-semibold text-purple-900">Augmentin 500/125mg</div>
-              <div className="text-xs text-purple-700">
-                Amoxicillin 500mg + Clavulanate 125mg
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-purple-900">
-                {calculation.augmentin500Count}
-              </div>
-              <div className="text-xs text-purple-700">顆</div>
-            </div>
-          </div>
-        </div>
 
-        {/* Amoxicillin 500mg 卡片 */}
-        {calculation.useAmoxicillin500 && (
-          <div className="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-semibold text-green-900">Amoxicillin 500mg</div>
-                <div className="text-xs text-green-700">
-                  純 Amoxicillin 錠劑
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-green-900">
-                  {calculation.amoxicillin500Count}
-                </div>
-                <div className="text-xs text-green-700">顆</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Amoxicillin 250mg 卡片 */}
-        {!calculation.useAmoxicillin500 && calculation.amoxicillin250Count > 0 && (
-          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-semibold text-orange-900">Amoxicillin 250mg</div>
-                <div className="text-xs text-orange-700">
-                  純 Amoxicillin 錠劑
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-orange-900">
-                  {calculation.amoxicillin250Count}
-                </div>
-                <div className="text-xs text-orange-700">顆</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* 藥物比例卡片 */}
@@ -147,35 +89,34 @@ const AmoxicillinClavulanateResults: React.FC<CalculatorResultsProps> = ({
           </svg>
           實際藥物比例
         </h4>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="text-indigo-600">Amoxicillin：</span>
-            <span className="font-semibold text-indigo-900">
-              {calculation.actualAmoxicillin.toFixed(1)} mg
-            </span>
-          </div>
-          <div>
-            <span className="text-indigo-600">Clavulanate：</span>
-            <span className="font-semibold text-indigo-900">
-              {calculation.actualClavulanate.toFixed(1)} mg
-            </span>
-          </div>
+        <div className="text-center">
+          {calculation.actualClavulanate > 0 ? (
+            <>
+              <div className="text-2xl font-bold text-indigo-900 mb-2">
+                {calculation.ratio.toFixed(1)} : 1
+              </div>
+              <div className="text-sm text-indigo-700">
+                Amoxicillin : Clavulanate
+              </div>
+              <div className="text-xs text-indigo-600 mt-2">
+                {calculation.isRatioValid ? (
+                  <span className="text-green-600">✓ 比例適當</span>
+                ) : (
+                  <span className="text-yellow-600">⚠ 比例略高但安全</span>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-2xl font-bold text-indigo-900 mb-2">
+                純 Amoxicillin
+              </div>
+              <div className="text-sm text-indigo-700">
+                無 Clavulanate 成分
+              </div>
+            </>
+          )}
         </div>
-        {calculation.actualClavulanate > 0 && (
-          <div className="mt-3 text-center">
-            <div className="text-lg font-bold text-indigo-900">
-              比例 = {calculation.ratio.toFixed(1)} : 1
-            </div>
-            <div className="text-xs text-indigo-700">
-              (Amoxicillin : Clavulanate)
-              {calculation.isRatioValid ? (
-                <span className="text-green-600 ml-2">✓ 比例適當</span>
-              ) : (
-                <span className="text-yellow-600 ml-2">⚠ 比例略高但安全</span>
-              )}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* 實際濃度卡片 */}
@@ -199,34 +140,7 @@ const AmoxicillinClavulanateResults: React.FC<CalculatorResultsProps> = ({
         </div>
       </div>
 
-      {/* 實際劑量資訊 */}
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <h4 className="text-sm font-medium text-gray-900 mb-3">實際劑量（每次）：</h4>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="text-gray-600">Amoxicillin：</span>
-            <span className="font-semibold text-gray-900">
-              {calculation.actualAmoxicillin.toFixed(1)} mg
-            </span>
-          </div>
-          <div>
-            <span className="text-gray-600">Clavulanate：</span>
-            <span className="font-semibold text-gray-900">
-              {calculation.actualClavulanate.toFixed(1)} mg
-            </span>
-          </div>
-        </div>
-        {calculation.actualClavulanate > 0 && (
-          <div className="mt-2 text-xs text-gray-600">
-            比例 (Amoxicillin:Clavulanate) = {calculation.ratio.toFixed(1)}:1
-            {calculation.isRatioValid ? (
-              <span className="text-green-600 ml-2">✓ 比例適當</span>
-            ) : (
-              <span className="text-yellow-600 ml-2">⚠ 比例略高但安全</span>
-            )}
-          </div>
-        )}
-      </div>
+
 
       {/* 警告訊息 */}
       {result.warnings && result.warnings.length > 0 && (

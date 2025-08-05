@@ -28,6 +28,7 @@ interface CalculationDetails {
   ratio: number;
   isRatioValid: boolean;
   useAmoxicillin500: boolean;
+  totalAmoxicillinForCourse: number;
 }
 
 export function validate(inputs: Record<string, any>): ValidationResult {
@@ -79,11 +80,14 @@ export function calculate(inputs: Record<string, any>): CalculationResult {
   const dailyDosePerKg = doseTarget === 'high' ? 85 : 45;
   const targetAmoxicillinDaily = weight * dailyDosePerKg;
   
+  // 計算療程總劑量：體重 × 劑量選擇 × 天數
+  const totalAmoxicillinForCourse = weight * dailyDosePerKg * days;
+  
   // 每日三次服用，計算單次劑量
   const targetAmoxicillinSingle = targetAmoxicillinDaily / 3;
   
-  // 計算最佳藥物組合
-  const calculation = calculateOptimalCombination(targetAmoxicillinSingle);
+  // 計算最佳藥物組合（基於療程總劑量）
+  const calculation = calculateOptimalCombinationForCourse(totalAmoxicillinForCourse, days);
   
   const warnings: string[] = [];
   
@@ -162,7 +166,8 @@ export function calculate(inputs: Record<string, any>): CalculationResult {
       calculation,
       targetAmoxicillinSingle,
       dailyDosePerKg,
-      days
+      days,
+      totalAmoxicillinForCourse
     },
     
     breakdown: [
@@ -287,7 +292,94 @@ function calculateOptimalCombination(targetAmoxicillin: number): CalculationDeta
     actualClavulanate: 0,
     ratio: Infinity,
     isRatioValid: true,
-    useAmoxicillin500: true
+    useAmoxicillin500: true,
+    totalAmoxicillinForCourse: 0
+  };
+}
+
+function calculateOptimalCombinationForCourse(totalAmoxicillin: number, days: number): CalculationDetails {
+  // 基於療程總劑量計算最佳藥物組合
+  let bestCombination: CalculationDetails | null = null;
+  let minDifference = Infinity;
+
+  // 嘗試不同的 Augmentin 500/125 數量
+  const maxAugmentinCount = Math.ceil(totalAmoxicillin / DRUG_SPECS.augmentin500.amoxicillin);
+  
+  for (let augmentinCount = 0; augmentinCount <= maxAugmentinCount; augmentinCount++) {
+    const amoxicillinFromAugmentin = augmentinCount * DRUG_SPECS.augmentin500.amoxicillin;
+    const clavulanateFromAugmentin = augmentinCount * DRUG_SPECS.augmentin500.clavulanate;
+    const remainingAmoxicillin = totalAmoxicillin - amoxicillinFromAugmentin;
+
+    if (remainingAmoxicillin < 0) continue;
+
+    // 嘗試用 Amoxicillin 500mg 或 250mg 補足
+    const amoxicillin500Count = Math.round(remainingAmoxicillin / DRUG_SPECS.amoxicillin500.amoxicillin);
+    const amoxicillin250Count = Math.round(remainingAmoxicillin / DRUG_SPECS.amoxicillin250.amoxicillin);
+
+    // 計算兩種選擇的結果
+    const combinations = [
+      {
+        augmentin500Count: augmentinCount,
+        amoxicillin500Count: Math.max(0, amoxicillin500Count),
+        amoxicillin250Count: 0,
+        useAmoxicillin500: true
+      },
+      {
+        augmentin500Count: augmentinCount,
+        amoxicillin500Count: 0,
+        amoxicillin250Count: Math.max(0, amoxicillin250Count),
+        useAmoxicillin500: false
+      }
+    ];
+
+    for (const combo of combinations) {
+      const actualAmoxicillin = 
+        combo.augmentin500Count * DRUG_SPECS.augmentin500.amoxicillin +
+        combo.amoxicillin500Count * DRUG_SPECS.amoxicillin500.amoxicillin +
+        combo.amoxicillin250Count * DRUG_SPECS.amoxicillin250.amoxicillin;
+
+      const actualClavulanate = combo.augmentin500Count * DRUG_SPECS.augmentin500.clavulanate;
+      
+      // 計算比例 (Amoxicillin : Clavulanate)
+      const ratio = actualClavulanate > 0 ? actualAmoxicillin / actualClavulanate : Infinity;
+      const isRatioValid = actualClavulanate === 0 || (ratio >= 7 && ratio <= 14);
+      
+      const difference = Math.abs(actualAmoxicillin - totalAmoxicillin);
+      
+      // 優先選擇比例合適且差異最小的組合
+      const score = difference + (isRatioValid ? 0 : 1000);
+      
+      if (score < minDifference) {
+        minDifference = score;
+        bestCombination = {
+          targetAmoxicillin: totalAmoxicillin / days / 3, // 單次劑量
+          targetClavulanate: actualClavulanate / days / 3, // 單次劑量
+          augmentin500Count: combo.augmentin500Count,
+          amoxicillin500Count: combo.amoxicillin500Count,
+          amoxicillin250Count: combo.amoxicillin250Count,
+          actualAmoxicillin: actualAmoxicillin / days / 3, // 單次實際劑量
+          actualClavulanate: actualClavulanate / days / 3, // 單次實際劑量
+          ratio,
+          isRatioValid,
+          useAmoxicillin500: combo.useAmoxicillin500,
+          totalAmoxicillinForCourse: actualAmoxicillin
+        };
+      }
+    }
+  }
+
+  return bestCombination || {
+    targetAmoxicillin: totalAmoxicillin / days / 3,
+    targetClavulanate: 0,
+    augmentin500Count: 0,
+    amoxicillin500Count: Math.round(totalAmoxicillin / DRUG_SPECS.amoxicillin500.amoxicillin),
+    amoxicillin250Count: 0,
+    actualAmoxicillin: Math.round(totalAmoxicillin / DRUG_SPECS.amoxicillin500.amoxicillin) * DRUG_SPECS.amoxicillin500.amoxicillin / days / 3,
+    actualClavulanate: 0,
+    ratio: Infinity,
+    isRatioValid: true,
+    useAmoxicillin500: true,
+    totalAmoxicillinForCourse: Math.round(totalAmoxicillin / DRUG_SPECS.amoxicillin500.amoxicillin) * DRUG_SPECS.amoxicillin500.amoxicillin
   };
 }
 
