@@ -8,8 +8,16 @@
       "Bash(mv:*)",
       "Bash(rsync:*)",
       "Bash(cp:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npx @playwright/mcp@latest:*)"
     ],
     "deny": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "fetch",
+    "Context7",
+    "playwright",
+    "serena"
+  ]
 }

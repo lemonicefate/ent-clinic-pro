@@ -1,0 +1,70 @@
+{
+    "mcpServers": {
+      "fetch": {
+        "command": "uvx",
+        "args": [
+          "mcp-server-fetch"
+        ],
+        "env": {},
+        "disabled": false,
+        "autoApprove": []
+      },
+      "Context7": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@upstash/context7-mcp"
+        ],
+        "env": {},
+        "disabled": false,
+        "autoApprove": [
+          "mcp_Context7_resolve_library_id",
+          "mcp_Context7_get_library_docs",
+          "resolve-library-id",
+          "get-library-docs"
+        ]
+      },
+      "playwright": {
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ]
+      },
+      "serena": {
+        "command": "uv",
+        "args": [
+          "run",
+          "--directory",
+          "D:\\ai_project\\ent-pro\\serena",
+          "serena-mcp-server",
+          "--project",
+          "D:\\ai_project\\ent-pro"
+        ],
+        "env": {
+          "FASTMCP_LOG_LEVEL": "ERROR"
+        },
+        "disabled": false,
+        "autoApprove": [
+          "find_symbol",
+          "activate_project",
+          "list_dir",
+          "find_file",
+          "create_text_file",
+          "execute_shell_command",
+          "replace_regex",
+          "read_file",
+          "think_about_collected_information",
+          "think_about_task_adherence",
+          "think_about_whether_you_are_done",
+          "summarize_changes",
+          "check_onboarding_performed",
+          "onboarding",
+          "get_symbols_overview",
+          "write_memory",
+          "search_for_pattern",
+          "list_memories",
+          "read_memory"
+        ]
+      }
+    }
+  }
