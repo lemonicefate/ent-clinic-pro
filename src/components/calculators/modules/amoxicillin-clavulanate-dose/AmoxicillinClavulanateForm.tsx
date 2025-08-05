@@ -52,13 +52,20 @@ const AmoxicillinClavulanateForm: React.FC<CalculatorFormProps> = ({
           )}
         </div>
 
-        {/* 劑量選擇 */}
+        {/* 劑量選擇 - 圖卡顯示 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-3">
             劑量選擇
           </label>
-          <div className="space-y-3">
-            <label className="flex items-start cursor-pointer">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div
+              className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                values.doseTarget === 'normal'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 bg-white hover:border-gray-300'
+              }`}
+              onClick={() => onChange('doseTarget', 'normal')}
+            >
               <input
                 type="radio"
                 name="doseTarget"
@@ -66,14 +73,23 @@ const AmoxicillinClavulanateForm: React.FC<CalculatorFormProps> = ({
                 checked={values.doseTarget === 'normal'}
                 onChange={(e) => onChange('doseTarget', e.target.value)}
                 onBlur={() => onBlur('doseTarget')}
-                className="mt-1 mr-3 text-blue-600 focus:ring-blue-500"
+                className="sr-only"
               />
-              <div>
-                <div className="text-sm font-medium text-gray-900">正常劑量</div>
-                <div className="text-xs text-gray-500">45 mg/kg/day - 適用於一般感染</div>
+              <div className="text-center">
+                <div className="text-lg font-semibold text-gray-900 mb-1">正常劑量</div>
+                <div className="text-lg font-bold text-blue-600 mb-2">45 mg/kg/day</div>
+                <div className="text-sm text-gray-600">適用於一般感染</div>
               </div>
-            </label>
-            <label className="flex items-start cursor-pointer">
+            </div>
+            
+            <div
+              className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                values.doseTarget === 'high'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 bg-white hover:border-gray-300'
+              }`}
+              onClick={() => onChange('doseTarget', 'high')}
+            >
               <input
                 type="radio"
                 name="doseTarget"
@@ -81,16 +97,42 @@ const AmoxicillinClavulanateForm: React.FC<CalculatorFormProps> = ({
                 checked={values.doseTarget === 'high'}
                 onChange={(e) => onChange('doseTarget', e.target.value)}
                 onBlur={() => onBlur('doseTarget')}
-                className="mt-1 mr-3 text-blue-600 focus:ring-blue-500"
+                className="sr-only"
               />
-              <div>
-                <div className="text-sm font-medium text-gray-900">高劑量</div>
-                <div className="text-xs text-gray-500">80-90 mg/kg/day - 適用於頑固細菌感染</div>
+              <div className="text-center">
+                <div className="text-lg font-semibold text-gray-900 mb-1">高劑量</div>
+                <div className="text-lg font-bold text-red-600 mb-2">80-90 mg/kg/day</div>
+                <div className="text-sm text-gray-600">適用於頑固細菌感染</div>
               </div>
-            </label>
+            </div>
           </div>
           {errors.doseTarget && (
             <p className="mt-1 text-sm text-red-600">{errors.doseTarget}</p>
+          )}
+        </div>
+
+        {/* 天數選擇 */}
+        <div>
+          <label htmlFor="days" className="block text-sm font-medium text-gray-700 mb-2">
+            天數
+          </label>
+          <select
+            id="days"
+            value={values.days ?? 3}
+            onChange={(e) => onChange('days', parseInt(e.target.value))}
+            onBlur={() => onBlur('days')}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value={1}>1天</option>
+            <option value={2}>2天</option>
+            <option value={3}>3天</option>
+            <option value={4}>4天</option>
+            <option value={5}>5天</option>
+            <option value={6}>6天</option>
+            <option value={7}>7天</option>
+          </select>
+          {errors.days && (
+            <p className="mt-1 text-sm text-red-600">{errors.days}</p>
           )}
         </div>
 

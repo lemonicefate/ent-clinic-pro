@@ -57,6 +57,15 @@ export function validate(inputs: Record<string, any>): ValidationResult {
     });
   }
 
+  const days = inputs.days || 3;
+  if (days < 1 || days > 7) {
+    errors.push({
+      field: 'days',
+      message: '天數必須在 1-7 天之間',
+      code: 'OUT_OF_RANGE'
+    });
+  }
+
   return {
     isValid: errors.length === 0,
     errors
@@ -64,7 +73,7 @@ export function validate(inputs: Record<string, any>): ValidationResult {
 }
 
 export function calculate(inputs: Record<string, any>): CalculationResult {
-  const { weight, doseTarget } = inputs;
+  const { weight, doseTarget, days = 3 } = inputs;
   
   // 計算目標 Amoxicillin 每日劑量 (mg/kg/day)
   const dailyDosePerKg = doseTarget === 'high' ? 85 : 45;
@@ -152,7 +161,8 @@ export function calculate(inputs: Record<string, any>): CalculationResult {
     customData: {
       calculation,
       targetAmoxicillinSingle,
-      dailyDosePerKg
+      dailyDosePerKg,
+      days
     },
     
     breakdown: [
@@ -194,7 +204,7 @@ export function calculate(inputs: Record<string, any>): CalculationResult {
       calculatedAt: new Date().toISOString(),
       calculationTime: Date.now(),
       version: '2.0.0',
-      inputs: { weight, doseTarget }
+      inputs: { weight, doseTarget, days }
     }
   };
 }
