@@ -5,7 +5,7 @@
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SimpleAmoxicillinClavulanateCalculator from '../../components/calculators/modules/amoxicillin-clavulanate-dose/SimpleAmoxicillinClavulanate.tsx';
+import CalculatorContainer from '../../components/calculators/common/CalculatorContainer.tsx';
 import type { SupportedLocale } from '../../types/calculator.js';
 
 const locale: SupportedLocale = 'zh-TW';
@@ -14,7 +14,7 @@ const locale: SupportedLocale = 'zh-TW';
 const pluginMetadata = {
   id: 'amoxicillin-clavulanate-dose',
   namespace: 'pediatrics',
-  version: '1.0.0',
+  version: '2.0.0',
   name: {
     'zh-TW': '兒童 Amoxicillin/Clavulanate 劑量計算器',
     'en': 'Pediatric Amoxicillin/Clavulanate Dose Calculator',
@@ -100,11 +100,13 @@ const structuredData = {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- 計算機主體 - 使用 React 組件 -->
+      <!-- 計算機主體 - 使用新的模組化組件 -->
       <div class="lg:col-span-2">
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-          <SimpleAmoxicillinClavulanateCalculator client:load locale={locale} />
-        </div>
+        <CalculatorContainer 
+          calculatorId="amoxicillin-clavulanate-dose"
+          locale={locale}
+          client:load 
+        />
       </div>
 
       <!-- 側邊欄資訊 -->

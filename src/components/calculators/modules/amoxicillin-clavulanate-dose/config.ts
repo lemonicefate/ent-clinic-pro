@@ -24,33 +24,45 @@ export const config: CalculatorConfig = {
       id: 'weight',
       type: 'number',
       label: {
-        'zh-TW': '兒童體重',
-        'en': 'Child Weight',
-        'ja': '小児体重'
+        'zh-TW': '體重',
+        'en': 'Weight',
+        'ja': '体重'
+      },
+      placeholder: {
+        'zh-TW': '例如：25',
+        'en': 'e.g., 25',
+        'ja': '例：25'
       },
       required: true,
+      min: 1,
+      max: 100,
+      step: 0.1,
+      unit: 'kg',
       validation: {
-        min: 1,
-        max: 100
-      },
-      unit: 'kg'
+        errorMessage: {
+          'zh-TW': '體重必須在 1-100 公斤之間',
+          'en': 'Weight must be between 1-100 kg',
+          'ja': '体重は1-100kgの間である必要があります'
+        }
+      }
     },
     {
       id: 'doseTarget',
       type: 'select',
       label: {
-        'zh-TW': 'Amoxicillin 劑量目標',
-        'en': 'Amoxicillin Dose Target',
-        'ja': 'アモキシシリン用量目標'
+        'zh-TW': '劑量選擇',
+        'en': 'Dose Selection',
+        'ja': '用量選択'
       },
       required: true,
+      defaultValue: 'normal',
       options: [
         {
-          value: 'low',
+          value: 'normal',
           label: {
-            'zh-TW': '標準劑量 (45 mg/kg/day)',
-            'en': 'Standard Dose (45 mg/kg/day)',
-            'ja': '標準用量 (45 mg/kg/day)'
+            'zh-TW': '正常劑量 (45 mg/kg/day)',
+            'en': 'Normal Dose (45 mg/kg/day)',
+            'ja': '通常用量 (45 mg/kg/day)'
           }
         },
         {
@@ -61,24 +73,6 @@ export const config: CalculatorConfig = {
             'ja': '高用量 (80-90 mg/kg/day)'
           }
         }
-      ]
-    },
-    {
-      id: 'days',
-      type: 'select',
-      label: {
-        'zh-TW': '治療天數',
-        'en': 'Treatment Days',
-        'ja': '治療日数'
-      },
-      required: true,
-      defaultValue: '3',
-      options: [
-        { value: '1', label: { 'zh-TW': '1 天', 'en': '1 Day', 'ja': '1日' } },
-        { value: '2', label: { 'zh-TW': '2 天', 'en': '2 Days', 'ja': '2日' } },
-        { value: '3', label: { 'zh-TW': '3 天', 'en': '3 Days', 'ja': '3日' } },
-        { value: '4', label: { 'zh-TW': '4 天', 'en': '4 Days', 'ja': '4日' } },
-        { value: '5', label: { 'zh-TW': '5 天', 'en': '5 Days', 'ja': '5日' } }
       ]
     }
   ],

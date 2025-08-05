@@ -36,7 +36,8 @@
         "browser_type",
         "browser_click",
         "browser_select_option",
-        "browser_snapshot"
+        "browser_snapshot",
+        "browser_wait_for"
       ]
     },
     "serena": {

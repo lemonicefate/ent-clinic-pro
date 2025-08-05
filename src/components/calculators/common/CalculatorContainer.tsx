@@ -238,37 +238,93 @@ export const CalculatorContainer: React.FC<CalculatorContainerProps> = ({
           </div>
         )}
 
-        {/* 表單組件 */}
-        <ErrorBoundary 
-          calculatorId={`${calculatorId}-form`}
-          onError={onError}
-        >
-          <FormComponent
-            values={values}
-            errors={errors}
-            touched={touched}
-            onChange={handleValueChange}
-            onBlur={handleFieldBlur}
-            onSubmit={handleSubmit}
-            onReset={handleReset}
-            isLoading={isCalculating}
-            locale={locale}
-            className="mb-8"
-          />
-        </ErrorBoundary>
+        {/* 根據計算機類型選擇布局 */}
+        {calculatorId === 'amoxicillin-clavulanate-dose' ? (
+          /* 左右兩欄布局 */
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* 左欄：表單 */}
+            <div>
+              <ErrorBoundary 
+                calculatorId={`${calculatorId}-form`}
+                onError={onError}
+              >
+                <FormComponent
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  onChange={handleValueChange}
+                  onBlur={handleFieldBlur}
+                  onSubmit={handleSubmit}
+                  onReset={handleReset}
+                  isLoading={isCalculating}
+                  locale={locale}
+                  className=""
+                />
+              </ErrorBoundary>
+            </div>
 
-        {/* 結果組件 */}
-        {result && (
-          <ErrorBoundary 
-            calculatorId={`${calculatorId}-results`}
-            onError={onError}
-          >
-            <ResultsComponent
-              result={result}
-              locale={locale}
-              className="mt-8"
-            />
-          </ErrorBoundary>
+            {/* 右欄：結果 */}
+            <div>
+              {result ? (
+                <ErrorBoundary 
+                  calculatorId={`${calculatorId}-results`}
+                  onError={onError}
+                >
+                  <ResultsComponent
+                    result={result}
+                    locale={locale}
+                    className=""
+                  />
+                </ErrorBoundary>
+              ) : (
+                <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">尚未計算</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    請輸入體重和劑量選擇，然後點擊「計算劑量」
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* 傳統上下布局 */
+          <>
+            {/* 表單組件 */}
+            <ErrorBoundary 
+              calculatorId={`${calculatorId}-form`}
+              onError={onError}
+            >
+              <FormComponent
+                values={values}
+                errors={errors}
+                touched={touched}
+                onChange={handleValueChange}
+                onBlur={handleFieldBlur}
+                onSubmit={handleSubmit}
+                onReset={handleReset}
+                isLoading={isCalculating}
+                locale={locale}
+                className="mb-8"
+              />
+            </ErrorBoundary>
+
+            {/* 結果組件 */}
+            {result && (
+              <ErrorBoundary 
+                calculatorId={`${calculatorId}-results`}
+                onError={onError}
+              >
+                <ResultsComponent
+                  result={result}
+                  locale={locale}
+                  className="mt-8"
+                />
+              </ErrorBoundary>
+            )}
+          </>
         )}
       </div>
     </ErrorBoundary>
