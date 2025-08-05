@@ -211,17 +211,7 @@ export const CalculatorContainer: React.FC<CalculatorContainerProps> = ({
       onError={onError}
     >
       <div className={`calculator-container ${className}`}>
-        {/* 計算機標題 */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {module.config.name[locale] || module.config.name['zh-TW']}
-          </h1>
-          {module.config.description && (
-            <p className="text-gray-600">
-              {module.config.description[locale] || module.config.description['zh-TW']}
-            </p>
-          )}
-        </div>
+
 
         {/* 一般錯誤訊息 */}
         {errors.general && (
