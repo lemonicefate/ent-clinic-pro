@@ -186,7 +186,7 @@ export class ModuleLoader {
    */
   async loadModule(modulePath: string): Promise<ModuleLoadResult> {
     try {
-      const importFn = () => import(modulePath);
+      const importFn = () => import(/* @vite-ignore */ modulePath);
       return await this.loadSingleModule(modulePath, importFn);
     } catch (error) {
       return {
