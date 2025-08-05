@@ -257,7 +257,7 @@ function calculateOptimalCombination(targetAmoxicillin: number): CalculationDeta
       
       // 計算比例 (Amoxicillin : Clavulanate)
       const ratio = actualClavulanate > 0 ? actualAmoxicillin / actualClavulanate : Infinity;
-      const isRatioValid = actualClavulanate === 0 || (ratio >= 7 && ratio <= 14);
+      const isRatioValid = actualClavulanate === 0 || (ratio >= 4 && ratio <= 14);
       
       const difference = Math.abs(actualAmoxicillin - targetAmoxicillin);
       
@@ -298,9 +298,13 @@ function calculateOptimalCombination(targetAmoxicillin: number): CalculationDeta
 }
 
 function calculateOptimalCombinationForCourse(totalAmoxicillin: number, days: number): CalculationDetails {
-  // 基於療程總劑量計算最佳藥物組合
+  // 基於療程總劑量計算最佳藥物組合，確保 amo:cla 比例在 4:1~14:1 之間
   let bestCombination: CalculationDetails | null = null;
-  let minDifference = Infinity;
+  let bestScore = Infinity;
+
+  // 計算理想的 Clavulanate 範圍（基於 4:1 到 14:1 比例）
+  const minClavulanate = totalAmoxicillin / 14; // 14:1 比例時的最小 Clavulanate
+  const maxClavulanate = totalAmoxicillin / 4;  // 4:1 比例時的最大 Clavulanate
 
   // 嘗試不同的 Augmentin 500/125 數量
   const maxAugmentinCount = Math.ceil(totalAmoxicillin / DRUG_SPECS.augmentin500.amoxicillin);
@@ -342,15 +346,28 @@ function calculateOptimalCombinationForCourse(totalAmoxicillin: number, days: nu
       
       // 計算比例 (Amoxicillin : Clavulanate)
       const ratio = actualClavulanate > 0 ? actualAmoxicillin / actualClavulanate : Infinity;
-      const isRatioValid = actualClavulanate === 0 || (ratio >= 7 && ratio <= 14);
+      const isRatioValid = actualClavulanate === 0 || (ratio >= 4 && ratio <= 14);
       
-      const difference = Math.abs(actualAmoxicillin - totalAmoxicillin);
+      // 計算劑量差異
+      const doseDifference = Math.abs(actualAmoxicillin - totalAmoxicillin);
       
-      // 優先選擇比例合適且差異最小的組合
-      const score = difference + (isRatioValid ? 0 : 1000);
+      // 計算比例偏差（如果有 Clavulanate）
+      let ratioScore = 0;
+      if (actualClavulanate > 0) {
+        if (ratio < 4) {
+          ratioScore = (4 - ratio) * 1000; // 比例太低的懲罰
+        } else if (ratio > 14) {
+          ratioScore = (ratio - 14) * 100; // 比例太高的懲罰（較輕）
+        }
+      }
       
-      if (score < minDifference) {
-        minDifference = score;
+      // 總分數：劑量差異 + 比例偏差 + 藥物顆數懲罰
+      const totalPills = combo.augmentin500Count + combo.amoxicillin500Count + combo.amoxicillin250Count;
+      const pillPenalty = totalPills * 10; // 偏好較少的藥物顆數
+      const score = doseDifference + ratioScore + pillPenalty;
+      
+      if (score < bestScore) {
+        bestScore = score;
         bestCombination = {
           targetAmoxicillin: totalAmoxicillin / days / 3, // 單次劑量
           targetClavulanate: actualClavulanate / days / 3, // 單次劑量
