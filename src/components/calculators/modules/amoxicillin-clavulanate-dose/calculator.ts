@@ -306,15 +306,27 @@ function calculateOptimalCombinationForCourse(totalAmoxicillin: number, days: nu
   const minClavulanate = totalAmoxicillin / 14; // 14:1 比例時的最小 Clavulanate
   const maxClavulanate = totalAmoxicillin / 4;  // 4:1 比例時的最大 Clavulanate
 
-  // 嘗試不同的 Augmentin 500/125 數量
-  const maxAugmentinCount = Math.ceil(totalAmoxicillin / DRUG_SPECS.augmentin500.amoxicillin);
+  // 計算理想的 Augmentin 數量範圍（基於 Clavulanate 範圍）
+  const minAugmentinCount = Math.ceil(minClavulanate / DRUG_SPECS.augmentin500.clavulanate);
+  const maxAugmentinCount = Math.floor(maxClavulanate / DRUG_SPECS.augmentin500.clavulanate);
   
-  for (let augmentinCount = 0; augmentinCount <= maxAugmentinCount; augmentinCount++) {
+  // 確保至少嘗試純 Amoxicillin 的選項（augmentinCount = 0）
+  const augmentinRangeStart = 0;
+  const augmentinRangeEnd = Math.max(maxAugmentinCount, Math.ceil(totalAmoxicillin / DRUG_SPECS.augmentin500.amoxicillin));
+  
+  for (let augmentinCount = augmentinRangeStart; augmentinCount <= augmentinRangeEnd; augmentinCount++) {
     const amoxicillinFromAugmentin = augmentinCount * DRUG_SPECS.augmentin500.amoxicillin;
     const clavulanateFromAugmentin = augmentinCount * DRUG_SPECS.augmentin500.clavulanate;
     const remainingAmoxicillin = totalAmoxicillin - amoxicillinFromAugmentin;
 
     if (remainingAmoxicillin < 0) continue;
+
+    // 檢查 Clavulanate 範圍約束（如果有 Clavulanate）
+    if (clavulanateFromAugmentin > 0) {
+      // 如果 Clavulanate 超出理想範圍太多，跳過此組合
+      if (clavulanateFromAugmentin > maxClavulanate * 1.5) continue;
+      if (clavulanateFromAugmentin < minClavulanate * 0.5) continue;
+    }
 
     // 嘗試用 Amoxicillin 500mg 或 250mg 補足
     const amoxicillin500Count = Math.round(remainingAmoxicillin / DRUG_SPECS.amoxicillin500.amoxicillin);
@@ -351,6 +363,21 @@ function calculateOptimalCombinationForCourse(totalAmoxicillin: number, days: nu
       // 計算劑量差異
       const doseDifference = Math.abs(actualAmoxicillin - totalAmoxicillin);
       
+      // 計算 Clavulanate 範圍偏差評分
+      let clavulanateRangeScore = 0;
+      if (actualClavulanate > 0) {
+        if (actualClavulanate < minClavulanate) {
+          clavulanateRangeScore = (minClavulanate - actualClavulanate) * 50; // Clavulanate 太少的懲罰
+        } else if (actualClavulanate > maxClavulanate) {
+          clavulanateRangeScore = (actualClavulanate - maxClavulanate) * 100; // Clavulanate 太多的懲罰
+        } else {
+          // 在理想範圍內，給予獎勵
+          const rangeCenter = (minClavulanate + maxClavulanate) / 2;
+          const distanceFromCenter = Math.abs(actualClavulanate - rangeCenter);
+          clavulanateRangeScore = -distanceFromCenter * 10; // 越接近中心越好（負分表示獎勵）
+        }
+      }
+      
       // 計算比例偏差（如果有 Clavulanate）
       let ratioScore = 0;
       if (actualClavulanate > 0) {
@@ -361,10 +388,10 @@ function calculateOptimalCombinationForCourse(totalAmoxicillin: number, days: nu
         }
       }
       
-      // 總分數：劑量差異 + 比例偏差 + 藥物顆數懲罰
+      // 總分數：劑量差異 + Clavulanate範圍評分 + 比例偏差 + 藥物顆數懲罰
       const totalPills = combo.augmentin500Count + combo.amoxicillin500Count + combo.amoxicillin250Count;
       const pillPenalty = totalPills * 10; // 偏好較少的藥物顆數
-      const score = doseDifference + ratioScore + pillPenalty;
+      const score = doseDifference + clavulanateRangeScore + ratioScore + pillPenalty;
       
       if (score < bestScore) {
         bestScore = score;
