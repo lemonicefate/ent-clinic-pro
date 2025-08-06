@@ -14,13 +14,31 @@
   "category": "pediatrics",
   "metadata": {
     "difficulty": "intermediate",
-    "tags": ["pediatrics", "antibiotics", "amoxicillin", "clavulanate", "dose-calculation", "infection"],
+    "tags": [
+      "pediatrics",
+      "antibiotics",
+      "amoxicillin",
+      "clavulanate",
+      "dose-calculation",
+      "infection"
+    ],
     "author": "Astro Clinical Platform",
     "license": "MIT",
-    "keywords": ["amoxicillin", "clavulanate", "pediatric", "dose", "antibiotic"]
+    "keywords": [
+      "amoxicillin",
+      "clavulanate",
+      "pediatric",
+      "dose",
+      "antibiotic"
+    ]
   },
   "medical": {
-    "specialty": ["Pediatrics", "Family Medicine", "Internal Medicine", "Infectious Disease"],
+    "specialty": [
+      "Pediatrics",
+      "Family Medicine",
+      "Internal Medicine",
+      "Infectious Disease"
+    ],
     "evidenceLevel": "A",
     "clinicalGuidelines": {
       "zh-TW": "基於兒科抗生素使用指引，Amoxicillin/Clavulanate 為治療兒童細菌感染的第一線或第二線抗生素，特別適用於中耳炎、鼻竇炎等感染。劑量計算需考慮 Amoxicillin 的治療效果與 Clavulanate 的安全限制。",
@@ -30,7 +48,9 @@
     "references": [
       {
         "title": "Pediatric Antimicrobial Stewardship Guidelines",
-        "authors": ["American Academy of Pediatrics"],
+        "authors": [
+          "American Academy of Pediatrics"
+        ],
         "journal": "Pediatrics",
         "year": "2023",
         "doi": "10.1542/peds.2023-061891"
